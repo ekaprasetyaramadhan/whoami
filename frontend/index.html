@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0e13">
+  <meta name="description" content="whoiam: Platform Intelijen Akun & Forensik Media Sosial (Instagram, X, Facebook, Threads).">
+  <title>whoiam | Social Media Intelligence & Account Forensics</title>
+  
+  <!-- Google Fonts: Space Grotesk, IBM Plex Sans, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+  
+  <link rel="stylesheet" href="./src/styles/warroom.css">
+  <link rel="stylesheet" href="./src/styles/components.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header bar diinject oleh JavaScript -->
+    <header id="header-container" class="header-bar"></header>
+
+    <!-- Ringkasan Eksekutif (4 Indikator Utama yang Mudah Dipahami) -->
+    <section class="executive-kpi-bar" id="executive-kpi-bar">
+      <!-- Card 1: Cakupan Wilayah -->
+      <div class="kpi-card" id="kpi-card-status">
+        <div class="kpi-icon status-green" id="kpi-icon-status"><i class="fa-solid fa-map-location-dot"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-label">CAKUPAN WILAYAH INDONESIA</div>
+          <div class="kpi-val text-cyan" id="kpi-val-provinces">38 PROVINSI (NASIONAL)</div>
+          <div class="kpi-desc" id="kpi-desc-status">Sumatera, Jawa, Bali-Nusa, Kalimantan, Sulawesi, Maluku-Papua</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Buzzer Terpantau -->
+      <div class="kpi-card">
+        <div class="kpi-icon text-cyan"><i class="fa-solid fa-users-viewfinder"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-label">JARINGAN BUZZER TERDETEKSI</div>
+          <div class="kpi-val text-cyan" id="kpi-val-buzzers">76 KOORDINATOR • 1.250+ BOT</div>
+          <div class="kpi-desc">Aktor utama & kluster amplifikasi terorganisir nasional</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Jangkauan Audiens -->
+      <div class="kpi-card">
+        <div class="kpi-icon text-purple"><i class="fa-solid fa-bullhorn"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-label">POTENSI JANGKAUAN (REACH)</div>
+          <div class="kpi-val text-purple" id="kpi-val-reach">36.800.000 NETIZEN</div>
+          <div class="kpi-desc">Total akumulasi follower akun buzzer terpantau</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Platform Medsos -->
+      <div class="kpi-card">
+        <div class="kpi-icon text-amber"><i class="fa-solid fa-share-nodes"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-label">CRAWLING MULTI-PLATFORM</div>
+          <div class="kpi-val text-amber" id="kpi-val-platforms">X • INSTAGRAM • FACEBOOK</div>
+          <div class="kpi-desc">Sinkronisasi data medsos & berita daerah live</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Tab Navigasi Utama -->
+    <nav class="main-nav-tabs">
+      <button class="main-tab-btn active" data-tab="tab-pane-geo" id="nav-btn-geo">
+        <i class="fa-solid fa-map-location-dot"></i> PETA & SEBARAN BUZZER
+      </button>
+      <button class="main-tab-btn" data-tab="tab-pane-osint" id="nav-btn-osint">
+        <i class="fa-solid fa-globe"></i> PELACAK AKUN MEDSOS
+      </button>
+    </nav>
+
+    <!-- Kontainer Panel Konten Tab -->
+    <main class="main-tab-content">
+      <!-- TAB 1: PETA & SEBARAN BUZZER (TAMPILAN UTAMA DEFAULT) -->
+      <section id="tab-pane-geo" class="tab-pane active" style="padding: 0;">
+        <!-- GeoBuzzerView inline component dimount di sini secara otomatis -->
+      </section>
+
+      <!-- TAB 2: OSINT SCRAPER LANGSUNG -->
+      <section id="tab-pane-osint" class="tab-pane">
+        <div id="osint-inline-container" style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: 14px; overflow-y: auto;">
+          <!-- Inline OSINT View dimount di sini -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
