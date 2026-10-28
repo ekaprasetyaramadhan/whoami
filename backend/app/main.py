@@ -122,7 +122,7 @@ if os.path.exists(ASSETS_DIR):
 if os.path.exists(DATA_DIR):
     app.mount("/data", StaticFiles(directory=DATA_DIR), name="static-data")
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def read_root():
     index_file = os.path.join(DIST_DIR, "index.html")
     if os.path.exists(index_file):
@@ -182,7 +182,7 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
         ws_manager.disconnect(websocket)
 
 # SPA fallback handler untuk melayani asset publik dan rute SPA frontend
-@app.get("/{full_path:path}")
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
 def serve_spa_or_static(full_path: str):
     target_file = os.path.join(DIST_DIR, full_path)
     if os.path.isfile(target_file):
