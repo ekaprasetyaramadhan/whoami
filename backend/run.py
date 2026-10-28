@@ -14,7 +14,7 @@ if current_dir not in sys.path:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    reload = os.environ.get("RELOAD", "false").lower() == "true"
+    reload = os.environ.get("RELOAD", "true").lower() == "true"
     print("=" * 70)
     print("[whoiam] Social Media Intelligence & Account Forensics Platform")
     print(f"Memulai server API Backend pada http://0.0.0.0:{port}")

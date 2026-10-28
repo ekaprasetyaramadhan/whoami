@@ -3,6 +3,7 @@ Unit Test Suite for whoiam Core Engines
 whoiam - Social Media Intelligence & Account Forensics
 """
 
+import pytest
 from app.core.ews_engine import EWSEngine
 from app.core.bot_engine import BotEngine
 from app.core.hoax_engine import HoaxEngine
@@ -72,3 +73,15 @@ def test_sentiment_engine_emotions():
     res_pos = engine.analyze_text("Senang melihat layanan resmi yang sangat profesional, terpercaya, dan aman.")
     assert res_pos["polarity"] == "POSITIVE"
     assert res_pos["dominant_emotion"] == "TRUST"
+    assert "emotions" in res_pos
+    assert "scores" in res_pos
+
+@pytest.mark.anyio
+async def test_osint_engine_search_and_ingest():
+    from app.core.osint_engine import osint_engine
+    posts = await osint_engine.search_and_ingest(query="pilkada", platform="all", limit=3, inject_stream=False)
+    assert len(posts) >= 1
+    assert "content" in posts[0]
+    assert "emotions" in posts[0]
+    assert "bot_score" in posts[0]
+

@@ -70,15 +70,18 @@ class SentimentEngine:
         else:
             polarity = "NEUTRAL"
 
+        scores_dict = {
+            "anger": score_anger,
+            "fear": score_fear,
+            "trust": score_trust,
+            "anticipation": score_anticipation
+        }
+
         return {
             "polarity": polarity,
             "dominant_emotion": dominant_emotion,
-            "scores": {
-                "anger": score_anger,
-                "fear": score_fear,
-                "trust": score_trust,
-                "anticipation": score_anticipation
-            }
+            "scores": scores_dict,
+            "emotions": scores_dict
         }
 
     def record_post(self, post: dict):
