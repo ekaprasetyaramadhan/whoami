@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  esbuild: {
+    drop: mode === 'production' ? ['console', 'debugger'] : []
+  },
   server: {
     port: 5173,
     host: '0.0.0.0',
@@ -17,4 +20,4 @@ export default defineConfig({
       }
     }
   }
-});
+}));
