@@ -9,7 +9,10 @@ import re
 import os
 import json
 import random
+import socket
+import ipaddress
 import httpx
+from urllib.parse import urlparse
 from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from typing import Dict, Any, List, Optional
@@ -18,6 +21,51 @@ from app.core.bot_engine import bot_engine
 from app.core.hoax_engine import hoax_engine
 from app.core.sentiment_engine import sentiment_engine
 from app.core.stream_bus import stream_bus
+
+def is_safe_public_url(url: str) -> bool:
+    """
+    Validasi Anti-SSRF (Server-Side Request Forgery):
+    Hanya mengizinkan skema http/https dan menolak localhost, loopback, link-local,
+    metadata cloud, serta seluruh blok IP privat (RFC 1918).
+    """
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            return False
+
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+
+        # Blokir nama host loopback, internal, dan cloud metadata
+        blocked_hosts = {
+            "localhost", "0.0.0.0", "::1", "127.0.0.1",
+            "metadata.google.internal", "instance-data"
+        }
+        lower_host = hostname.lower()
+        if lower_host in blocked_hosts or lower_host.endswith(".local") or lower_host.endswith(".internal"):
+            return False
+
+        # Cek jika hostname adalah alamat IP langsung
+        try:
+            ip = ipaddress.ip_address(hostname)
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+                return False
+        except ValueError:
+            # Hostname berupa nama domain: lakukan DNS lookup untuk memastikan tidak meresolusi ke IP privat
+            try:
+                resolved = socket.getaddrinfo(hostname, None)
+                for entry in resolved:
+                    ip_str = entry[4][0]
+                    ip = ipaddress.ip_address(ip_str)
+                    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+                        return False
+            except socket.gaierror:
+                return False
+
+        return True
+    except Exception:
+        return False
 
 class OsintEngine:
     def __init__(self):
@@ -272,6 +320,10 @@ class OsintEngine:
         """
         Mengambil konten teks & author dari URL menggunakan oEmbed API atau OpenGraph HTML parsing.
         """
+        # Anti-SSRF Check
+        if not is_safe_public_url(url):
+            raise ValueError("URL ditolak: Akses ke IP privat, localhost, atau link internal dilarang (Anti-SSRF Protection).")
+
         data = {
             "author_name": "Pengguna Media Sosial",
             "author_handle": "@user_osint",

@@ -40,6 +40,8 @@ async def inspect_url_endpoint(req: InspectUrlRequest):
             "status": "success",
             "data": data
         }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gagal membedah URL: {str(e)}")
 
@@ -80,5 +82,7 @@ async def compare_accounts_endpoint(req: CompareAccountsRequest):
             "status": "success",
             "data": data
         }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gagal membandingkan akun: {str(e)}")
