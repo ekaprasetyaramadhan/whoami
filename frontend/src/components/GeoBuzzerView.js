@@ -37,12 +37,12 @@ export class GeoBuzzerView {
     if (!this.container) return;
 
     this.container.innerHTML = `
-      <div style="display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; background: #080d14;">
+      <div class="geo-view-wrapper">
         
         <!-- Filter & Control Toolbar -->
-        <div style="padding: 8px 16px; background: #0c1219; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; flex-shrink: 0;">
+        <div class="geo-control-toolbar">
           <!-- Platform Filter Pills -->
-          <div style="display: flex; align-items: center; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
             <span style="font-size: 0.7rem; color: var(--color-text-muted); font-weight: 600; margin-right: 2px;">PLATFORM:</span>
             <button class="btn-tactical geo-platform-pill active" data-platform="all">SEMUA</button>
             <button class="btn-tactical geo-platform-pill" data-platform="X"><i class="fa-brands fa-x-twitter"></i> 𝕏</button>
@@ -51,7 +51,7 @@ export class GeoBuzzerView {
           </div>
 
           <!-- Timeframe Playback Slider / Pills -->
-          <div style="display: flex; align-items: center; gap: 5px;">
+          <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
             <span style="font-size: 0.7rem; color: var(--color-cyan); font-weight: 700; margin-right: 2px;">
               <i class="fa-solid fa-clock-rotate-left"></i> RENTANG:
             </span>
@@ -62,7 +62,7 @@ export class GeoBuzzerView {
           </div>
 
           <!-- Province Selector, Flight Lines Toggle & Refresh -->
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <button id="main-btn-toggle-flights" class="btn-tactical active" style="padding: 4px 9px; font-size: 0.7rem; border-color: var(--color-cyan); color: var(--color-cyan);">
               <i class="fa-solid fa-plane-departure"></i> JALUR PROPAGASI
             </button>
@@ -86,13 +86,13 @@ export class GeoBuzzerView {
         </div>
 
         <!-- Main Split View (Kiri: Peta Indonesia, Kanan: 3 Tab Intelejen Wilayah) -->
-        <div style="display: flex; flex: 1; overflow: hidden; position: relative;">
+        <div class="geo-split-container">
           
           <!-- SISI KIRI: Peta Interaktif Indonesia -->
-          <div style="flex: 1.15; display: flex; flex-direction: column; border-right: 1px solid var(--color-border); background: #070b10; position: relative;">
+          <div class="geo-map-panel">
             
             <!-- Map Legend Box -->
-            <div style="position: absolute; top: 12px; left: 14px; z-index: 10; background: rgba(10, 16, 24, 0.9); backdrop-filter: blur(8px); padding: 8px 14px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.7rem; pointer-events: none;">
+            <div class="geo-map-legend">
               <div style="color: var(--color-cyan); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-circle-dot"></i> SEBARAN BUZZER TERDETEKSI</div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                 <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px #ef4444;"></span>
@@ -112,10 +112,10 @@ export class GeoBuzzerView {
             </div>
 
             <!-- ECharts Indonesia Map Container -->
-            <div id="main-indonesia-map-chart" style="width: 100%; flex: 1; min-height: 440px;"></div>
+            <div id="main-indonesia-map-chart" class="geo-map-chart"></div>
 
             <!-- Bottom Selected Province Bar -->
-            <div style="padding: 8px 16px; background: #0a0f16; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; flex-shrink: 0;">
+            <div class="geo-brief-prov-bar">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-location-crosshairs text-cyan"></i>
                 <span style="color: var(--color-text-muted);">Wilayah Terpilih:</span>
@@ -128,10 +128,10 @@ export class GeoBuzzerView {
           </div>
 
           <!-- SISI KANAN: Panel 3 Tab (SNA, Berita Lokal, Medsos Scrapes) -->
-          <div style="flex: 0.95; display: flex; flex-direction: column; background: #0a0e14; overflow: hidden;">
+          <div class="geo-intel-panel">
             
             <!-- Tab Header -->
-            <div style="display: flex; border-bottom: 1px solid var(--color-border); background: #0d131b; flex-shrink: 0;">
+            <div class="geo-intel-tab-header">
               <button id="main-btn-tab-sna" class="btn-tactical geo-tab-nav active" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
                 <i class="fa-solid fa-circle-nodes text-purple"></i> 1. SNA WILAYAH
               </button>

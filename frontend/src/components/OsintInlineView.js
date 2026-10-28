@@ -18,10 +18,10 @@ export class OsintInlineView {
     if (!this.container) return;
 
     this.container.innerHTML = `
-      <div style="display: flex; flex-direction: column; height: 100%; gap: 14px; background: #080d14; border: 1px solid var(--color-border); border-radius: 8px; padding: 18px; overflow: hidden;">
+      <div class="osint-view-container">
         
         <!-- Header Penjelasan -->
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; flex-shrink: 0; flex-wrap: wrap; gap: 8px;">
+        <div class="osint-view-header">
           <div>
             <h2 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 8px;">
               <i class="fa-solid fa-globe text-cyan"></i> PELACAK AKUN &amp; KONTEN MEDSOS (OSINT FORENSIK)
@@ -32,7 +32,7 @@ export class OsintInlineView {
           </div>
 
           <!-- Tab Nav Mini -->
-          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <div class="osint-tab-nav">
             <button id="inline-osint-tab-url" class="btn-tactical cyan">
               <i class="fa-solid fa-link"></i> 1. BEDAH URL POSTINGAN
             </button>
@@ -55,7 +55,7 @@ export class OsintInlineView {
                 TEMPELKAN LINK POSTINGAN / PROFIL MEDIA SOSIAL:
               </label>
 
-              <div style="display: flex; gap: 10px;">
+              <div class="osint-input-row">
                 <input type="text" id="inline-osint-input-url" class="tactical-input" style="flex: 1; padding: 8px 12px; background: #0c1219; border: 1px solid var(--color-border); color: #fff; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem;" placeholder="https://x.com/username/status/... atau https://instagram.com/..." />
                 <button id="inline-btn-run-inspect-url" class="btn-tactical cyan" style="padding: 8px 20px;">
                   <i class="fa-solid fa-magnifying-glass"></i> BEDAH SEKARANG
@@ -74,7 +74,7 @@ export class OsintInlineView {
                 CARI BERDASARKAN KATA KUNCI ATAU TAGAR POPULER:
               </label>
 
-              <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: center;">
+              <div class="osint-search-grid">
                 <input type="text" id="inline-osint-input-query" class="tactical-input" style="padding: 8px 12px; background: #0c1219; border: 1px solid var(--color-border); color: #fff; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem;" placeholder="Contoh: #pilkada2024, gempa, boikot, bantuan modal..." />
                 <select id="inline-osint-select-platform" style="padding: 8px 12px; background: #0c1219; border: 1px solid var(--color-border); color: #fff; border-radius: 4px; font-size: 0.8rem;">
                   <option value="all">Semua Medsos (X, IG, FB)</option>
@@ -104,7 +104,7 @@ export class OsintInlineView {
                 </button>
               </div>
 
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div class="osint-compare-grid">
                 <div>
                   <label style="font-size: 0.68rem; color: #38bdf8; font-weight: 700; margin-bottom: 4px; display: block;">
                     URL TARGET 1 (AKUN A / KOORDINATOR):
@@ -363,7 +363,7 @@ export class OsintInlineView {
             </span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.72rem; margin-bottom: 10px; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 4px; font-family: var(--font-mono);">
+          <div class="osint-timing-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.72rem; margin-bottom: 10px; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 4px; font-family: var(--font-mono);">
             <div><span style="color: #94a3b8;">Waktu Rilis Asli:</span> <strong style="color: #fff;">${origin.date_time_release || post.date_time_release || '-'}</strong></div>
             <div><span style="color: #94a3b8;">Delta Waktu Sebar:</span> <strong style="color: #38bdf8;">${origin.time_delta_from_origin || '0 detik'}</strong></div>
           </div>
@@ -387,7 +387,7 @@ export class OsintInlineView {
             </span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; font-size: 0.72rem;">
+          <div class="osint-geo-grid" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; font-size: 0.72rem;">
             <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(0,229,255,0.2); border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 4px;">
               <div><span style="color: #94a3b8;">Titik Koordinat:</span> <strong style="color: #fff; font-family: var(--font-mono);">${geo.latitude}, ${geo.longitude}</strong> (Radius: <span style="color: var(--color-cyan);">${geo.accuracy_radius || '±25m'}</span>)</div>
               <div><span style="color: #94a3b8;">Wilayah Administratif:</span> <strong style="color: #fff;">${geo.district}, ${geo.city}, ${geo.province}</strong></div>
@@ -422,7 +422,7 @@ export class OsintInlineView {
             Akun ini terdeteksi memiliki jaringan sinkronisasi postingan dengan simpul-simpul berikut:
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+          <div class="osint-sna-nodes" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
             ${snaNodesHtml}
           </div>
         </div>
@@ -438,7 +438,7 @@ export class OsintInlineView {
             </span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.72rem; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 4px; margin-bottom: 8px;">
+          <div class="osint-avatar-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.72rem; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 4px; margin-bottom: 8px;">
             <div>
               <span style="color: #94a3b8;">Probabilitas AI GAN:</span>
               <strong style="color: ${avatar.ai_probability > 60 ? '#f472b6' : '#10b981'}; font-size: 0.85rem; margin-left: 4px;">
@@ -455,7 +455,7 @@ export class OsintInlineView {
           <div style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px; font-weight: 700;">
             <i class="fa-solid fa-microscope text-pink"></i> ARTEFAK SINTESIS PADA WAJAH:
           </div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.68rem;">
+          <div class="osint-avatar-markers" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.68rem;">
             <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(236,72,153,0.2); border-radius: 4px; padding: 6px 8px;">
               <span style="color: #cbd5e1; font-weight: 600;">Simetri Pupil:</span>
               <div style="color: #f472b6; margin-top: 2px;">${(avatar.facial_markers && avatar.facial_markers.pupil_symmetry) || 'Simetris wajar'}</div>
@@ -560,7 +560,7 @@ export class OsintInlineView {
       </div>
 
       <!-- Side-by-Side Account Profiles -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+      <div class="osint-compare-profiles" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
         <!-- Akun A -->
         <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 6px; padding: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -589,7 +589,7 @@ export class OsintInlineView {
       </div>
 
       <!-- Forensik Korelasi 4 Parameter Utama -->
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; font-size: 0.72rem;">
+      <div class="osint-compare-metrics" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; font-size: 0.72rem;">
         <!-- 1. Kesamaan Leksikal -->
         <div style="background: rgba(0,0,0,0.4); border: 1px solid var(--color-border); border-radius: 4px; padding: 8px 10px;">
           <div style="color: #94a3b8; font-size: 0.65rem;">KESAMAAN TEKS (JACCARD):</div>
