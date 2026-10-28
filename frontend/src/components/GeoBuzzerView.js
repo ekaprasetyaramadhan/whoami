@@ -790,11 +790,14 @@ export class GeoBuzzerView {
             </div>
             ${escapeHtml(n.fact_check_note)}
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-            <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
-              ${escapeHtml(n.buzzer_correlation)}
-            </span>
-            <a href="${n.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
+                ${escapeHtml(n.buzzer_correlation)}
+              </span>
+              ${n.ethical_scraping ? `<span class="tag-badge valid" style="font-size: 0.58rem;"><i class="fa-solid fa-robot"></i> ROBOTS.TXT: ${escapeHtml(n.ethical_scraping.robots_status)}</span>` : ''}
+            </div>
+            <a href="${n.portal_url || n.url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
               Buka Berita Asli <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </div>
@@ -902,11 +905,12 @@ export class GeoBuzzerView {
                 </div>
                 <div>
                   <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
-                    ${escapeHtml(f.author_name)} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle)}</span>
+                    ${escapeHtml(f.author_name || f.author)} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle || f.handle)}</span>
                     ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
+                    ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px;"><i class="fa-solid fa-satellite-dish"></i> DATA ASLI (LIVE SCRAPED)</span>' : ''}
                   </div>
                   <div style="font-size: 0.65rem; color: var(--color-text-muted);">
-                    ${escapeHtml(f.city)}, ${escapeHtml(f.province)} &bull; <strong style="color: var(--color-cyan);">${f.followers.toLocaleString('id-ID')} followers</strong>
+                    ${escapeHtml(f.city || f.province)}, ${escapeHtml(f.province)} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
                   </div>
                 </div>
               </div>
@@ -921,7 +925,7 @@ export class GeoBuzzerView {
                 <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp)}
               </span>
               <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
-                ${escapeHtml(f.time_delta || 'T+0m')}
+                ${escapeHtml(f.time_delta || f.time_delta_label || 'T+0m')}
               </span>
             </div>
 
@@ -941,17 +945,19 @@ export class GeoBuzzerView {
                 </button>
               </div>
               <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
-                <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || '-'}</div>
-                <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || '-'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
+                <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || f.geolocation?.bts_tower || '-'}</div>
+                <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || f.geolocation?.network_type || '-'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
               </div>
             </div>
 
             <!-- Footer Engagement & Tagar -->
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-              <span style="color: #38bdf8; font-weight: 600;">${f.narrative}</span>
+              <span style="color: #38bdf8; font-weight: 600;">
+                ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
+              </span>
               <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
-                <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares}</span>
-                <span><i class="fa-regular fa-heart"></i> ${f.likes}</span>
+                <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares || f.retweets || 0}</span>
+                <span><i class="fa-regular fa-heart"></i> ${f.likes || 0}</span>
               </div>
             </div>
           </div>
