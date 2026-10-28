@@ -526,9 +526,17 @@ export class GeoBuzzerView {
       const highRisk = data.high_risk_count ?? (provBuzzers.length > 0 ? provBuzzers.filter((b) => b.threat_level === 'HIGH').length : 1);
 
       briefStats.innerHTML = `
-        <span>Kluster Terdeteksi: <strong style="color: #fff;">${totalCluster} Akun</strong> (<span style="color: #ef4444;">${coreCoordinators} Koordinator Inti</span> + <span style="color: #a855f7;">${botAmplifiers} Bot Amplifiers</span>)</span> &bull; 
-        <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
-        <span>High Threat: <strong style="color: #ef4444;">${highRisk} Aktor</strong></span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">
+            <i class="fa-solid fa-users-viewfinder text-cyan"></i> Kluster: <strong style="color: #fff;">${totalCluster} Akun</strong> (<span style="color: #ef4444; font-weight:700;">${coreCoordinators} Inti</span> + <span style="color: #c084fc;">${botAmplifiers} Bot</span>)
+          </span>
+          <span style="background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.3); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">
+            <i class="fa-solid fa-bullhorn text-cyan"></i> Jangkauan: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong> Netizen
+          </span>
+          <span style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">
+            <i class="fa-solid fa-triangle-exclamation text-red"></i> Ancaman Tinggi: <strong style="color: #ef4444;">${highRisk} Aktor</strong>
+          </span>
+        </div>
       `;
     }
   }
@@ -871,32 +879,32 @@ export class GeoBuzzerView {
       listContainer.innerHTML = newsList
         .map(
           (n) => `
-        <div style="background: #0f1622; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.68rem; color: var(--color-cyan); font-weight: 700; text-transform: uppercase;">
+        <div class="geo-news-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 0.72rem; color: var(--color-cyan); font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 6px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); padding: 3px 8px; border-radius: 4px;">
               <i class="fa-regular fa-newspaper"></i> ${escapeHtml(n.source)}
             </span>
-            <span style="font-size: 0.65rem; color: var(--color-text-muted); font-family: var(--font-mono);">
-              ${escapeHtml(n.published_at)}
+            <span style="font-size: 0.68rem; color: var(--color-text-muted); font-family: var(--font-mono); display: flex; align-items: center; gap: 4px;">
+              <i class="fa-regular fa-clock"></i> ${escapeHtml(n.published_at)}
             </span>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 600; color: #fff;">
+          <div style="font-size: 0.86rem; font-weight: 700; color: #fff; line-height: 1.4;">
             ${escapeHtml(n.title)}
           </div>
-          <div style="background: rgba(0,0,0,0.3); border-left: 3px solid #10b981; padding: 6px 10px; font-size: 0.7rem; color: #cbd5e1;">
-            <div style="color: #10b981; font-weight: 700; font-size: 0.65rem; margin-bottom: 2px;">
-              <i class="fa-solid fa-check-circle"></i> VERIFIKASI FAKTA VS NARRATIVE MEDSOS:
+          <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid #10b981; border-radius: 4px; padding: 8px 12px; font-size: 0.72rem; color: #e2e8f0; line-height: 1.45;">
+            <div style="color: #10b981; font-weight: 700; font-size: 0.68rem; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-shield-halved"></i> VERIFIKASI FAKTA VS NARASI MEDSOS:
             </div>
             ${escapeHtml(n.fact_check_note)}
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 6px;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
-                ${escapeHtml(n.buzzer_correlation)}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 8px; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 8px;">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.65rem;">
+                <i class="fa-solid ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i> ${escapeHtml(n.buzzer_correlation)}
               </span>
-              ${n.ethical_scraping ? `<span class="tag-badge valid" style="font-size: 0.58rem;"><i class="fa-solid fa-robot"></i> ROBOTS.TXT: ${escapeHtml(n.ethical_scraping.robots_status)}</span>` : ''}
+              ${n.ethical_scraping ? `<span class="tag-badge valid" style="font-size: 0.6rem;"><i class="fa-solid fa-robot"></i> ROBOTS.TXT: ${escapeHtml(n.ethical_scraping.robots_status)}</span>` : ''}
             </div>
-            <a href="${n.portal_url || n.url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
+            <a href="${n.portal_url || n.url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.3); padding: 4px 10px; border-radius: 4px; transition: all 0.2s ease;">
               Buka Berita Asli <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </div>
@@ -951,34 +959,34 @@ export class GeoBuzzerView {
       let gzBannerHtml = '';
       if (gzFeed) {
         gzBannerHtml = `
-          <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;">
+          <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 34, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 8px; padding: 14px 18px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 24px rgba(245, 158, 11, 0.2); backdrop-filter: blur(10px);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <span style="font-size: 0.74rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;">
                 <i class="fa-solid fa-bullseye fa-fade"></i> DETEKSI SUMBER POSTINGAN UTAMA (GROUND ZERO)
               </span>
-              <span class="tag-badge" style="border-color: #f59e0b; color: #f59e0b; font-size: 0.62rem; font-weight: 700;">
+              <span class="tag-badge" style="border-color: #f59e0b; color: #f59e0b; font-size: 0.65rem; font-weight: 800; background: rgba(245, 158, 11, 0.1);">
                 PATIENT ZERO
               </span>
             </div>
             
-            <div style="font-size: 0.75rem; color: #fff;">
+            <div style="font-size: 0.78rem; color: #fff; line-height: 1.45;">
               Akun <strong>${gzFeed.author_name}</strong> (<span style="color: var(--color-cyan); font-family: var(--font-mono);">${gzFeed.author_handle}</span>) terdeteksi sebagai <u>penyebar pertama narasi ini</u> pada:
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem;">
-              <div style="color: #f59e0b; font-weight: 700;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.45); padding: 7px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="color: #f59e0b; font-weight: 700; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-clock"></i> ${gzFeed.date_time_release || gzFeed.timestamp}
               </div>
               <div style="color: #94a3b8;">
-                Delta: <strong style="color: #38bdf8;">T+00m00s (ORIGIN)</strong>
+                Delta Waktu: <strong style="color: #38bdf8;">T+00m00s (ORIGIN)</strong>
               </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: #cbd5e1; margin-top: 2px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #cbd5e1; margin-top: 2px; flex-wrap: wrap; gap: 8px;">
               <span>
                 <i class="fa-solid fa-location-crosshairs text-cyan"></i> Geotag: <strong>${gzFeed.geolocation?.city || gzFeed.city}</strong> [${gzFeed.geolocation?.latitude || 0}, ${gzFeed.geolocation?.longitude || 0}]
               </span>
-              <button class="btn-focus-map" data-lon="${gzFeed.geolocation?.longitude || 0}" data-lat="${gzFeed.geolocation?.latitude || 0}" style="background: rgba(0,229,255,0.15); border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 3px 8px; border-radius: 3px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <button class="btn-focus-map" data-lon="${gzFeed.geolocation?.longitude || 0}" data-lat="${gzFeed.geolocation?.latitude || 0}" style="background: rgba(0,229,255,0.12); border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 4px 12px; border-radius: 4px; font-size: 0.68rem; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: 600;">
                 <i class="fa-solid fa-magnifying-glass-location"></i> Fokuskan Peta
               </button>
             </div>
@@ -1007,81 +1015,94 @@ export class GeoBuzzerView {
   }
 
   renderPostCardHtml(f, isNewLive = false) {
+    const platformBg =
+      f.platform === 'X'
+        ? 'background: #000; border: 1px solid rgba(255,255,255,0.25); color: #fff;'
+        : f.platform === 'INSTAGRAM'
+        ? 'background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff;'
+        : 'background: #1877f2; color: #fff;';
+
     const platformIcon =
       f.platform === 'X'
         ? 'fa-brands fa-x-twitter'
         : f.platform === 'INSTAGRAM'
-        ? 'fa-brands fa-instagram text-purple'
-        : 'fa-brands fa-facebook text-cyan';
+        ? 'fa-brands fa-instagram'
+        : 'fa-brands fa-facebook';
 
     const threatColor = f.threat_level === 'HIGH' ? '#ef4444' : '#f59e0b';
     const isGz = f.is_ground_zero;
     const highlightAnim = isNewLive ? 'animation: bounceIn 0.4s ease; border-color: var(--color-cyan) !important;' : '';
 
     return `
-    <div class="geo-social-card" style="background: ${isGz ? 'rgba(245, 158, 11, 0.05)' : '#0f1622'}; border: 1px solid ${isGz ? '#f59e0b' : 'var(--color-border)'}; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; ${highlightAnim}">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+    <div class="geo-social-card" style="background: ${isGz ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(15, 23, 34, 0.95))' : 'rgba(15, 23, 34, 0.75)'}; backdrop-filter: blur(8px); border: 1px solid ${isGz ? '#f59e0b' : 'rgba(255, 255, 255, 0.08)'}; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 9px; ${highlightAnim}">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 6px; ${platformBg} display: flex; align-items: center; justify-content: center; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); flex-shrink: 0;">
             <i class="${platformIcon}"></i>
           </div>
           <div>
-            <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
-              ${escapeHtml(f.author_name || f.author || 'Pengguna Medsos')} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle || f.handle || '@unknown')}</span>
-              ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
-              ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px;"><i class="fa-solid fa-satellite-dish"></i> DATA ASLI (LIVE SCRAPED)</span>' : ''}
-              ${isNewLive ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px; border-color:var(--color-cyan); color:var(--color-cyan);"><i class="fa-solid fa-bolt fa-fade"></i> LIVE TELEMETRI</span>' : ''}
+            <div style="font-weight: 700; color: #fff; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+              ${escapeHtml(f.author_name || f.author || 'Pengguna Medsos')} 
+              <span style="color: var(--color-text-muted); font-weight: normal; font-size: 0.72rem;">${escapeHtml(f.author_handle || f.handle || '@unknown')}</span>
+              ${isGz ? '<span class="tag-badge warning" style="font-size:0.58rem; font-weight:700;"><i class="fa-solid fa-bullseye fa-fade"></i> GROUND ZERO</span>' : ''}
+              ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem;"><i class="fa-solid fa-satellite-dish"></i> LIVE SCRAPED</span>' : ''}
+              ${isNewLive ? '<span class="tag-badge valid" style="font-size:0.58rem; border-color:var(--color-cyan); color:var(--color-cyan);"><i class="fa-solid fa-bolt fa-fade"></i> LIVE INGESTION</span>' : ''}
             </div>
-            <div style="font-size: 0.65rem; color: var(--color-text-muted);">
-              ${escapeHtml(f.city || f.province || 'Indonesia')}, ${escapeHtml(f.province || 'Wilayah')} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
+            <div style="font-size: 0.67rem; color: #94a3b8; margin-top: 2px;">
+              <i class="fa-solid fa-location-dot text-cyan"></i> ${escapeHtml(f.city || f.province || 'Indonesia')}, ${escapeHtml(f.province || 'Wilayah')} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
             </div>
           </div>
         </div>
-        <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem;">
-          BOT: ${f.bot_score || 0}%
-        </span>
+        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <div style="width: 50px; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;" title="Bot Score: ${f.bot_score || 0}%">
+            <div style="width: ${f.bot_score || 0}%; height: 100%; background: ${threatColor}; box-shadow: 0 0 6px ${threatColor};"></div>
+          </div>
+          <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem; font-weight: 700;">
+            BOT: ${f.bot_score || 0}%
+          </span>
+        </div>
       </div>
 
       <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
-      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 10px; border-radius: 5px; font-family: var(--font-mono); font-size: 0.66rem; border: 1px solid rgba(255,255,255,0.04);">
         <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
           <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp || 'Baru Saja')}
         </span>
-        <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
+        <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.63rem;">
           ${escapeHtml(f.time_delta || f.time_delta_label || 'T+0m')}
         </span>
       </div>
 
       <!-- Konten Postingan -->
-      <div style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+      <div style="font-size: 0.77rem; color: #e2e8f0; line-height: 1.45; background: rgba(0,0,0,0.15); padding: 6px 8px; border-radius: 4px; border-left: 2px solid ${threatColor};">
         ${escapeHtml(f.content || '')}
       </div>
 
       <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->
-      <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.25); border-radius: 4px; padding: 6px 8px; font-size: 0.66rem; display: flex; flex-direction: column; gap: 3px;">
+      <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.28); border-radius: 6px; padding: 7px 10px; font-size: 0.67rem; display: flex; flex-direction: column; gap: 3px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span style="color: var(--color-cyan); font-weight: 700;">
-            <i class="fa-solid fa-location-dot"></i> KOORDINAT: ${f.geolocation?.latitude ?? '-'}, ${f.geolocation?.longitude ?? '-'}
+            <i class="fa-solid fa-crosshairs text-cyan"></i> KOORDINAT: ${f.geolocation?.latitude ?? '-'}, ${f.geolocation?.longitude ?? '-'}
           </span>
           ${f.geolocation?.latitude ? `
-          <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: transparent; border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 1px 6px; border-radius: 3px; font-size: 0.6rem; cursor: pointer;">
-            <i class="fa-solid fa-crosshairs"></i> Lihat di Peta
+          <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: rgba(0,229,255,0.12); border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 2px 8px; border-radius: 4px; font-size: 0.62rem; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
+            <i class="fa-solid fa-magnifying-glass-location"></i> Lihat di Peta
           </button>` : ''}
         </div>
-        <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
-          <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || f.geolocation?.bts_tower || 'BTS Tower Regional'}</div>
-          <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || f.geolocation?.network_type || 'Mobile 4G/5G Network'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
+        <div style="color: #94a3b8; font-size: 0.63rem; display: flex; flex-direction: column; gap: 2px;">
+          <div><i class="fa-solid fa-tower-broadcast text-cyan"></i> Sektor BTS: <strong>${escapeHtml(f.geolocation?.cell_tower || f.geolocation?.bts_tower || 'BTS Tower Regional')}</strong></div>
+          <div><i class="fa-solid fa-mobile-screen"></i> Perangkat: ${escapeHtml(f.geolocation?.device || f.geolocation?.network_type || 'Mobile 4G/5G Network')} (Akurasi: ${f.geolocation?.accuracy_radius || '±30m'})</div>
         </div>
       </div>
 
       <!-- Footer Engagement & Tagar -->
-      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.06); padding-top: 7px;">
         <span style="color: #38bdf8; font-weight: 600;">
-          ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
+          ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline; display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
         </span>
-        <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
-          <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares || f.retweets || 0}</span>
-          <span><i class="fa-regular fa-heart"></i> ${f.likes || 0}</span>
+        <div style="display: flex; gap: 12px; font-family: var(--font-mono);">
+          <span><i class="fa-solid fa-repeat text-cyan"></i> ${f.retweets_shares || f.retweets || 0}</span>
+          <span><i class="fa-regular fa-heart" style="color: #f43f5e;"></i> ${f.likes || 0}</span>
         </div>
       </div>
     </div>
