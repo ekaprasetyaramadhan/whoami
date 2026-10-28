@@ -14,6 +14,7 @@
 
 import * as echarts from 'echarts';
 import { ApiService } from '../services/api.js';
+import { escapeHtml } from '../utils/sanitize.js';
 
 export class GeoBuzzerView {
   constructor(containerId) {
@@ -774,24 +775,24 @@ export class GeoBuzzerView {
         <div style="background: #0f1622; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.68rem; color: var(--color-cyan); font-weight: 700; text-transform: uppercase;">
-              <i class="fa-regular fa-newspaper"></i> ${n.source}
+              <i class="fa-regular fa-newspaper"></i> ${escapeHtml(n.source)}
             </span>
             <span style="font-size: 0.65rem; color: var(--color-text-muted); font-family: var(--font-mono);">
-              ${n.published_at}
+              ${escapeHtml(n.published_at)}
             </span>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; color: #fff;">
-            ${n.title}
+            ${escapeHtml(n.title)}
           </div>
           <div style="background: rgba(0,0,0,0.3); border-left: 3px solid #10b981; padding: 6px 10px; font-size: 0.7rem; color: #cbd5e1;">
             <div style="color: #10b981; font-weight: 700; font-size: 0.65rem; margin-bottom: 2px;">
               <i class="fa-solid fa-check-circle"></i> VERIFIKASI FAKTA VS NARRATIVE MEDSOS:
             </div>
-            ${n.fact_check_note}
+            ${escapeHtml(n.fact_check_note)}
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
             <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
-              ${n.buzzer_correlation}
+              ${escapeHtml(n.buzzer_correlation)}
             </span>
             <a href="${n.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
               Buka Berita Asli <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -901,11 +902,11 @@ export class GeoBuzzerView {
                 </div>
                 <div>
                   <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
-                    ${f.author_name} <span style="color: var(--color-text-muted); font-weight: normal;">${f.author_handle}</span>
+                    ${escapeHtml(f.author_name)} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle)}</span>
                     ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
                   </div>
                   <div style="font-size: 0.65rem; color: var(--color-text-muted);">
-                    ${f.city}, ${f.province} &bull; <strong style="color: var(--color-cyan);">${f.followers.toLocaleString('id-ID')} followers</strong>
+                    ${escapeHtml(f.city)}, ${escapeHtml(f.province)} &bull; <strong style="color: var(--color-cyan);">${f.followers.toLocaleString('id-ID')} followers</strong>
                   </div>
                 </div>
               </div>
@@ -917,16 +918,16 @@ export class GeoBuzzerView {
             <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
               <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
-                <i class="fa-solid fa-clock"></i> Rilis: ${f.date_time_release || f.timestamp}
+                <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp)}
               </span>
               <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
-                ${f.time_delta || 'T+0m'}
+                ${escapeHtml(f.time_delta || 'T+0m')}
               </span>
             </div>
 
             <!-- Konten Postingan -->
             <div style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-              ${f.content}
+              ${escapeHtml(f.content)}
             </div>
 
             <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->

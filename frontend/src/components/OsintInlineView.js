@@ -5,6 +5,7 @@
 
 import { ApiService } from '../services/api.js';
 import { CognitiveStore } from '../state/store.js';
+import { escapeHtml } from '../utils/sanitize.js';
 
 export class OsintInlineView {
   constructor(containerId) {
@@ -327,10 +328,10 @@ export class OsintInlineView {
           </div>
           <div>
             <div style="font-weight: 700; color: #fff; font-size: 1.05rem;">
-              ${account.author_name || data.author || 'Akun Medsos'}
+              ${escapeHtml(account.author_name || data.author || 'Akun Medsos')}
             </div>
             <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-cyan);">
-              ${account.author_handle || data.handle || '@unknown'} &bull; Platform: ${(data.platform || 'WEB').toUpperCase()}
+              ${escapeHtml(account.author_handle || data.handle || '@unknown')} &bull; Platform: ${escapeHtml((data.platform || 'WEB').toUpperCase())}
             </div>
           </div>
         </div>
@@ -345,7 +346,7 @@ export class OsintInlineView {
 
       <!-- Teks Postingan -->
       <div style="background: #060a0f; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; margin-bottom: 14px; font-size: 0.82rem; line-height: 1.5; color: #e2e8f0;">
-        "${post.content || data.content || data.snippet || 'Tidak ada teks yang dapat diekstrak.'}"
+        "${escapeHtml(post.content || data.content || data.snippet || 'Tidak ada teks yang dapat diekstrak.')}"
       </div>
 
       <!-- GRID FORENSIK 5 PILAR UTAMA -->
@@ -664,10 +665,10 @@ export class OsintInlineView {
         html += `
           <div style="background: #0f172a; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; font-size: 0.8rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-              <strong style="color: #fff;">${item.author_handle || '@pengguna'}</strong>
-              <span class="tag-badge valid">${item.platform || 'MEDSOS'}</span>
+              <strong style="color: #fff;">${escapeHtml(item.author_handle || '@pengguna')}</strong>
+              <span class="tag-badge valid">${escapeHtml(item.platform || 'MEDSOS')}</span>
             </div>
-            <div style="color: #cbd5e1; margin-bottom: 6px; line-height: 1.4;">${item.text}</div>
+            <div style="color: #cbd5e1; margin-bottom: 6px; line-height: 1.4;">${escapeHtml(item.text)}</div>
             <div style="display: flex; gap: 14px; font-size: 0.7rem; color: var(--color-text-muted);">
               <span>❤️ ${item.likes_count || 0}</span>
               <span>🔄 ${item.reposts_count || 0}</span>
@@ -678,7 +679,7 @@ export class OsintInlineView {
       });
       resBox.innerHTML = html;
     } catch (err) {
-      resBox.innerHTML = `<div style="padding: 14px; color: #ef4444;">Gagal mengambil data tagar: ${err.message}</div>`;
+      resBox.innerHTML = `<div style="padding: 14px; color: #ef4444;">Gagal mengambil data tagar: ${escapeHtml(err.message)}</div>`;
     } finally {
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> TARIK DATA LIVE';
