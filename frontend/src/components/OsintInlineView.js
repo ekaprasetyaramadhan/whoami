@@ -671,26 +671,34 @@ export class OsintInlineView {
 
     try {
       const resp = await ApiService.searchOsintFeed(query, platform, 10, true);
-      const items = resp.data && resp.data.items ? resp.data.items : [];
+      const items = Array.isArray(resp.data) ? resp.data : (resp.data?.items || resp.data?.posts || []);
       
       if (items.length === 0) {
         resBox.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--color-text-muted);">Tidak ditemukan postingan dengan kata kunci tersebut.</div>`;
         return;
       }
 
-      let html = `<div style="font-size: 0.8rem; color: var(--color-cyan); font-weight: 700; margin-bottom: 4px;">DITEMUKAN ${items.length} POSTINGAN TERBARU:</div>`;
+      let html = `<div style="font-size: 0.8rem; color: var(--color-cyan); font-weight: 700; margin-bottom: 8px;">DITEMUKAN ${items.length} POSTINGAN / NARASI PUBLIK TERBARU:</div>`;
       items.forEach(item => {
         html += `
-          <div style="background: #0f172a; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; font-size: 0.8rem;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-              <strong style="color: #fff;">${escapeHtml(item.author_handle || '@pengguna')}</strong>
-              <span class="tag-badge valid">${escapeHtml(item.platform || 'MEDSOS')}</span>
+          <div style="background: #0f172a; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <strong style="color: #fff;">${escapeHtml(item.author_handle || item.author || '@pengguna')}</strong>
+                <span class="tag-badge valid">${escapeHtml((item.platform || 'WEB').toUpperCase())}</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                ${item.robots_txt_status ? `<span class="tag-badge valid" style="font-size: 0.6rem;"><i class="fa-solid fa-robot"></i> ROBOTS.TXT: ${escapeHtml(item.robots_txt_status)}</span>` : ''}
+                <span style="font-size: 0.68rem; color: var(--color-text-muted); font-family: var(--font-mono);">${escapeHtml(item.timestamp || 'Baru saja')}</span>
+              </div>
             </div>
-            <div style="color: #cbd5e1; margin-bottom: 6px; line-height: 1.4;">${escapeHtml(item.text)}</div>
-            <div style="display: flex; gap: 14px; font-size: 0.7rem; color: var(--color-text-muted);">
-              <span>❤️ ${item.likes_count || 0}</span>
-              <span>🔄 ${item.reposts_count || 0}</span>
-              <span>Indeks Bot: <strong style="color: ${item.bot_score > 60 ? '#ef4444' : '#10b981'};">${item.bot_score || 20}%</strong></span>
+            <div style="color: #cbd5e1; line-height: 1.4;">${escapeHtml(item.content || item.text || '')}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.7rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+              <div style="display: flex; gap: 12px; font-family: var(--font-mono);">
+                <span>👥 ${(item.followers || 0).toLocaleString('id-ID')} followers</span>
+                <span>Indeks Bot: <strong style="color: ${item.bot_score > 60 ? '#ef4444' : '#10b981'};">${item.bot_score || 20}%</strong></span>
+              </div>
+              ${item.article_url ? `<a href="${escapeHtml(item.article_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : ''}
             </div>
           </div>
         `;

@@ -73,6 +73,10 @@ export const ApiService = {
     return await res.json();
   },
 
+  async searchOsintFeed(query, platform = 'all', limit = 10, injectStream = true) {
+    return await this.searchOsintIngest(query, platform, limit, injectStream);
+  },
+
   async getGeoBuzzerDistribution(platform = 'all', province = 'all') {
     const res = await fetch(`${API_BASE}/geo/buzzer-distribution?platform=${encodeURIComponent(platform)}&province=${encodeURIComponent(province)}`);
     return await res.json();
