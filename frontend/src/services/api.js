@@ -9,51 +9,9 @@ const API_BASE = RAW_API_URL
   : '/api/v1';
 
 export const ApiService = {
-  async getEwsTelemetry() {
-    const res = await fetch(`${API_BASE}/ews/telemetry`);
-    return await res.json();
-  },
-
-  async getCibSummary() {
-    const res = await fetch(`${API_BASE}/cib/summary`);
-    return await res.json();
-  },
-
-  async getSnaGraph(minInfluence = 0) {
-    const res = await fetch(`${API_BASE}/sna/graph-data?min_influence=${minInfluence}`);
-    return await res.json();
-  },
-
-  async getSentimentOverview() {
-    const res = await fetch(`${API_BASE}/sentiment/overview`);
-    return await res.json();
-  },
-
-  async verifyHoaxText(text) {
-    const res = await fetch(`${API_BASE}/hoax/verify-text`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
-    return await res.json();
-  },
-
-  async injectSpike() {
-    const res = await fetch(`${API_BASE}/sim/inject-spike`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    return await res.json();
-  },
-
-  async exportLapsitReport(analystName = 'User') {
-    const res = await fetch(`${API_BASE}/reports/export-lapsit`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ analyst_name: analystName })
-    });
-    return await res.json();
-  },
+  // ==========================================
+  // 1. ACTIVE WHOIAM REST ENDPOINTS (PRIMARY)
+  // ==========================================
 
   async inspectOsintUrl(url) {
     const res = await fetch(`${API_BASE}/osint/inspect-url`, {

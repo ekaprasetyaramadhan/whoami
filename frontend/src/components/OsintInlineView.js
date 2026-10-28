@@ -4,7 +4,6 @@
  */
 
 import { ApiService } from '../services/api.js';
-import { CognitiveStore } from '../state/store.js';
 import { escapeHtml } from '../utils/sanitize.js';
 
 export class OsintInlineView {

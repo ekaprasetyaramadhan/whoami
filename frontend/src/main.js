@@ -3,10 +3,7 @@
  * Social Media Intelligence & Regional Buzzer Forensics Platform
  */
 
-import { CognitiveStore } from './state/store.js';
 import { streamService } from './services/stream.js';
-import { ApiService } from './services/api.js';
-
 import { HeaderBar } from './components/HeaderBar.js';
 import { GuideModal } from './components/GuideModal.js';
 import { GeoBuzzerView } from './components/GeoBuzzerView.js';

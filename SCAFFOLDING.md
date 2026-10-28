@@ -98,7 +98,6 @@ e:\watax-player\
 │   ├── dist/                           # Direktori hasil build produksi (Vite compilation)
 │   └── src/                            # Kode sumber antarmuka
 │       ├── main.js                     # Inisialisasi aplikasi dan tab switching
-│       ├── index.css                   # Sistem styling Glassmorphism Dark Mode
 │       ├── components/                 # Modul komponen UI AKTIF (4 Komponen Bersih)
 │       │   ├── HeaderBar.js            # Identitas sistem, 2-tab switch, tombol buku panduan
 │       │   ├── GeoBuzzerView.js        # TAB 1: Peta 38 Provinsi, Flight Lines, Timeframe, SNA, News
@@ -106,13 +105,15 @@ e:\watax-player\
 │       │   └── GuideModal.js           # Modal: Buku Panduan Operasional Sistem & Glosarium
 │       ├── services/                   # Layanan komunikasi HTTP & WebSocket
 │       │   ├── api.js                  # Klien API fetch wrapper ke backend FastAPI
-│       │   └── stream.js               # Handler stream koneksi
+│       │   └── stream.js               # Handler stream koneksi WebSocket telemetri
 │       ├── state/                      # State Management
 │       │   └── store.js                # CognitiveStore (Observer Pub/Sub pattern)
+│       ├── utils/                      # Helper & Keamanan
+│       │   └── sanitize.js             # Sanitasi Anti-XSS (escapeHtml)
 │       └── styles/                     # CSS Modular
 │           ├── components.css          # Gaya visual kartu dan widget
 │           ├── variables.css           # Token warna desain (Cyan, Amber, Crimson, Dark)
-│           └── warroom.css             # Penataan layout dan kontainer
+│           └── warroom.css             # Penataan layout dan kontainer responsif multi-device
 │
 └── docs/                               # === DOKUMENTASI PENDUKUNG & PRESENTASI ===
     ├── README.md                       # Indeks dokumentasi pendukung

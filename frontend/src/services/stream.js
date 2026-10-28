@@ -29,7 +29,7 @@ class StreamService {
       this.ws = new WebSocket(this.url);
 
       this.ws.onopen = () => {
-        console.log('[KARTIKA STREAM] Terhubung ke WebSocket Telemetri Backend');
+        console.log('[whoiam STREAM] Terhubung ke WebSocket Telemetri Backend');
         if (this.reconnectTimer) {
           clearTimeout(this.reconnectTimer);
           this.reconnectTimer = null;
@@ -41,21 +41,21 @@ class StreamService {
           const packet = JSON.parse(event.data);
           this.handlePacket(packet);
         } catch (e) {
-          console.error('[KARTIKA STREAM] Gagal parsing paket WebSocket:', e);
+          console.error('[whoiam STREAM] Gagal parsing paket WebSocket:', e);
         }
       };
 
       this.ws.onclose = () => {
-        console.warn('[KARTIKA STREAM] Koneksi terputus. Menghubungkan kembali dalam 3 detik...');
+        console.warn('[whoiam STREAM] Koneksi terputus. Menghubungkan kembali dalam 3 detik...');
         this.scheduleReconnect();
       };
 
       this.ws.onerror = (err) => {
-        console.error('[KARTIKA STREAM] Kesalahan WebSocket:', err);
+        console.error('[whoiam STREAM] Kesalahan WebSocket:', err);
         this.ws.close();
       };
     } catch (e) {
-      console.warn('[KARTIKA STREAM] Gagal inisiasi WebSocket:', e);
+      console.warn('[whoiam STREAM] Gagal inisiasi WebSocket:', e);
       this.scheduleReconnect();
     }
   }

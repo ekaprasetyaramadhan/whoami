@@ -1,6 +1,6 @@
 /**
- * Reactive State Management untuk War Room Dashboard
- * KARTIKA COG-SHIELD
+ * Reactive State Management untuk whoiam Telemetri
+ * whoiam - Social Media Intelligence Platform
  */
 
 export const CognitiveStore = {
