@@ -50,14 +50,30 @@ export class OsintInlineView {
           <!-- TAB 1: BEDAH URL -->
           <div id="inline-osint-view-url" style="display: flex; flex-direction: column; gap: 12px;">
             <div style="background: rgba(16, 24, 34, 0.9); padding: 14px; border-radius: 6px; border: 1px solid var(--color-border);">
-              <label style="font-size: 0.75rem; color: #cbd5e1; font-weight: 600; margin-bottom: 8px; display: block;">
-                TEMPELKAN LINK POSTINGAN / PROFIL MEDIA SOSIAL:
-              </label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                <label style="font-size: 0.75rem; color: #cbd5e1; font-weight: 600;">
+                  TEMPELKAN LINK POSTINGAN / PROFIL MEDIA SOSIAL:
+                </label>
+                <div style="font-size: 0.68rem; color: #94a3b8; font-family: var(--font-mono);">
+                  <strong style="color: var(--color-cyan);">Langkah 1:</strong> Tempel Link &bull; <strong>Langkah 2:</strong> Analisis &bull; <strong>Langkah 3:</strong> Kesimpulan
+                </div>
+              </div>
 
               <div class="osint-input-row">
                 <input type="text" id="inline-osint-input-url" class="tactical-input" style="flex: 1; padding: 8px 12px; background: #0c1219; border: 1px solid var(--color-border); color: #fff; border-radius: 4px; font-family: var(--font-mono); font-size: 0.8rem;" placeholder="https://x.com/username/status/... atau https://instagram.com/..." />
                 <button id="inline-btn-run-inspect-url" class="btn-tactical cyan" style="padding: 8px 20px;">
                   <i class="fa-solid fa-magnifying-glass"></i> BEDAH SEKARANG
+                </button>
+              </div>
+
+              <!-- Preset Quick Action Chips -->
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                <span style="font-size: 0.7rem; color: var(--color-text-muted);">Belum punya link? Coba cepat:</span>
+                <button type="button" class="preset-chip" id="chip-sample-hoax">
+                  <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> ⚡ Contoh Kasus Hoaks Viral
+                </button>
+                <button type="button" class="preset-chip" id="chip-sample-organic">
+                  <i class="fa-solid fa-user-check" style="color: #10b981;"></i> ⚡ Contoh Akun Warganet Asli
                 </button>
               </div>
             </div>
@@ -84,6 +100,14 @@ export class OsintInlineView {
                 <button id="inline-btn-run-search" class="btn-tactical cyan" style="padding: 8px 20px;">
                   <i class="fa-solid fa-satellite-dish"></i> TARIK DATA LIVE
                 </button>
+              </div>
+
+              <!-- Preset Topic Chips -->
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                <span style="font-size: 0.7rem; color: var(--color-text-muted);">Topik populer:</span>
+                <button type="button" class="preset-chip" id="chip-tag-bansos">#bansos</button>
+                <button type="button" class="preset-chip" id="chip-tag-pilkada">#pilkada</button>
+                <button type="button" class="preset-chip" id="chip-tag-gempa">#gempa</button>
               </div>
             </div>
 
@@ -189,6 +213,22 @@ export class OsintInlineView {
       };
     }
 
+    // Preset Chips for URL Inspect
+    const chipHoax = document.getElementById('chip-sample-hoax');
+    const chipOrganic = document.getElementById('chip-sample-organic');
+    if (chipHoax && inputUrl && btnInspect) {
+      chipHoax.onclick = async () => {
+        inputUrl.value = 'https://x.com/warta_rakyat_id/status/18492019482910';
+        await this.handleInspectUrl(inputUrl.value, btnInspect);
+      };
+    }
+    if (chipOrganic && inputUrl && btnInspect) {
+      chipOrganic.onclick = async () => {
+        inputUrl.value = 'https://x.com/warga_semarang/status/18492019999999';
+        await this.handleInspectUrl(inputUrl.value, btnInspect);
+      };
+    }
+
     // Run Tagar Search
     const btnSearch = document.getElementById('inline-btn-run-search');
     const inputQuery = document.getElementById('inline-osint-input-query');
@@ -204,6 +244,18 @@ export class OsintInlineView {
         await this.handleSearchQuery(query, platform, btnSearch);
       };
     }
+
+    // Preset Topic Chips for Search
+    ['chip-tag-bansos', 'chip-tag-pilkada', 'chip-tag-gempa'].forEach(chipId => {
+      const chip = document.getElementById(chipId);
+      if (chip && inputQuery && btnSearch) {
+        chip.onclick = async () => {
+          inputQuery.value = chip.textContent.trim();
+          const platform = selectPlatform ? selectPlatform.value : 'all';
+          await this.handleSearchQuery(inputQuery.value, platform, btnSearch);
+        };
+      }
+    });
 
     // Run Account Compare
     const btnCompare = document.getElementById('inline-btn-run-compare');
@@ -337,6 +389,26 @@ export class OsintInlineView {
         </div>
       </div>
 
+      <!-- KOTAK KESIMPULAN & REKOMENDASI TINDAKAN (ACTIONABLE VERDICT) -->
+      <div style="background: ${isBot ? 'rgba(239, 68, 68, 0.12)' : 'rgba(16, 185, 129, 0.12)'}; border: 1.5px solid ${isBot ? '#ef4444' : '#10b981'}; border-radius: 6px; padding: 12px 16px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+          <div style="font-weight: 800; font-size: 0.85rem; color: ${isBot ? '#ef4444' : '#10b981'}; display: flex; align-items: center; gap: 8px;">
+            <i class="${isBot ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check'}"></i>
+            <span>KESIMPULAN: ${isBot ? 'TERINDIKASI KUAT OPERASI BOTNET / BUZZER' : 'TERINDIKASI AKUN ORGANIK ASLI'}</span>
+          </div>
+          <span class="tag-badge" style="background: ${isBot ? 'rgba(239,68,68,0.25)' : 'rgba(16,185,129,0.25)'}; border-color: ${isBot ? '#ef4444' : '#10b981'}; color: #fff; font-size: 0.68rem;">
+            Tingkat Kepalsuan: ${botScore}%
+          </span>
+        </div>
+        <div style="font-size: 0.8rem; line-height: 1.5; color: #e2e8f0;">
+          ${isBot 
+            ? `Akun ini memiliki ciri aktivitas otomatis / robot (${botScore}%). Unggahan terdeteksi dipicu di area <strong>${escapeHtml(geo.city || geo.province || 'DKI Jakarta')}</strong> pada <strong>${escapeHtml(origin.date_time_release || post.date_time_release || '-')}</strong>.
+               <div style="margin-top: 6px; color: #fca5a5; font-size: 0.78rem;"><strong>👉 Saran Tindakan:</strong> Waspadai potensi polarisasi narasi ini. Periksa klarifikasi berita daerah di tab <em>PETA & SEBARAN BUZZER</em> sisi kanan.</div>`
+            : `Akun ini menunjukkan pola aktivitas manusia wajar. Tidak terdeteksi amplifikasi botnet terkoordinasi.`
+          }
+        </div>
+      </div>
+
       <!-- 1. Header Profil & Bot Risk -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -357,7 +429,9 @@ export class OsintInlineView {
           <span style="background: ${isBot ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color: ${badgeColor}; border: 1px solid ${badgeColor}; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">
             ${isBot ? '⚠️ TERINDIKASI BOT KOORDINATOR' : '✓ AKUN ORGANIK'}
           </span>
-          <div style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 4px;">Indeks Bot: ${botScore}%</div>
+          <div style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 4px;">
+            Skor Kepalsuan: ${botScore}% <span class="help-icon" title="Tingkat kepalsuan akun (0-100%). Semakin tinggi skor, semakin kuat indikasi botnet otomatis.">?</span>
+          </div>
         </div>
       </div>
 
@@ -373,7 +447,8 @@ export class OsintInlineView {
         <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(15, 23, 42, 0.6)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.78rem; font-weight: 800; color: #f59e0b; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-bullseye fa-fade"></i> 1. DETEKSI SUMBER POSTINGAN UTAMA (GROUND ZERO)
+              <i class="fa-solid fa-bullseye fa-fade"></i> 1. DETEKSI SUMBER PERTAMA (GROUND ZERO)
+              <span class="help-icon" title="Akun yang pertama kali mengunggah narasi sebelum viral atau diamplifikasi botnet.">?</span>
             </div>
             <span class="tag-badge" style="border-color: #f59e0b; color: #f59e0b; font-size: 0.65rem;">
               ${origin.status_label || (isGroundZero ? '🎯 GROUND ZERO' : '⚡ AMPLIFIER')}
@@ -397,7 +472,8 @@ export class OsintInlineView {
         <div style="background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(15, 23, 42, 0.6)); border: 1.5px solid var(--color-cyan); border-radius: 6px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.78rem; font-weight: 800; color: var(--color-cyan); display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-location-crosshairs fa-spin-pulse"></i> 2. FORENSIK GEOLOKASI (GEO-TAG &amp; BTS TOWER IP INTEL)
+              <i class="fa-solid fa-location-crosshairs fa-spin-pulse"></i> 2. FORENSIK GEOLOKASI (GEO-TAG &amp; BTS TOWER)
+              <span class="help-icon" title="Estimasi lokasi fisik perangkat pengunggah berdasarkan koordinat GPS dan menara BTS telekomunikasi terdekat.">?</span>
             </div>
             <span class="tag-badge valid" style="font-size: 0.65rem;">
               ${geo.network_type || 'GPS NATIVE FIX'}
@@ -428,7 +504,8 @@ export class OsintInlineView {
         <div style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(15, 23, 42, 0.6)); border: 1.5px solid #a855f7; border-radius: 6px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.78rem; font-weight: 800; color: #c084fc; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-circle-nodes"></i> 3. GRAF INTERKONEKSI LINTAS MEDSOS (CROSS-PLATFORM SNA)
+              <i class="fa-solid fa-circle-nodes"></i> 3. PETA JEJARING LINTAS PLATFORM (SNA)
+              <span class="help-icon" title="Topologi hubungan antar akun di X, Instagram, Facebook, dan peternakan bot yang saling mengamplifikasi.">?</span>
             </div>
             <span class="tag-badge" style="border-color: #c084fc; color: #c084fc; font-size: 0.65rem;">
               ${sna.total_connected_accounts || 6} AKUN TERKONEKSI
@@ -448,7 +525,8 @@ export class OsintInlineView {
         <div style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(15, 23, 42, 0.6)); border: 1.5px solid #ec4899; border-radius: 6px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.78rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-robot"></i> 4. DETEKSI AVATAR AI / WAJAH SINTETIS (STYLEGAN / DIFFUSION DETECTOR)
+              <i class="fa-solid fa-robot"></i> 4. DETEKSI FOTO WAJAH AI (GAN AVATAR)
+              <span class="help-icon" title="Memeriksa apakah foto profil adalah wajah sintetis hasil buatan AI (StyleGAN/Diffusion) berdasarkan simetri pupil dan artefak optik.">?</span>
             </div>
             <span class="tag-badge" style="border-color: #ec4899; color: ${avatar.is_synthetic_ai ? '#f472b6' : '#10b981'}; font-size: 0.65rem;">
               ${avatar.verdict_badge || (avatar.is_synthetic_ai ? '⚠️ AVATAR AI GENERATED' : '✓ FOTO MANUSIA ASLI')}
@@ -492,7 +570,8 @@ export class OsintInlineView {
         <div style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.6)); border: 1.5px solid #38bdf8; border-radius: 6px; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.78rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-cloud-bolt"></i> 5. EKSTRAKSI TOPIK &amp; AWAN KATA KUNCI (AMPLIFIED KEYWORDS)
+              <i class="fa-solid fa-cloud-bolt"></i> 5. EKSTRAKSI TOPIK &amp; KATA KUNCI (AMPLIFIED KEYWORDS)
+              <span class="help-icon" title="Daftar kata kunci dan tagar utama yang sengaja diviralkan oleh akun ini beserta sentimennya.">?</span>
             </div>
             <span class="tag-badge valid" style="font-size: 0.65rem;">
               ${topicCloud.length} TOPIK DIKUATKAN

@@ -27,10 +27,13 @@ export class HeaderBar {
         </div>
       </div>
 
-      <!-- Right Guide Action -->
-      <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- Right Guide & Tour Actions -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="btn-open-tour" class="btn-tactical" style="background: rgba(0, 229, 255, 0.12); border-color: var(--color-cyan); color: var(--color-cyan);" title="Mulai Tur Interaktif 1 Menit">
+          <span class="fa-solid fa-compass"></span> TUR 1 MENIT
+        </button>
         <button id="btn-open-guide" class="btn-tactical cyan" title="Buka Panduan & Cara Membaca Dashboard">
-          <span class="fa-solid fa-circle-question"></span> PANDUAN SISTEM
+          <span class="fa-solid fa-circle-question"></span> BUKU PANDUAN
         </button>
       </div>
     `;

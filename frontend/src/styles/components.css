@@ -306,3 +306,66 @@
   font-weight: 700;
 }
 
+/* Onboarding Tour Dots & UI Helpers */
+.tour-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.tour-dot.active {
+  width: 20px;
+  border-radius: 4px;
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+/* Preset Quick Action Chips */
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 0.73rem;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #e2e8f0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.preset-chip:hover {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: var(--color-cyan);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 229, 255, 0.25);
+}
+
+/* Contextual Help Popover Icon */
+.help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-cyan);
+  font-size: 0.65rem;
+  cursor: help;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+.help-icon:hover {
+  background: var(--color-cyan);
+  color: #050b14;
+}
+
+

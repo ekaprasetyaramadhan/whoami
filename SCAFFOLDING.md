@@ -98,11 +98,12 @@ e:\watax-player\
 │   ├── dist/                           # Direktori hasil build produksi (Vite compilation)
 │   └── src/                            # Kode sumber antarmuka
 │       ├── main.js                     # Inisialisasi aplikasi dan tab switching
-│       ├── components/                 # Modul komponen UI AKTIF (4 Komponen Bersih)
-│       │   ├── HeaderBar.js            # Identitas sistem, 2-tab switch, tombol buku panduan
+│       ├── components/                 # Modul komponen UI AKTIF (5 Komponen Bersih)
+│       │   ├── HeaderBar.js            # Identitas sistem, 2-tab switch, tombol tur & buku panduan
 │       │   ├── GeoBuzzerView.js        # TAB 1: Peta 38 Provinsi, Flight Lines, Timeframe, SNA, News
 │       │   ├── OsintInlineView.js      # TAB 2: Bedah URL, Lacak Tagar, GAN Forensics, Compare 2 Akun
-│       │   └── GuideModal.js           # Modal: Buku Panduan Operasional Sistem & Glosarium
+│       │   ├── GuideModal.js           # Modal: Buku Panduan Operasional Sistem & Glosarium
+│       │   └── OnboardingModal.js      # Modal: Tur Interaktif 1 Menit Pengguna Baru (3 Langkah)
 │       ├── services/                   # Layanan komunikasi HTTP & WebSocket
 │       │   ├── api.js                  # Klien API fetch wrapper ke backend FastAPI
 │       │   └── stream.js               # Handler stream koneksi WebSocket telemetri

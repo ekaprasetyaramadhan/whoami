@@ -6,6 +6,7 @@
 import { streamService } from './services/stream.js';
 import { HeaderBar } from './components/HeaderBar.js';
 import { GuideModal } from './components/GuideModal.js';
+import { OnboardingModal } from './components/OnboardingModal.js';
 import { GeoBuzzerView } from './components/GeoBuzzerView.js';
 import { OsintInlineView } from './components/OsintInlineView.js';
 
@@ -20,12 +21,21 @@ function initWarRoom() {
 
   // 2. Modals & Dialogs
   const guideModal = new GuideModal();
+  const onboardingModal = new OnboardingModal();
 
-  // Pasang listener panduan di Header
+  // Pasang listener panduan & tur di Header
   const guideBtn = document.getElementById('btn-open-guide');
   if (guideBtn) {
     guideBtn.onclick = () => guideModal.open();
   }
+
+  const tourBtn = document.getElementById('btn-open-tour');
+  if (tourBtn) {
+    tourBtn.onclick = () => onboardingModal.open();
+  }
+
+  // Cek apakah tur perlu ditampilkan otomatis untuk pengguna baru
+  onboardingModal.checkAutoPrompt();
 
   // 3. TAB 1: Mount GeoBuzzerView langsung ke tampilan utama
   // (Peta Indonesia + Titik Follower Terbanyak + SNA Wilayah + Berita Daerah + Scraping Medsos)

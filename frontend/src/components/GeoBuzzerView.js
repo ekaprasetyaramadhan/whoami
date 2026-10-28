@@ -104,10 +104,10 @@ export class GeoBuzzerView {
               </div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                 <span style="display: inline-block; width: 14px; height: 2px; background: #00e5ff; box-shadow: 0 0 6px #00e5ff;"></span>
-                <span style="color: #cbd5e1;">Garis Propagasi Isu (Penerbangan Animasi)</span>
+                <span style="color: #cbd5e1;">Arah Sebaran Isu (Garis Panah Terbang) <span class="help-icon" title="Menunjukkan ke provinsi mana narasi ini merambat beserta kecepatan sebar per jamnya.">?</span></span>
               </div>
               <div style="font-size: 0.65rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px; line-height: 1.3;">
-                *Titik mewakili <strong>Koordinator Inti</strong> (menggerakkan 18–35 bot amplifier terhubung)
+                *Titik mewakili <strong>Koordinator Pemicu</strong> (menggerakkan 18–35 bot amplifier terhubung)
               </div>
             </div>
 
@@ -132,14 +132,14 @@ export class GeoBuzzerView {
             
             <!-- Tab Header -->
             <div class="geo-intel-tab-header">
-              <button id="main-btn-tab-sna" class="btn-tactical geo-tab-nav active" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-circle-nodes text-purple"></i> 1. SNA WILAYAH
+              <button id="main-btn-tab-sna" class="btn-tactical geo-tab-nav active" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat diagram hubungan akun dan botnet">
+                <i class="fa-solid fa-circle-nodes text-purple"></i> 1. JEJARING BUZZER
               </button>
-              <button id="main-btn-tab-news" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-newspaper text-cyan"></i> 2. BERITA WILAYAH
+              <button id="main-btn-tab-news" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat klarifikasi pers resmi Dewan Pers">
+                <i class="fa-solid fa-newspaper text-cyan"></i> 2. BERITA RESMI DAERAH
               </button>
-              <button id="main-btn-tab-social" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-hashtag text-amber"></i> 3. SCRAPING MEDSOS
+              <button id="main-btn-tab-social" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat postingan medsos di provinsi ini">
+                <i class="fa-solid fa-hashtag text-amber"></i> 3. POSTINGAN MEDSOS
               </button>
             </div>
 
@@ -147,9 +147,10 @@ export class GeoBuzzerView {
             <div id="main-geo-tab-view-sna" class="geo-tab-pane" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;">
               <div style="padding: 8px 14px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; flex-shrink: 0;">
                 <span style="color: #c084fc;">
-                  <i class="fa-solid fa-project-diagram"></i> Topologi Interaksi Buzzer & Bot Farm di <strong id="main-sna-target-prov-label">DKI JAKARTA</strong>
+                  <i class="fa-solid fa-project-diagram"></i> Peta Hubungan Akun Pemicu vs Bot Farm di <strong id="main-sna-target-prov-label">DKI JAKARTA</strong>
+                  <span class="help-icon" title="Diagram lingkaran interaksi: Koordinator Inti (tengah), Bot Farm amplifier (sekitar), dan Warganet Organik.">?</span>
                 </span>
-                <span class="tag-badge bot" style="font-size: 0.62rem;">COMMUNITY GRAPH</span>
+                <span class="tag-badge bot" style="font-size: 0.62rem;">DIAGRAM JEJARING</span>
               </div>
               <div id="main-geo-sna-chart-container" style="width: 100%; height: 100%; min-height: 440px; flex: 1;"></div>
             </div>
