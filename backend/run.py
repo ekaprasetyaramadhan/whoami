@@ -13,10 +13,12 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    reload = os.environ.get("RELOAD", "false").lower() == "true"
     print("=" * 70)
     print("[whoiam] Social Media Intelligence & Account Forensics Platform")
-    print("Memulai server API Backend pada http://127.0.0.1:8000")
-    print("Dokumentasi Swagger API: http://127.0.0.1:8000/docs")
+    print(f"Memulai server API Backend pada http://0.0.0.0:{port}")
+    print(f"Dokumentasi Swagger API: http://0.0.0.0:{port}/docs")
     print("Role: User")
     print("=" * 70)
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=reload)

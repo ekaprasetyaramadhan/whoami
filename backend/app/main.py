@@ -101,9 +101,13 @@ from fastapi.responses import FileResponse
 # Cek apakah folder frontend/dist tersedia (misal saat running di Docker / Production)
 DIST_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
 ASSETS_DIR = os.path.join(DIST_DIR, "assets")
+DATA_DIR = os.path.join(DIST_DIR, "data")
 
 if os.path.exists(ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="static-assets")
+
+if os.path.exists(DATA_DIR):
+    app.mount("/data", StaticFiles(directory=DATA_DIR), name="static-data")
 
 @app.get("/")
 def read_root():
@@ -163,3 +167,14 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"[WS ERROR] Error koneksi: {e}")
         ws_manager.disconnect(websocket)
+
+# SPA fallback handler untuk melayani asset publik dan rute SPA frontend
+@app.get("/{full_path:path}")
+def serve_spa_or_static(full_path: str):
+    target_file = os.path.join(DIST_DIR, full_path)
+    if os.path.isfile(target_file):
+        return FileResponse(target_file)
+    index_file = os.path.join(DIST_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"detail": "Not Found"}
