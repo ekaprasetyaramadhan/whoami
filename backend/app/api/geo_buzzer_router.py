@@ -113,6 +113,11 @@ async def get_social_feeds(
         "data": feeds
     }
 
+@router.get("/province-sna")
+async def get_province_sna_query(province: Optional[str] = Query("DKI JAKARTA", description="Nama provinsi")):
+    """Mengambil topologi graf SNA via query param."""
+    return await get_province_sna(province=province)
+
 @router.get("/province-sna/{province}")
 async def get_province_sna(province: str):
     """Mengambil topologi graf SNA interaksi buzzer vs botnet vs netizen untuk provinsi terpilih."""

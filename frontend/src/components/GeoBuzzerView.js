@@ -181,12 +181,17 @@ export class GeoBuzzerView {
 
           <!-- PANE 2: FULL-WIDTH SNA GRAPH CANVAS -->
           <div id="main-view-pane-sna" class="geo-full-view-pane" style="display: none;">
-            <div style="padding: 10px 18px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; flex-shrink: 0;">
-              <span style="color: #c084fc;">
+            <div style="padding: 10px 18px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; flex-shrink: 0; flex-wrap: wrap; gap: 8px;">
+              <span style="color: #c084fc; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-diagram-project"></i> Peta Hubungan Akun Pemicu vs Bot Farm di Wilayah <strong id="main-sna-target-prov-label">DKI JAKARTA</strong> (Full 100% Canvas)
                 <span class="help-icon" title="Diagram lingkaran interaksi: Koordinator Inti (tengah), Bot Farm amplifier (sekitar), dan Warganet Organik.">?</span>
               </span>
-              <span class="tag-badge bot" style="font-size: 0.65rem;">SNA FULL RESOLUTION</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button id="main-btn-sna-back-to-map" class="btn-tactical cyan" style="padding: 3px 10px; font-size: 0.65rem;">
+                  <i class="fa-solid fa-map-location-dot"></i> KEMBALI KE PETA
+                </button>
+                <span class="tag-badge bot" style="font-size: 0.65rem;">SNA FULL RESOLUTION</span>
+              </div>
             </div>
             <div id="main-geo-sna-chart-container" style="width: 100%; height: 560px; min-height: 520px; flex: 1;"></div>
           </div>
@@ -314,6 +319,14 @@ export class GeoBuzzerView {
       };
     });
 
+    // SNA Back To Map Button
+    const backToMapBtn = document.getElementById('main-btn-sna-back-to-map');
+    if (backToMapBtn) {
+      backToMapBtn.onclick = () => {
+        this.switchMainView('map');
+      };
+    }
+
     // Speed Pacer Buttons
     const btnPaceNormal = document.getElementById('btn-stream-pace-normal');
     const btnPaceSlow = document.getElementById('btn-stream-pace-slow');
@@ -371,10 +384,22 @@ export class GeoBuzzerView {
     setTimeout(() => {
       if (viewName === 'map' && this.mapChart) {
         this.mapChart.resize();
-      } else if (viewName === 'sna' && this.snaChart) {
-        this.snaChart.resize();
+      } else if (viewName === 'sna') {
+        const snaContainer = document.getElementById('main-geo-sna-chart-container');
+        if (snaContainer) {
+          if (!this.snaChart) {
+            this.snaChart = echarts.init(snaContainer);
+          } else {
+            this.snaChart.resize();
+          }
+        }
+        if (this.lastSnaData) {
+          this.renderSnaGraph(this.lastSnaData);
+        } else {
+          this.loadProvinceSna(this.selectedProvince);
+        }
       }
-    }, 50);
+    }, 60);
   }
 
   async changeStreamPace(mode) {
@@ -536,8 +561,18 @@ export class GeoBuzzerView {
           <span style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">
             <i class="fa-solid fa-triangle-exclamation text-red"></i> Ancaman Tinggi: <strong style="color: #ef4444;">${highRisk} Aktor</strong>
           </span>
+          <button id="main-btn-brief-open-sna" class="btn-tactical" style="padding: 4px 12px; font-size: 0.68rem; border-color: #8b5cf6; color: #c084fc; background: rgba(139, 92, 246, 0.15); display: flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 4px; font-weight: 700; transition: all 0.2s ease;">
+            <i class="fa-solid fa-diagram-project"></i> BUKA GRAF SNA WILAYAH ➔
+          </button>
         </div>
       `;
+
+      const openSnaBtn = document.getElementById('main-btn-brief-open-sna');
+      if (openSnaBtn) {
+        openSnaBtn.onclick = () => {
+          this.switchMainView('sna');
+        };
+      }
     }
   }
 
@@ -757,7 +792,11 @@ export class GeoBuzzerView {
     try {
       const res = await ApiService.getProvinceSna(provName);
       if (res && res.data) {
-        this.renderSnaGraph(res.data);
+        this.lastSnaData = res.data;
+        const snaContainer = document.getElementById('main-geo-sna-chart-container');
+        if (snaContainer && snaContainer.clientWidth > 0) {
+          this.renderSnaGraph(res.data);
+        }
       }
     } catch (e) {
       console.warn('Gagal memuat SNA wilayah:', e);
@@ -765,6 +804,9 @@ export class GeoBuzzerView {
   }
 
   renderSnaGraph(snaData) {
+    if (!snaData) return;
+    this.lastSnaData = snaData;
+
     const snaContainer = document.getElementById('main-geo-sna-chart-container');
     if (!snaContainer) return;
 
@@ -774,12 +816,17 @@ export class GeoBuzzerView {
       this.snaChart.resize();
     }
 
+    const processedNodes = (snaData.nodes || []).map((n) => ({
+      ...n,
+      draggable: true
+    }));
+
     const option = {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'item',
         backgroundColor: '#10161d',
-        borderColor: '#1f2937',
+        borderColor: '#8b5cf6',
         textStyle: { color: '#e9e6dd', fontSize: 12 },
         formatter: (params) => {
           if (params.dataType === 'node') {
@@ -789,7 +836,7 @@ export class GeoBuzzerView {
               <strong style="color: #00e5ff;">${displayName}</strong> <span style="color:#94a3b8;">(${d.id})</span><br>
               Peran: <strong>${d.role}</strong><br>
               Bot Score: <strong style="color:${d.bot_score > 70 ? '#ef4444' : '#10b981'};">${d.bot_score}%</strong><br>
-              Follower: <strong>${d.followers.toLocaleString('id-ID')}</strong>
+              Follower: <strong>${(d.followers || 0).toLocaleString('id-ID')}</strong>
             </div>`;
           } else if (params.dataType === 'edge') {
             return `<div style="font-size:0.72rem;">${params.data.source} ➔ ${params.data.target}<br/>Relasi: <strong>${params.data.relation}</strong></div>`;
@@ -798,7 +845,7 @@ export class GeoBuzzerView {
       },
       legend: [
         {
-          data: snaData.categories.map((c) => c.name),
+          data: (snaData.categories || []).map((c) => c.name),
           textStyle: { color: '#94a3b8', fontSize: 10 },
           top: 6,
           left: 10
@@ -809,10 +856,12 @@ export class GeoBuzzerView {
           name: 'Regional SNA',
           type: 'graph',
           layout: 'force',
-          data: snaData.nodes,
-          links: snaData.links,
-          categories: snaData.categories,
+          data: processedNodes,
+          links: snaData.links || [],
+          categories: snaData.categories || [],
           roam: true,
+          center: ['50%', '50%'],
+          zoom: 1.1,
           label: {
             show: true,
             position: 'right',
@@ -824,9 +873,9 @@ export class GeoBuzzerView {
             hideOverlap: true
           },
           force: {
-            repulsion: 320,
-            gravity: 0.08,
-            edgeLength: [80, 200],
+            repulsion: 380,
+            gravity: 0.12,
+            edgeLength: [90, 220],
             friction: 0.6
           },
           edgeSymbol: ['none', 'arrow'],
@@ -849,7 +898,7 @@ export class GeoBuzzerView {
     this.snaChart.setOption(option, true);
     setTimeout(() => {
       if (this.snaChart) this.snaChart.resize();
-    }, 50);
+    }, 60);
   }
 
   async loadRegionalNews(provName) {
