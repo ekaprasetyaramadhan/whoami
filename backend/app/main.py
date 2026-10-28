@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import APP_NAME, APP_VERSION, APP_DESCRIPTION, API_PREFIX
+from app.config import APP_NAME, APP_VERSION, APP_DESCRIPTION, API_PREFIX, ENVIRONMENT
 from app.core.ws_manager import ws_manager
 from app.core.stream_bus import stream_bus
 from app.core.ews_engine import ews_engine
@@ -65,19 +65,32 @@ async def lifespan(app: FastAPI):
     print("[whoiam] SERVICE TELEMETRI DIMATIKAN.")
     stream_bus.is_running = False
 
+# Sembunyikan dokumentasi OpenAPI/Swagger di production agar endpoint tidak di-scrape publik
+docs_url = None if ENVIRONMENT == "production" else "/docs"
+redoc_url = None if ENVIRONMENT == "production" else "/redoc"
+
 app = FastAPI(
     title=APP_NAME,
     version=APP_VERSION,
     description=APP_DESCRIPTION,
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url=docs_url,
+    redoc_url=redoc_url,
     lifespan=lifespan
 )
 
-# CORS Middleware (mengizinkan koneksi dari frontend Vite localhost:5173 / web production)
+# CORS Policy: Kunci domain hanya untuk domain resmi & dev lokal di mode production
+allowed_origins = [
+    "https://whoami.labados.my.id",
+    "https://www.whoami.labados.my.id",
+    "http://localhost:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000"
+] if ENVIRONMENT == "production" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
