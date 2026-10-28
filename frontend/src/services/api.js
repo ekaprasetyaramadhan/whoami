@@ -110,6 +110,12 @@ export const ApiService = {
       body: JSON.stringify({ url_a: urlA, url_b: urlB })
     });
     return await res.json();
+  },
+
+  async checkRobotsTxt(url) {
+    const res = await fetch(`${API_BASE}/osint/check-robots?url=${encodeURIComponent(url)}`);
+    return await res.json();
   }
 };
+
 

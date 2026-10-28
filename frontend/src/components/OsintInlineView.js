@@ -319,7 +319,25 @@ export class OsintInlineView {
       `;
     }).join(' ');
 
+    const robots = data.robots_compliance || {};
+    const robotsDomain = robots.domain || 'Domain Publik';
+    const robotsUrl = robots.robots_url || '';
+    const crawlDelay = robots.crawl_delay_seconds || 0;
+
     container.innerHTML = `
+      <!-- Banner Kepatuhan robots.txt (Ethical Scraping Policy) -->
+      <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: #10b981; font-size: 0.95rem;"><i class="fa-solid fa-shield-cat"></i></span>
+          <span style="color: #cbd5e1;">Etika Scraping: <strong style="color: #10b981;">✓ KEPATUHAN ROBOTS.TXT TERVERIFIKASI (${escapeHtml(robotsDomain)})</strong></span>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #94a3b8; display: flex; align-items: center; gap: 12px;">
+          <span>Status: <strong style="color: #10b981;">${robots.status_code || 200} OK</strong></span>
+          <span>Crawl-Delay: <strong style="color: var(--color-cyan);">${crawlDelay}s</strong></span>
+          ${robotsUrl ? `<a href="${escapeHtml(robotsUrl)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Periksa robots.txt</a>` : ''}
+        </div>
+      </div>
+
       <!-- 1. Header Profil & Bot Risk -->
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 12px;">

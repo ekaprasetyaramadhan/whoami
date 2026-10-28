@@ -26,8 +26,26 @@ def get_osint_status():
         "status": "operational",
         "engine": "whoiam OSINT Scraper (Playwright & oEmbed Engine)",
         "supported_platforms": ["X (Twitter)", "Threads", "Instagram", "Facebook", "Web Articles"],
-        "apify_configured": bool(osint_engine.apify_token)
+        "apify_configured": bool(osint_engine.apify_token),
+        "ethical_scraping_enabled": True
     }
+
+@router.get("/check-robots")
+async def check_robots_endpoint(url: str, user_agent: Optional[str] = None):
+    """
+    Endpoint untuk menguji kepatuhan robots.txt dari domain atau URL spesifik.
+    """
+    from app.core.ethical_scraper import ethical_scraper
+    try:
+        allowed, details = await ethical_scraper.can_fetch_url(url, custom_user_agent=user_agent)
+        return {
+            "status": "success",
+            "allowed": allowed,
+            "details": details
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Gagal memeriksa robots.txt: {str(e)}")
+
 
 @router.post("/inspect-url")
 async def inspect_url_endpoint(req: InspectUrlRequest):
