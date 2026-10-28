@@ -459,8 +459,11 @@ class OsintEngine:
                 }
 
                 scraped_posts.append(post_item)
-                if inject_stream:
-                    await stream_bus.emit(post_item)
+                if inject_stream and hasattr(stream_bus, "emit"):
+                    try:
+                        await stream_bus.emit(post_item)
+                    except Exception as e:
+                        print(f"[OSINT] Stream emit non-fatal warning: {e}")
 
         # Fallback dinamis jika query tidak menghasilkan artikel langsung
         if not scraped_posts:
@@ -497,12 +500,11 @@ class OsintEngine:
                 }
 
                 scraped_posts.append(post_item)
-                if inject_stream:
-                    await stream_bus.emit(post_item)
-
-            # Jika opsi inject aktif, pancarkan ke stream bus agar war room langsung bergerak!
-            if inject_stream:
-                await stream_bus.emit(post_item)
+                if inject_stream and hasattr(stream_bus, "emit"):
+                    try:
+                        await stream_bus.emit(post_item)
+                    except Exception as e:
+                        print(f"[OSINT] Stream emit non-fatal warning: {e}")
 
         return scraped_posts
 

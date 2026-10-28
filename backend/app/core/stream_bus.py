@@ -33,6 +33,19 @@ class StreamBus:
         """
         self.active_spike_count += intensity
 
+    async def emit(self, post: dict):
+        """
+        Menyuntikkan postingan eksternal (misal dari scraping OSINT live) langsung ke seluruh subscriber.
+        """
+        for subscriber in self.subscribers:
+            try:
+                if asyncio.iscoroutinefunction(subscriber):
+                    await subscriber(post)
+                else:
+                    subscriber(post)
+            except Exception as e:
+                print(f"[STREAM BUS ERROR] Gagal mendistribusikan post eksternal: {e}")
+
     async def start(self):
         """Memulai background loop generator telemetri."""
         if self._worker_task is None or self._worker_task.done():
