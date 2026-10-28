@@ -317,22 +317,73 @@ body::before {
   gap: 10px;
 }
 
-.geo-split-container {
+/* Full-Width Modular Geo & SNA Layout (Unsplit) */
+.geo-main-tab-nav {
+  display: flex;
+  gap: 8px;
+  background: #090e16;
+  border-bottom: 1px solid var(--color-border);
+  padding: 8px 16px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.geo-main-tab-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.geo-main-tab-btn:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.4);
+  color: #fff;
+}
+
+.geo-main-tab-btn.active {
+  background: rgba(0, 229, 255, 0.14) !important;
+  border-color: var(--color-cyan) !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.global-stream-bar {
+  background: linear-gradient(180deg, #0d1522, #090d14);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.22);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+.geo-full-content-container {
   display: flex;
   flex: 1;
+  flex-direction: column;
   overflow: hidden;
   position: relative;
   width: 100%;
+  background: #070b10;
 }
 
-.geo-map-panel {
-  flex: 1.15;
+.geo-full-view-pane {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--color-border);
-  background: #070b10;
+  flex: 1;
+  width: 100%;
+  height: 100%;
   position: relative;
-  min-width: 0;
+  min-height: 0;
 }
 
 .geo-map-legend {
@@ -352,7 +403,7 @@ body::before {
 .geo-map-chart {
   width: 100%;
   flex: 1;
-  min-height: 440px;
+  min-height: 520px;
 }
 
 .geo-brief-prov-bar {
@@ -363,22 +414,6 @@ body::before {
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
-  flex-shrink: 0;
-}
-
-.geo-intel-panel {
-  flex: 0.95;
-  display: flex;
-  flex-direction: column;
-  background: #0a0e14;
-  overflow: hidden;
-  min-width: 0;
-}
-
-.geo-intel-tab-header {
-  display: flex;
-  border-bottom: 1px solid var(--color-border);
-  background: #0d131b;
   flex-shrink: 0;
 }
 
@@ -474,31 +509,23 @@ body::before {
     overflow: visible !important;
   }
 
-  .geo-split-container {
-    flex-direction: column !important;
+  .geo-full-content-container {
     height: auto !important;
     overflow: visible !important;
   }
 
-  .geo-map-panel {
-    border-right: none !important;
-    border-bottom: 1px solid var(--color-border);
+  .geo-full-view-pane {
+    height: auto !important;
+    min-height: 480px !important;
+    overflow: visible !important;
+    flex: none !important;
+  }
+
+  .geo-map-chart,
+  #main-indonesia-map-chart,
+  #main-geo-sna-chart-container {
     height: 480px !important;
     min-height: 460px !important;
-    flex: none !important;
-  }
-
-  .geo-intel-panel {
-    height: auto !important;
-    min-height: 520px !important;
-    overflow: visible !important;
-    flex: none !important;
-  }
-
-  #main-geo-tab-view-sna,
-  #main-geo-sna-chart-container {
-    height: 460px !important;
-    min-height: 440px !important;
   }
 
   .osint-view-container {

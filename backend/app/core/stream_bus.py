@@ -23,7 +23,7 @@ class StreamBus:
 
     def set_speed(self, mode: str):
         """Mengatur kecepatan aliran simulasi data."""
-        if mode in ["NORMAL", "TURBO", "PAUSED"]:
+        if mode in ["NORMAL", "TURBO", "SLOW", "PAUSED"]:
             self.speed_mode = mode
 
     def inject_spike(self, intensity=25):
@@ -81,6 +81,8 @@ class StreamBus:
                 await asyncio.sleep(0.1)  # Lonjakan cepat saat spike
             elif self.speed_mode == "TURBO":
                 await asyncio.sleep(0.2)
+            elif self.speed_mode == "SLOW":
+                await asyncio.sleep(4.0)
             else:
                 await asyncio.sleep(1.5)
 

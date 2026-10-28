@@ -24,7 +24,8 @@ export class GeoBuzzerView {
     this.selectedProvince = 'DKI JAKARTA';
     this.selectedPlatform = 'all';
     this.selectedTimeframe = '24h';
-    this.activeRightTab = 'sna'; // 'sna' | 'news' | 'social'
+    this.activeMainView = 'map'; // 'map' | 'sna' | 'social' | 'news'
+    this.streamPaceMode = 'NORMAL'; // 'NORMAL' | 'SLOW' | 'PAUSED'
     this.buzzerData = [];
     this.summaryData = {};
     this.flightLinesData = [];
@@ -87,12 +88,61 @@ export class GeoBuzzerView {
           </div>
         </div>
 
-        <!-- Main Split View (Kiri: Peta Indonesia, Kanan: 3 Tab Intelejen Wilayah) -->
-        <div class="geo-split-container">
+        <!-- 4 Sub-Views Full-Width Modular Navigation (Unsplit) -->
+        <div class="geo-main-tab-nav">
+          <button id="main-btn-view-map" class="btn-tactical geo-main-tab-btn active" data-view="map">
+            <i class="fa-solid fa-map-location-dot text-cyan"></i> 1. PETA GEOGRAFIS (38 PROVINSI)
+          </button>
+          <button id="main-btn-view-sna" class="btn-tactical geo-main-tab-btn" data-view="sna">
+            <i class="fa-solid fa-diagram-project text-purple"></i> 2. JEJARING AKTOR (SNA FULL CANVAS)
+          </button>
+          <button id="main-btn-view-social" class="btn-tactical geo-main-tab-btn" data-view="social">
+            <i class="fa-solid fa-satellite-dish text-amber"></i> 3. LIVE STREAM MEDSOS & GROUND ZERO
+            <span id="main-tab-social-count-badge" class="tag-badge" style="font-size: 0.6rem; margin-left: 6px;">0 POSTS</span>
+          </button>
+          <button id="main-btn-view-news" class="btn-tactical geo-main-tab-btn" data-view="news">
+            <i class="fa-regular fa-newspaper text-cyan"></i> 4. RADAR BERITA RESMI DAERAH
+          </button>
+        </div>
+
+        <!-- Global Persistent Ingestion Stream Bar -->
+        <div id="main-global-stream-bar" class="global-stream-bar">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #fff;">
+              <span class="fa-solid fa-bolt fa-fade" style="color: #f59e0b;"></span>
+              <span id="main-global-stream-text"><span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-satellite-dish"></i> Telemetri Live Aktif:</span> Menangkap aliran data medsos 38 provinsi</span>
+            </div>
+            <!-- Floating Banner Notification Toast -->
+            <div id="main-geo-new-posts-banner" class="floating-stream-banner" style="display: none; margin: 0; padding: 3px 12px;" title="Klik untuk menampilkan postingan terbaru">
+              <span id="main-geo-new-posts-text">⚡ 0 Post Baru Masuk</span>
+              <button id="main-btn-show-new-posts" class="btn-tactical cyan" style="padding: 2px 8px; font-size: 0.65rem; font-weight: 700; margin-left: 6px;">
+                TAMPILKAN KE FEED ↑
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <!-- Speed Pacer Controls -->
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 600;">KECEPATAN ALIRAN:</span>
+              <button id="btn-stream-pace-normal" class="btn-tactical active" style="padding: 2px 7px; font-size: 0.62rem;" title="Aliran standar setiap 1.5 detik">⚡ NORMAL (1.5s)</button>
+              <button id="btn-stream-pace-slow" class="btn-tactical" style="padding: 2px 7px; font-size: 0.62rem;" title="Aliran santai setiap 4 detik">⏱️ SANTAI (4s)</button>
+              <button id="btn-stream-pace-pause" class="btn-tactical" style="padding: 2px 7px; font-size: 0.62rem;" title="Jeda sementara agar data tidak melompat-lompat">⏸️ JEDA</button>
+            </div>
+
+            <!-- Auto-Stream Toggle -->
+            <label style="font-size: 0.68rem; color: #cbd5e1; display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; background: rgba(0, 229, 255, 0.08); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(0, 229, 255, 0.2);" title="Otomatis masukkan postingan baru tanpa perlu klik tombol Tampilkan">
+              <input type="checkbox" id="chk-auto-stream-toggle" style="accent-color: var(--color-cyan); cursor: pointer;">
+              <span>Auto-Stream Langsung</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Full-Width Content Container (TIDAK LAGI SPLIT 50/50) -->
+        <div class="geo-full-content-container">
           
-          <!-- SISI KIRI: Peta Interaktif Indonesia -->
-          <div class="geo-map-panel">
-            
+          <!-- PANE 1: FULL-WIDTH PETA INDONESIA -->
+          <div id="main-view-pane-map" class="geo-full-view-pane" style="display: flex;">
             <!-- Map Legend Box -->
             <div class="geo-map-legend">
               <div style="color: var(--color-cyan); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-circle-dot"></i> SEBARAN BUZZER TERDETEKSI</div>
@@ -114,7 +164,7 @@ export class GeoBuzzerView {
             </div>
 
             <!-- ECharts Indonesia Map Container -->
-            <div id="main-indonesia-map-chart" class="geo-map-chart"></div>
+            <div id="main-indonesia-map-chart" class="geo-map-chart" style="width: 100%; height: 560px; min-height: 520px; flex: 1;"></div>
 
             <!-- Bottom Selected Province Bar -->
             <div class="geo-brief-prov-bar">
@@ -129,81 +179,45 @@ export class GeoBuzzerView {
             </div>
           </div>
 
-          <!-- SISI KANAN: Panel 3 Tab (SNA, Berita Lokal, Medsos Scrapes) -->
-          <div class="geo-intel-panel">
-            
-            <!-- Tab Header -->
-            <div class="geo-intel-tab-header">
-              <button id="main-btn-tab-sna" class="btn-tactical geo-tab-nav active" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat diagram hubungan akun dan botnet">
-                <i class="fa-solid fa-circle-nodes text-purple"></i> 1. JEJARING BUZZER
-              </button>
-              <button id="main-btn-tab-news" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat klarifikasi pers resmi Dewan Pers">
-                <i class="fa-solid fa-newspaper text-cyan"></i> 2. BERITA RESMI DAERAH
-              </button>
-              <button id="main-btn-tab-social" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;" title="Lihat postingan medsos di provinsi ini">
-                <i class="fa-solid fa-hashtag text-amber"></i> 3. POSTINGAN MEDSOS
-              </button>
+          <!-- PANE 2: FULL-WIDTH SNA GRAPH CANVAS -->
+          <div id="main-view-pane-sna" class="geo-full-view-pane" style="display: none;">
+            <div style="padding: 10px 18px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; flex-shrink: 0;">
+              <span style="color: #c084fc;">
+                <i class="fa-solid fa-diagram-project"></i> Peta Hubungan Akun Pemicu vs Bot Farm di Wilayah <strong id="main-sna-target-prov-label">DKI JAKARTA</strong> (Full 100% Canvas)
+                <span class="help-icon" title="Diagram lingkaran interaksi: Koordinator Inti (tengah), Bot Farm amplifier (sekitar), dan Warganet Organik.">?</span>
+              </span>
+              <span class="tag-badge bot" style="font-size: 0.65rem;">SNA FULL RESOLUTION</span>
             </div>
+            <div id="main-geo-sna-chart-container" style="width: 100%; height: 560px; min-height: 520px; flex: 1;"></div>
+          </div>
 
-            <!-- Tab Content 1: SNA Graph Canvas -->
-            <div id="main-geo-tab-view-sna" class="geo-tab-pane" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;">
-              <div style="padding: 8px 14px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; flex-shrink: 0;">
-                <span style="color: #c084fc;">
-                  <i class="fa-solid fa-project-diagram"></i> Peta Hubungan Akun Pemicu vs Bot Farm di <strong id="main-sna-target-prov-label">DKI JAKARTA</strong>
-                  <span class="help-icon" title="Diagram lingkaran interaksi: Koordinator Inti (tengah), Bot Farm amplifier (sekitar), dan Warganet Organik.">?</span>
+          <!-- PANE 3: FULL-WIDTH POSTINGAN MEDSOS & GROUND ZERO -->
+          <div id="main-view-pane-social" class="geo-full-view-pane" style="display: none; overflow-y: auto; padding: 18px; gap: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.8rem; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-satellite-dish text-amber"></i> POSTINGAN MEDSOS & DETEKSI GROUND ZERO DI <span id="main-social-prov-title" style="color: var(--color-cyan);">DKI JAKARTA</span>
+              </div>
+              <div id="main-geo-social-count-badge" class="tag-badge valid" style="font-size: 0.68rem;">0 POSTS TERKUTIP</div>
+            </div>
+            <div id="main-geo-social-feed-list" class="geo-feed-grid">
+              <!-- Diisi dinamis -->
+            </div>
+          </div>
+
+          <!-- PANE 4: FULL-WIDTH RADAR BERITA RESMI DAERAH -->
+          <div id="main-view-pane-news" class="geo-full-view-pane" style="display: none; overflow-y: auto; padding: 18px; gap: 14px;">
+            <div style="padding: 12px 18px; background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 6px; font-size: 0.74rem; color: #94a3b8;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="color: var(--color-cyan); font-weight: 700;">
+                  <i class="fa-solid fa-newspaper text-cyan"></i> CRAWLER BERITA RESMI DAERAH (DEWAN PERS & MEDIA TERAKREDITASI)
                 </span>
-                <span class="tag-badge bot" style="font-size: 0.62rem;">DIAGRAM JEJARING</span>
+                <span class="tag-badge valid" style="font-size: 0.65rem;">LIVE NEWS CRAWLER</span>
               </div>
-              <div id="main-geo-sna-chart-container" style="width: 100%; height: 100%; min-height: 440px; flex: 1;"></div>
+              Menyinkronkan rilis pers dan investigasi resmi dari portal berita terakreditasi untuk memverifikasi isu dan narasi medsos di provinsi ini.
             </div>
-
-            <!-- Tab Content 2: Regional News Crawler -->
-            <div id="main-geo-tab-view-news" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px;">
-              <div style="padding: 10px 14px; background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 6px; font-size: 0.72rem; color: #94a3b8;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span style="color: var(--color-cyan); font-weight: 700;">
-                    <i class="fa-solid fa-satellite-dish text-cyan"></i> CRAWLER BERITA DAERAH REAL-TIME (DEWAN PERS)
-                  </span>
-                  <span class="tag-badge valid" style="font-size: 0.62rem;">LIVE NEWS CRAWLER</span>
-                </div>
-                Menyinkronkan rilis pers dan investigasi resmi dari portal berita terakreditasi untuk memverifikasi isu dan narasi medsos di provinsi ini.
-              </div>
-              <div id="main-geo-news-feed-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Diisi dinamis -->
-              </div>
+            <div id="main-geo-news-feed-list" class="geo-news-grid">
+              <!-- Diisi dinamis -->
             </div>
-
-            <!-- Tab Content 3: Scraping Feeds Medsos (X, IG, FB) -->
-            <div id="main-geo-tab-view-social" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px; position: relative;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 6px;">
-                <div style="font-size: 0.75rem; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-satellite-dish text-amber"></i> POSTINGAN BUZZER TERDETEKSI
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <label style="font-size: 0.65rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;" title="Otomatis masukkan postingan baru tanpa perlu klik banner">
-                    <input type="checkbox" id="chk-auto-stream-toggle" style="accent-color: var(--color-cyan); cursor: pointer;">
-                    Auto-Stream
-                  </label>
-                  <div id="main-geo-social-count-badge" class="tag-badge" style="font-size: 0.65rem;">0 POSTS</div>
-                </div>
-              </div>
-
-              <!-- FLOATING BANNER NOTIFIKASI POSTINGAN BARU (IDE 2) -->
-              <div id="main-geo-new-posts-banner" class="floating-stream-banner" style="display: none;" title="Klik untuk menampilkan postingan terbaru">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <span class="fa-solid fa-bolt" style="color: #f59e0b;"></span>
-                  <span id="main-geo-new-posts-text">⚡ 1 Postingan Baru Masuk</span>
-                </div>
-                <button id="main-btn-show-new-posts" class="btn-tactical cyan" style="padding: 2px 8px; font-size: 0.65rem; font-weight: 700;">
-                  TAMPILKAN ↑
-                </button>
-              </div>
-
-              <div id="main-geo-social-feed-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Diisi dinamis -->
-              </div>
-            </div>
-
           </div>
 
         </div>
@@ -291,36 +305,23 @@ export class GeoBuzzerView {
       };
     }
 
-    // Right Sub-Tab Switching
-    const tabSnaBtn = document.getElementById('main-btn-tab-sna');
-    const tabNewsBtn = document.getElementById('main-btn-tab-news');
-    const tabSocialBtn = document.getElementById('main-btn-tab-social');
+    // 4 Modular View Tabs Switching
+    const viewBtns = this.container.querySelectorAll('.geo-main-tab-btn');
+    viewBtns.forEach((btn) => {
+      btn.onclick = () => {
+        const view = btn.dataset.view;
+        if (view) this.switchMainView(view);
+      };
+    });
 
-    const viewSna = document.getElementById('main-geo-tab-view-sna');
-    const viewNews = document.getElementById('main-geo-tab-view-news');
-    const viewSocial = document.getElementById('main-geo-tab-view-social');
+    // Speed Pacer Buttons
+    const btnPaceNormal = document.getElementById('btn-stream-pace-normal');
+    const btnPaceSlow = document.getElementById('btn-stream-pace-slow');
+    const btnPacePause = document.getElementById('btn-stream-pace-pause');
 
-    const switchTab = (tab) => {
-      this.activeRightTab = tab;
-      [tabSnaBtn, tabNewsBtn, tabSocialBtn].forEach((b) => b && b.classList.remove('active'));
-      [viewSna, viewNews, viewSocial].forEach((v) => v && (v.style.display = 'none'));
-
-      if (tab === 'sna') {
-        tabSnaBtn.classList.add('active');
-        viewSna.style.display = 'flex';
-        if (this.snaChart) this.snaChart.resize();
-      } else if (tab === 'news') {
-        tabNewsBtn.classList.add('active');
-        viewNews.style.display = 'flex';
-      } else if (tab === 'social') {
-        tabSocialBtn.classList.add('active');
-        viewSocial.style.display = 'flex';
-      }
-    };
-
-    if (tabSnaBtn) tabSnaBtn.onclick = () => switchTab('sna');
-    if (tabNewsBtn) tabNewsBtn.onclick = () => switchTab('news');
-    if (tabSocialBtn) tabSocialBtn.onclick = () => switchTab('social');
+    if (btnPaceNormal) btnPaceNormal.onclick = () => this.changeStreamPace('NORMAL');
+    if (btnPaceSlow) btnPaceSlow.onclick = () => this.changeStreamPace('SLOW');
+    if (btnPacePause) btnPacePause.onclick = () => this.changeStreamPace('PAUSED');
 
     // Auto-Stream Ingestion Toggle
     const autoStreamChk = document.getElementById('chk-auto-stream-toggle');
@@ -347,6 +348,63 @@ export class GeoBuzzerView {
         this.handleIncomingTelemetryPost(e.detail);
       }
     });
+  }
+
+  switchMainView(viewName) {
+    this.activeMainView = viewName;
+    const btns = this.container.querySelectorAll('.geo-main-tab-btn');
+    btns.forEach((b) => {
+      b.classList.toggle('active', b.dataset.view === viewName);
+    });
+
+    const panes = {
+      map: document.getElementById('main-view-pane-map'),
+      sna: document.getElementById('main-view-pane-sna'),
+      social: document.getElementById('main-view-pane-social'),
+      news: document.getElementById('main-view-pane-news')
+    };
+
+    Object.entries(panes).forEach(([k, el]) => {
+      if (el) el.style.display = k === viewName ? 'flex' : 'none';
+    });
+
+    setTimeout(() => {
+      if (viewName === 'map' && this.mapChart) {
+        this.mapChart.resize();
+      } else if (viewName === 'sna' && this.snaChart) {
+        this.snaChart.resize();
+      }
+    }, 50);
+  }
+
+  async changeStreamPace(mode) {
+    this.streamPaceMode = mode;
+    const pBtns = {
+      NORMAL: document.getElementById('btn-stream-pace-normal'),
+      SLOW: document.getElementById('btn-stream-pace-slow'),
+      PAUSED: document.getElementById('btn-stream-pace-pause')
+    };
+
+    Object.entries(pBtns).forEach(([k, btn]) => {
+      if (btn) btn.classList.toggle('active', k === mode);
+    });
+
+    const streamStatusText = document.getElementById('main-global-stream-text');
+    if (streamStatusText) {
+      if (mode === 'PAUSED') {
+        streamStatusText.innerHTML = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-pause"></i> Aliran Dijeda:</span> Postingan baru ditampung di antrean buffer';
+      } else if (mode === 'SLOW') {
+        streamStatusText.innerHTML = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-clock"></i> Aliran Santai:</span> Jeda santai 4 detik per post';
+      } else {
+        streamStatusText.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-satellite-dish"></i> Telemetri Live Aktif:</span> Menangkap aliran data medsos 38 provinsi';
+      }
+    }
+
+    try {
+      await ApiService.setSimulatorSpeed(mode);
+    } catch (e) {
+      console.warn('Gagal mengatur kecepatan simulator:', e);
+    }
   }
 
   async loadAllData() {
@@ -703,15 +761,9 @@ export class GeoBuzzerView {
     if (!snaContainer) return;
 
     if (!this.snaChart) {
-      this.snaChart = echarts.init(snaContainer, null, {
-        width: snaContainer.clientWidth || 560,
-        height: 440
-      });
+      this.snaChart = echarts.init(snaContainer);
     } else {
-      this.snaChart.resize({
-        width: snaContainer.clientWidth || 560,
-        height: 440
-      });
+      this.snaChart.resize();
     }
 
     const option = {
@@ -764,9 +816,9 @@ export class GeoBuzzerView {
             hideOverlap: true
           },
           force: {
-            repulsion: 220,
-            gravity: 0.1,
-            edgeLength: [60, 140],
+            repulsion: 320,
+            gravity: 0.08,
+            edgeLength: [80, 200],
             friction: 0.6
           },
           edgeSymbol: ['none', 'arrow'],
@@ -881,9 +933,12 @@ export class GeoBuzzerView {
       const countBadge = document.getElementById('main-geo-social-count-badge');
       if (countBadge) countBadge.textContent = `${feeds.length} POSTS TERKUTIP`;
 
+      const tabCountBadge = document.getElementById('main-tab-social-count-badge');
+      if (tabCountBadge) tabCountBadge.textContent = `${feeds.length} POSTS`;
+
       if (feeds.length === 0) {
         listContainer.innerHTML = `
-          <div style="padding: 16px; text-align: center; color: var(--color-text-muted); font-size: 0.75rem;">
+          <div style="grid-column: 1 / -1; padding: 16px; text-align: center; color: var(--color-text-muted); font-size: 0.75rem;">
             Tidak ada postingan scraper medsos aktif untuk filter ini.
           </div>
         `;
@@ -896,7 +951,7 @@ export class GeoBuzzerView {
       let gzBannerHtml = '';
       if (gzFeed) {
         gzBannerHtml = `
-          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+          <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span style="font-size: 0.72rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;">
                 <i class="fa-solid fa-bullseye fa-fade"></i> DETEKSI SUMBER POSTINGAN UTAMA (GROUND ZERO)
@@ -940,6 +995,7 @@ export class GeoBuzzerView {
           const lon = parseFloat(btn.dataset.lon);
           const lat = parseFloat(btn.dataset.lat);
           if (lon && lat) {
+            this.switchMainView('map');
             this.flyToLocation(lon, lat, 4.5);
           }
         };
@@ -1041,8 +1097,8 @@ export class GeoBuzzerView {
       this.triggerMapPulse(targetProv);
     }
 
-    // 2. Prepend langsung jika mode auto-stream aktif, atau tampung di banner jika manual
-    if (this.autoStreamEnabled) {
+    // 2. Prepend langsung jika mode auto-stream aktif & tidak dijeda, atau tampung di banner jika manual / paused
+    if (this.autoStreamEnabled && this.streamPaceMode !== 'PAUSED') {
       this.prependSocialPost(post, true);
     } else {
       this.pendingIncomingPosts.unshift(post);
@@ -1053,14 +1109,22 @@ export class GeoBuzzerView {
   updatePendingBanner() {
     const banner = document.getElementById('main-geo-new-posts-banner');
     const textEl = document.getElementById('main-geo-new-posts-text');
+    const tabCountBadge = document.getElementById('main-tab-social-count-badge');
     if (!banner || !textEl) return;
 
     const count = this.pendingIncomingPosts.length;
     if (count > 0) {
       textEl.innerHTML = `⚡ <strong>${count} Postingan Baru Masuk</strong>`;
       banner.style.display = 'flex';
+      if (tabCountBadge) {
+        tabCountBadge.textContent = `+${count} BARU`;
+        tabCountBadge.className = 'tag-badge warning';
+      }
     } else {
       banner.style.display = 'none';
+      if (tabCountBadge) {
+        tabCountBadge.className = 'tag-badge';
+      }
     }
   }
 
@@ -1107,6 +1171,7 @@ export class GeoBuzzerView {
         const lon = parseFloat(focusBtn.dataset.lon);
         const lat = parseFloat(focusBtn.dataset.lat);
         if (lon && lat) {
+          this.switchMainView('map');
           this.flyToLocation(lon, lat, 4.5);
         }
       };
@@ -1117,6 +1182,10 @@ export class GeoBuzzerView {
     const existingCards = listContainer.querySelectorAll('.geo-social-card');
     if (countBadge) {
       countBadge.textContent = `${existingCards.length} POSTS TERKUTIP`;
+    }
+    const tabCountBadge = document.getElementById('main-tab-social-count-badge');
+    if (tabCountBadge && this.pendingIncomingPosts.length === 0) {
+      tabCountBadge.textContent = `${existingCards.length} POSTS`;
     }
 
     // Batasi card agar tidak membuat browser lambat (max 40 cards)

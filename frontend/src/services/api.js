@@ -77,6 +77,15 @@ export const ApiService = {
   async checkRobotsTxt(url) {
     const res = await fetch(`${API_BASE}/osint/check-robots?url=${encodeURIComponent(url)}`);
     return await res.json();
+  },
+
+  async setSimulatorSpeed(speed) {
+    const res = await fetch(`${API_BASE}/sim/control`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ speed })
+    });
+    return await res.json();
   }
 };
 

@@ -402,5 +402,30 @@
   100% { transform: translateY(0); opacity: 1; }
 }
 
+/* 2-Column Responsive Feed Grids */
+.geo-feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .geo-feed-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.geo-news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .geo-news-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 

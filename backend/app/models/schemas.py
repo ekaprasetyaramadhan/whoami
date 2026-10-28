@@ -186,7 +186,7 @@ class SimulatorSpikeResponse(BaseModel):
     simulated_incident: str
 
 class SimulatorControlRequest(BaseModel):
-    speed: str = Field(description="NORMAL, TURBO, atau PAUSED")
+    speed: str = Field(description="NORMAL, TURBO, SLOW, atau PAUSED")
 
 class SimulatorControlResponse(BaseModel):
     status: str = "success"
