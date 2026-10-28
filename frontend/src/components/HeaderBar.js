@@ -27,6 +27,20 @@ export class HeaderBar {
         </div>
       </div>
 
+      <!-- Center Compact Telemetry Badges (Ringkasan Nasional Pengganti KPI Bar) -->
+      <div class="header-kpi-summary">
+        <div class="header-kpi-chip">
+          <i class="fa-solid fa-users-viewfinder text-cyan"></i>
+          <span class="chip-label">Buzzer Terpantau:</span>
+          <strong id="header-kpi-buzzers" class="chip-val" style="color: #fff;">76 Koordinator &bull; 1.250+ Bot</strong>
+        </div>
+        <div class="header-kpi-chip">
+          <i class="fa-solid fa-bullhorn text-purple"></i>
+          <span class="chip-label">Potensi Jangkauan:</span>
+          <strong id="header-kpi-reach" class="chip-val" style="color: #c084fc;">36.800.000 Netizen</strong>
+        </div>
+      </div>
+
       <!-- Right Guide & Tour Actions -->
       <div style="display: flex; align-items: center; gap: 8px;">
         <div id="header-ws-badge" class="tag-badge valid" style="font-size: 0.68rem; display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: rgba(16, 185, 129, 0.12); border-color: #10b981; color: #10b981;" title="Status Aliran Data Telemetri Real-time">
