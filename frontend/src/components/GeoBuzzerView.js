@@ -804,7 +804,7 @@ export class GeoBuzzerView {
   }
 
   renderSnaGraph(snaData) {
-    if (!snaData) return;
+    if (!snaData || !snaData.nodes) return;
     this.lastSnaData = snaData;
 
     const snaContainer = document.getElementById('main-geo-sna-chart-container');
@@ -816,9 +816,34 @@ export class GeoBuzzerView {
       this.snaChart.resize();
     }
 
-    const processedNodes = (snaData.nodes || []).map((n) => ({
-      ...n,
-      draggable: true
+    // 1. Sanitasi & Deduplikasi Simpul (Nodes) untuk mencegah ECharts crash dataIndex
+    const seenNodeIds = new Set();
+    const validNodes = [];
+
+    (snaData.nodes || []).forEach((n, idx) => {
+      const rawId = n.id ?? n.name ?? `node-${idx}`;
+      const uniqueId = String(rawId).trim();
+      if (!uniqueId || seenNodeIds.has(uniqueId)) return;
+      seenNodeIds.add(uniqueId);
+
+      validNodes.push({
+        ...n,
+        id: uniqueId,
+        name: uniqueId,
+        draggable: true
+      });
+    });
+
+    // 2. Sanitasi Relasi (Links / Edges) - pastikan source dan target valid
+    const validLinks = (snaData.links || []).filter((l) => {
+      if (!l || l.source == null || l.target == null) return false;
+      const s = String(l.source).trim();
+      const t = String(l.target).trim();
+      return seenNodeIds.has(s) && seenNodeIds.has(t) && s !== t;
+    }).map((l) => ({
+      ...l,
+      source: String(l.source).trim(),
+      target: String(l.target).trim()
     }));
 
     const option = {
@@ -856,8 +881,8 @@ export class GeoBuzzerView {
           name: 'Regional SNA',
           type: 'graph',
           layout: 'force',
-          data: processedNodes,
-          links: snaData.links || [],
+          data: validNodes,
+          links: validLinks,
           categories: snaData.categories || [],
           roam: true,
           center: ['50%', '50%'],
@@ -1279,7 +1304,7 @@ export class GeoBuzzerView {
       }, 1400);
     }
 
-    // Jika peta ECharts siap, temukan node buzzer terkait dan picu highlight sementara
+    // Jika peta ECharts siap, temukan node buzzer terkait dan picu highlight sementara secara aman
     if (this.mapChart && this.buzzerData && this.buzzerData.length > 0) {
       const pUpper = provinceName.toUpperCase();
       const targetIdx = this.buzzerData.findIndex(
@@ -1288,16 +1313,23 @@ export class GeoBuzzerView {
 
       if (targetIdx !== -1) {
         try {
-          this.mapChart.dispatchAction({
-            type: 'showTip',
-            seriesIndex: 0,
-            dataIndex: targetIdx
-          });
-          setTimeout(() => {
+          const opt = this.mapChart.getOption();
+          const seriesList = (opt && opt.series) || [];
+          const scatterIdx = seriesList.findIndex((s) => s.type === 'effectScatter');
+          if (scatterIdx !== -1 && seriesList[scatterIdx].data && targetIdx < seriesList[scatterIdx].data.length) {
             this.mapChart.dispatchAction({
-              type: 'hideTip'
+              type: 'showTip',
+              seriesIndex: scatterIdx,
+              dataIndex: targetIdx
             });
-          }, 2000);
+            setTimeout(() => {
+              try {
+                this.mapChart.dispatchAction({
+                  type: 'hideTip'
+                });
+              } catch (_) {}
+            }, 2000);
+          }
         } catch (_) {}
       }
     }

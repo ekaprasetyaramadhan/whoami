@@ -146,17 +146,19 @@ class SNAEngine:
                 "itemStyle": { "color": color }
             })
 
+        valid_node_ids = {n["id"] for n in nodes_list}
         for u, v, data in self.graph.edges(data=True):
-            links_list.append({
-                "source": u,
-                "target": v,
-                "relation": data.get("relation", "INTERACT"),
-                "value": data.get("weight", 1),
-                "lineStyle": {
-                    "width": min(data.get("weight", 1), 4),
-                    "opacity": 0.45
-                }
-            })
+            if u in valid_node_ids and v in valid_node_ids:
+                links_list.append({
+                    "source": u,
+                    "target": v,
+                    "relation": data.get("relation", "INTERACT"),
+                    "value": data.get("weight", 1),
+                    "lineStyle": {
+                        "width": min(data.get("weight", 1), 4),
+                        "opacity": 0.45
+                    }
+                })
 
         return {
             "total_nodes": len(nodes_list),
