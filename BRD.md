@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: BRD-WHOIAM-2026-003  
-**Versi**: 3.1.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: BRD-WHOIAM-2026-004  
+**Versi**: 3.2.0  
+**Tanggal Rilis**: 28 Oktober 2026  
 **Status**: APPROVED & OPERATIONAL  
 **Klasifikasi Dokumen**: Spesifikasi Persyaratan Bisnis & Solusi Intelijen Forensik  
 **Target Pengguna**: Analis Media Sosial, Penyelidik OSINT, Tim Forensik Siber, & Pemeriksa Fakta  
@@ -34,6 +34,7 @@
    - [7.9 Deteksi Avatar AI / Wajah Sintetis (Synthetic Face GAN Detector)](#79-deteksi-avatar-ai--wajah-sintetis-synthetic-face-gan-detector)
    - [7.10 Komparasi 2 Akun Berdampingan (Side-by-Side Synchronicity Comparator)](#710-komparasi-2-akun-berdampingan-side-by-side-synchronicity-comparator)
    - [7.11 Ekstraksi Topik & Tagar (Topic & Keyword Cloud)](#711-ekstraksi-topik--tagar-topic--keyword-cloud)
+   - [7.12 Ethical Scraping & Multi-Device Accessibility](#712-ethical-scraping--multi-device-accessibility)
 8. [KEBUTUHAN NON-FUNGSIONAL (NFR)](#8-kebutuhan-non-fungsional-nfr)
 9. [MATRIKS TRACEABILITY & KRITERIA PENERIMAAN](#9-matriks-traceability--kriteria-penerimaan)
 
@@ -48,6 +49,7 @@
 | 2.0.0 | 22 Oktober 2026 | Tim whoiam | Rebranding ke whoiam, integrasi OSINT Scraper, netralisasi narasi militer |
 | 3.0.0 | 27 Oktober 2026 | Tim whoiam | Ekspansi cakupan 38 Provinsi, Deteksi Ground Zero, BTS Geolokasi, Cross-Platform SNA. |
 | 3.1.0 | 27 Oktober 2026 | Tim whoiam | **Implementasi Fitur Forensik Lanjutan**: Garis Propagasi Isu Antar-Provinsi (*Migration Flight Lines*), Filter Rentang Waktu (1h, 6h, 24h, 7d), Deteksi Avatar AI Wajah Sintetis (GAN Detector), Komparasi 2 Akun Berdampingan (*Synchronicity Comparator*), dan Ekstraksi Topik/Tagar (*Topic Cloud*). |
+| 3.2.0 | 28 Oktober 2026 | Tim whoiam | **Desain Responsif Multi-Device & Ethical Scraping Compliance**: Penyesuaian antarmuka responsif (Desktop, Tablet, Mobile/HP), modul crawling etis `robots.txt` compliance dengan Anti-SSRF, live dynamic buzzer harvesting, dan CI/CD deployment ke VPS live `https://whoami.labados.my.id/`. |
 
 ### 1.2 Glosarium & Terminologi
 * **whoiam**: Platform intelijen media sosial dan forensik akun untuk mengidentifikasi dalang penyebar narasi, validitas postingan, serta pola jaringan manipulasi siber di Indonesia.

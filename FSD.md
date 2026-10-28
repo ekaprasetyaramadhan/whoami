@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: FSD-WHOIAM-2026-003  
-**Versi**: 3.1.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: FSD-WHOIAM-2026-004  
+**Versi**: 3.2.0  
+**Tanggal Rilis**: 28 Oktober 2026  
 **Status**: APPROVED & IMPLEMENTED  
 **Target Pengguna**: Tim Rekayasa Perangkat Lunak, DevOps, QA, dan Analis Sistem  
 **Role Pengguna**: `user`  
@@ -21,17 +21,20 @@
    - [3.1 GeoBuzzerEngine (38 Provinsi, Ground Zero, Geofix & Flight Lines)](#31-geobuzzerengine-38-provinsi-ground-zero-geofix--flight-lines)
    - [3.2 OsintEngine (URL Profiler, GAN Avatar Detector, Topic Cloud & Account Comparator)](#32-osintengine-url-profiler-gan-avatar-detector-topic-cloud--account-comparator)
    - [3.3 BotEngine & HoaxEngine (XAI & Bot Score)](#33-botengine--hoaxengine-xai--bot-score)
+   - [3.4 EthicalScraper & LiveBuzzerHarvester (Robots.txt & Dynamic Harvester)](#34-ethicalscraper--livebuzzerharvester-robotstxt--dynamic-harvester)
 4. [SPESIFIKASI API BACKEND (REST & DATA CONTRACTS)](#4-spesifikasi-api-backend-rest--data-contracts)
-   - [4.1 GET /api/v1/geo-buzzer/distribution](#41-get-apiv1geo-buzzerdistribution)
-   - [4.2 GET /api/v1/geo-buzzer/propagation-lines](#42-get-apiv1geo-buzzerpropagation-lines)
+   - [4.1 GET /api/v1/geo/buzzer-distribution](#41-get-apiv1geo-buzzerdistribution)
+   - [4.2 GET /api/v1/geo/propagation-lines](#42-get-apiv1geo-buzzerpropagation-lines)
    - [4.3 POST /api/v1/osint/inspect-url](#43-post-apiv1osintinspect-url)
    - [4.4 POST /api/v1/osint/compare-accounts](#44-post-apiv1osintcompare-accounts)
+   - [4.5 GET /api/v1/osint/check-robots](#45-get-apiv1osintcheck-robots)
 5. [SPESIFIKASI MODUL & KOMPONEN FRONTEND](#5-spesifikasi-modul--komponen-frontend)
    - [5.1 Komponen HeaderBar](#51-komponen-headerbar)
    - [5.2 Komponen GeoBuzzerView (Tab 1: Peta, Sebaran Buzzer, Flight Lines & Timeframe)](#52-komponen-geobuzzerview-tab-1-peta-sebaran-buzzer-flight-lines--timeframe)
    - [5.3 Komponen OsintInlineView (Tab 2: Pelacak Medsos, GAN Detector & Sync Comparator)](#53-komponen-osintinlineview-tab-2-pelacak-medsos-gan-detector--sync-comparator)
    - [5.4 Komponen GuideModal (Buku Panduan)](#54-komponen-guidemodal-buku-panduan)
    - [5.5 Layanan API Klien (`services/api.js`)](#55-layanan-api-klien-servicesapijs)
+   - [5.6 Desain Responsif Multi-Device (Desktop, Tablet, Mobile/HP)](#56-desain-responsif-multi-device-desktop-tablet-mobilehp)
 6. [SEQUENCE DIAGRAM ALUR KERJA UTAMA](#6-sequence-diagram-alur-kerja-utama)
 7. [MANAJEMEN ENERGI, MEMORI & FALLBACK HANDLING](#7-manajemen-energi-memori--fallback-handling)
 
@@ -149,6 +152,27 @@ Sistem **whoiam** mengadopsi arsitektur terpisah (*Decoupled Client-Server Monor
     - Menghitung indeks kesamaan leksikal Jaccard, selisih waktu unggah (*temporal delta seconds*), kedekatan subnet menara BTS, dan kesamaan *device fingerprint*.
     - Menghasilkan skor sinkronisasi gabungan (0–100%) dan vonis apakah akun dikendalikan oleh operator tunggal.
 
+### 3.3 BotEngine & HoaxEngine (XAI & Bot Score)
+* **File Lokasi**: `backend/app/core/bot_engine.py` & `backend/app/core/hoax_engine.py`
+* **BotEngine**:
+  - Menghitung *Unified Bot Score* $S_{\text{bot}} = 0.30 \times S_{\text{entropy}} + 0.35 \times S_{\text{temporal}} + 0.35 \times S_{\text{jaccard}}$.
+  - Klasifikasi level probabilitas bot (`BOTNET HIGH`, `SUSPICIOUS`, `ORGANIC`).
+* **HoaxEngine**:
+  - Klasifikasi 5 taksonomi misinformasi/disinformasi (Fabricated, Manipulated, False Context, Misleading, Satire).
+  - Ekstraksi token bukti (*evidence tokens*) dan penalaran transparan (*Explainable AI Rationale*).
+
+### 3.4 EthicalScraper & LiveBuzzerHarvester (Robots.txt & Dynamic Harvester)
+* **File Lokasi**: `backend/app/core/ethical_scraper.py` & `backend/app/core/live_buzzer_harvester.py`
+* **EthicalScraper**:
+  - `is_url_allowed_by_robots(url, user_agent="whoiam-ForensicBot/3.2")`: Parsing otomatis berkas `robots.txt` menggunakan `urllib.robotparser.RobotFileParser`.
+  - In-Memory TTL Cache (3600 detik) untuk parser robots.txt per host, meminimalkan request berlebih.
+  - Sanitasi Keamanan Anti-SSRF (`is_safe_public_url`): Memblokir IP privat (RFC 1918), loopback, link-local, dan link cloud metadata.
+  - Kebijakan Crawl-Delay & Politeness: Menghormati jeda penarikan konten sesuai regulasi domain.
+* **LiveBuzzerHarvester**:
+  - Mengambil berita daerah live dan diskusi publik per provinsi secara asinkron.
+  - Menghitung skor bot dinamis menggunakan `bot_engine` untuk postingan live.
+  - Membangun topologi graf SNA dinamis (koordinator vs amplifier vs warganet organik) berdasarkan konten teriklan.
+
 ---
 
 ## 4. SPESIFIKASI API BACKEND (REST & DATA CONTRACTS)
@@ -203,6 +227,22 @@ Mengembalikan:
 }
 ```
 
+### 4.5 `GET /api/v1/osint/check-robots`
+Parameter Query: `url` (contoh: `https://news.detik.com/berita/...`).
+Memeriksa direktif `robots.txt` domain target menggunakan `urllib.robotparser` dengan validasi Anti-SSRF.
+Mengembalikan:
+```json
+{
+  "url": "https://news.detik.com/berita/123",
+  "domain": "news.detik.com",
+  "allowed": true,
+  "crawl_delay": 1.0,
+  "user_agent": "whoiam-ForensicBot/3.2",
+  "is_safe_public_url": true,
+  "status": "ETHICAL_COMPLIANT"
+}
+```
+
 ---
 
 ## 5. SPESIFIKASI MODUL & KOMPONEN FRONTEND
@@ -228,7 +268,7 @@ Mengembalikan:
 * **Panel Kanan 3-Sub Tab**:
   - Sub-tab 1: SNA Wilayah (topologi interaksi koordinator vs bot farm).
   - Sub-tab 2: Berita Wilayah (live crawler Google News RSS Dewan Pers).
-  - Sub-tab 3: Scraping Medsos (postingan buzzer terdeteksi di provinsi).
+  - Sub-tab 3: Scraping Medsos (postingan buzzer terdeteksi di provinsi, dilengkapi badge `DATA ASLI (LIVE SCRAPED)` dan tautan sumber).
 
 ### 5.3 Komponen OsintInlineView (`frontend/src/components/OsintInlineView.js`)
 * **3 Sub-Tab Operasional**:
@@ -238,6 +278,7 @@ Mengembalikan:
     - Pilar 3: Graf Interkoneksi Lintas Medsos (Cross-Platform SNA).
     - Pilar 4: Deteksi Avatar AI / Wajah Sintetis (StyleGAN/Diffusion GAN Forensics, Pupil Symmetry, Artefak).
     - Pilar 5: Ekstraksi Topik & Awan Kata Kunci (Topic Cloud Badges dengan frekuensi & sentimen).
+    - Banner Kepatuhan Etika: Indikator hijau status audit `robots.txt` domain target.
   - `2. LACAK TAGAR / TREN`: Penarikan data cuitan live berdasarkan kata kunci/tagar.
   - `3. KOMPARASI 2 AKUN (SYNC COMPARATOR)`: Input URL Akun A dan Akun B secara berdampingan untuk menguji korelasi kepemilikan operator tunggal dengan visualisasi scorecard metrik forensik.
 
@@ -252,6 +293,12 @@ Mengembalikan:
   - `inspectOsintUrl(url)`
   - `compareAccounts(urlA, urlB)`
   - `searchOsintFeed(query, platform, limit, live)`
+  - `checkRobotsTxt(url)`
+
+### 5.6 Desain Responsif Multi-Device (Desktop, Tablet, Mobile/HP)
+* **Desktop (`> 1024px`)**: Tata letak War Room 100vh tanpa scrollbar ganda, kanvas visualisasi peta dan panel informasi 3 kolom berdampingan.
+* **Tablet (`769px - 1024px`)**: Grid adaptif 2 kolom, peta dan panel analitik ditata secara vertikal fleksibel (*split stack*).
+* **Smartphone / HP (`<= 768px`)**: Single-column layout penuh, bilah navigasi tab dapat digeser sentuh (*touch scrollable*), kartu ringkas KPI vertikal, peta responsif dengan rasio layar sentuh.
 
 ---
 

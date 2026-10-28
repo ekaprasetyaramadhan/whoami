@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: SCAF-WHOIAM-2026-003  
-**Versi**: 3.1.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: SCAF-WHOIAM-2026-004  
+**Versi**: 3.2.0  
+**Tanggal Rilis**: 28 Oktober 2026  
 **Status**: ACTIVE PRODUCTION BLUEPRINT  
 **Role Pengguna**: `user`  
 
@@ -52,7 +52,9 @@ e:\watax-player\
 │   ├── run.py                          # Launcher server Uvicorn (port 8000)
 │   ├── tests/                          # Pengujian otomatis unit tests (pytest)
 │   │   ├── __init__.py
-│   │   └── test_engines.py             # 5 unit tests validasi analytic engines
+│   │   ├── test_engines.py             # 5 unit tests validasi analytic engines
+│   │   ├── test_ethical_scraper.py     # 2 unit tests kepatuhan robots.txt & SSRF
+│   │   └── test_live_buzzer_harvester.py # 2 unit tests live buzzer harvesting & dynamic SNA
 │   └── app/                            # Paket aplikasi backend
 │       ├── __init__.py
 │       ├── config.py                   # Konfigurasi aplikasi (APP_NAME = "whoiam", port, host)
@@ -60,7 +62,7 @@ e:\watax-player\
 │       ├── api/                        # Router endpoint REST API
 │       │   ├── __init__.py
 │       │   ├── geo_buzzer_router.py    # UTAMA: 38 Provinsi, Ground Zero, Flight Lines, Geofix, News, SNA
-│       │   ├── osint_router.py         # UTAMA: URL Inspect, GAN Detector, Compare Accounts, Search
+│       │   ├── osint_router.py         # UTAMA: URL Inspect, GAN Detector, Compare Accounts, Search, Robots Audit
 │       │   ├── cib_router.py           # Kompatibilitas: Kluster botnet CIB
 │       │   ├── ews_router.py           # Kompatibilitas: Early Warning System status
 │       │   ├── hoax_router.py          # Kompatibilitas: XAI Hoax classification
@@ -72,11 +74,13 @@ e:\watax-player\
 │       │   ├── __init__.py
 │       │   ├── geo_buzzer_engine.py    # UTAMA: 38 Provinsi DB, Ground Zero, Flight Lines, BTS, News RSS
 │       │   ├── osint_engine.py         # UTAMA: URL Profiler, GAN Detector, Topic Cloud, Compare Accounts
+│       │   ├── ethical_scraper.py      # UTAMA: Ethical Scraper (urllib.robotparser, Anti-SSRF, TTL Cache)
+│       │   ├── live_buzzer_harvester.py # UTAMA: Live Regional News/Discussion Harvester & Dynamic SNA
 │       │   ├── bot_engine.py           # Unified Bot Index (Entropi, Sinkronisasi, Jaccard)
 │       │   ├── hoax_engine.py          # Explainable AI Rationale & 5 Taksonomi
 │       │   ├── sna_engine.py           # Algoritma analisis graf jaringan (NetworkX)
 │       │   ├── sentiment_engine.py     # Analisis polaritas sentimen & spektrum emosi
-│       │   ├── stream_bus.py           # Antrian event telemetri asinkron
+│       │   ├── stream_bus.py           # Antrian event telemetri asinkron (emit/subscribe)
 │       │   ├── ews_engine.py           # Engine moving average & z-score
 │       │   └── ws_manager.py           # Koneksi & broadcast WebSocket
 │       ├── data/                       # Dataset dan skenario simulasi

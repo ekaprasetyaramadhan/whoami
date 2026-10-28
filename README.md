@@ -8,7 +8,9 @@
 [![Vite](https://img.shields.io/badge/Vite-5.4%2B-646cff?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/ECharts-5.5%2B-aa344d?logo=apacheecharts&logoColor=white)](https://echarts.apache.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?logo=docker&logoColor=white)](https://www.docker.com/)
-[![Offline Ready](https://img.shields.io/badge/Architecture-100%25%20Offline%20Ready-00e5ff?logo=shield&logoColor=white)](#-desain-offline-ready--keamanan)
+[![CI/CD](https://img.shields.io/badge/GitHub%20Actions-Automated%20Deploy-2088ff?logo=githubactions&logoColor=white)](https://github.com/ekaprasetyaramadhan/whoami/actions)
+[![Production URL](https://img.shields.io/badge/Live%20Production-whoami.labados.my.id-10b981?logo=nginx&logoColor=white)](https://whoami.labados.my.id/)
+[![Ethical Scraping](https://img.shields.io/badge/Scraping-robots.txt%20Compliant-00e5ff?logo=shield&logoColor=white)](#-desain-offline-ready--keamanan)
 
 ---
 
@@ -19,7 +21,7 @@
 4. [Struktur File & Komponen](#-struktur-file--komponen)
 5. [Panduan Instalasi & Quick Start (1-Klik Run)](#-panduan-instalasi--quick-start)
 6. [Dokumentasi API Endpoint](#-dokumentasi-api-endpoint)
-7. [Desain Offline-Ready & Keamanan](#-desain-offline-ready--keamanan)
+7. [Ethical Scraping, Keamanan OWASP Top 10, & Responsivitas Multi-Device](#-desain-offline-ready--keamanan)
 
 ---
 
@@ -165,17 +167,31 @@ npm run dev
 
 | Endpoint | Method | Deskripsi |
 |---|:---:|---|
-| `/api/v1/geo/buzzer-distribution` | `GET` | Mengambil titik koordinat 76 buzzer, estimasi follower, level ancaman, dan platform. |
-| `/api/v1/geo/provinces-summary` | `GET` | Ringkasan statistik 38 provinsi (total buzzer, total reach, high risk count, narasi dominan). |
-| `/api/v1/geo/regional-news` | `GET` | Hasil crawling berita daerah terverifikasi Dewan Pers vs isu narasi medsos. |
-| `/api/v1/geo/social-feeds` | `GET` | Postingan medsos dengan penanda Ground Zero, waktu rilis presisi, dan geolokasi BTS. |
-| `/api/v1/geo/province-sna/{province}` | `GET` | Topologi graf SNA interkoneksi lintas medsos, botnet relay, dan klarifikasi resmi. |
-| `/api/v1/osint/inspect-url` | `POST` | Analisis komprehensif URL postingan/akun (bot score, geolokasi, timeline rilis, SNA). |
-| `/api/v1/osint/search-ingest` | `POST` | Penarikan data cuitan live berdasarkan tagar/kata kunci pencarian. |
+| `/api/v1/geo/buzzer-distribution` | `GET` | Mengambil persebaran buzzer (mendukung live ethical scraping per provinsi). |
+| `/api/v1/geo/provinces-summary` | `GET` | Ringkasan statistik 38 provinsi (total buzzer, total reach, high risk count). |
+| `/api/v1/geo/regional-news` | `GET` | Hasil crawling berita daerah live terverifikasi Dewan Pers vs isu narasi medsos. |
+| `/api/v1/geo/social-feeds` | `GET` | Postingan medsos live & baseline dengan penanda Ground Zero, waktu rilis, & BTS. |
+| `/api/v1/geo/province-sna/{province}` | `GET` | Topologi graf SNA interaksi dinamis buzzer vs botnet vs warganet organik. |
+| `/api/v1/geo/propagation-lines` | `GET` | Kurva animasi aliran propagasi transmisi isu dari Ground Zero ke provinsi lain. |
+| `/api/v1/osint/inspect-url` | `POST` | Analisis komprehensif URL medsos (bot index, hoax AI, geolokasi, audit robots.txt). |
+| `/api/v1/osint/search-ingest` | `POST` | Penarikan narasi & cuitan live berdasarkan tagar/kata kunci pencarian. |
+| `/api/v1/osint/check-robots` | `GET` | Audit instan kepatuhan robots.txt dan validasi Anti-SSRF pada domain/URL target. |
+| `/api/v1/osint/compare-accounts` | `POST` | Komparasi berdampingan 2 akun untuk membuktikan keterkaitan operator tunggal. |
 
 ---
 
-## 🛡️ DESAIN OFFLINE-READY & KEAMANAN
+## 🛡️ ETHICAL SCRAPING, KEAMANAN OWASP TOP 10, & RESPONSIVITAS
 
-1. **100% Offline Ready**: Seluruh pustaka JavaScript (Apache ECharts, FontAwesome), font IBM Plex / Space Grotesk, serta GeoJSON batas wilayah Indonesia telah disimpan secara lokal.
-2. **Kedaulatan & Kerahasiaan Data**: Pemrosesan analitik bot index, verifikasi fakta, dan pemetaan graf dijalankan secara on-premise tanpa ketergantungan pada API komersial eksternal.
+1. **Ethical Web Scraping (`robots.txt` Compliance)**:
+   - Menggunakan `ethical_scraper` berbasis `urllib.robotparser` untuk mematuhi direktif `User-agent`, `Disallow`, dan `Crawl-delay` pada setiap domain target.
+   - Dilengkapi *in-memory cache* (TTL 1 jam) agar tidak membebani server tujuan.
+2. **Hardening Keamanan OWASP Top 10**:
+   - **Anti-SSRF (Server-Side Request Forgery)**: Melarang akses ke IP privat (RFC 1918), loopback, link-local, dan cloud metadata (`169.254.169.254`).
+   - **Anti-XSS (Cross-Site Scripting)**: Sanitasi seluruh input dan respons dinamis via `escapeHtml()`.
+   - **Content Security Policy (CSP)** & Subresource Integrity (SRI) pada berkas HTML.
+   - **CORS Lockdown & Security Headers**: Strict-Origin-When-Cross-Origin, X-Content-Type-Options: nosniff, dan penyembunyian OpenAPI Swagger pada mode production.
+3. **Desain Responsif Multi-Device**:
+   - Layout adaptif untuk **Desktop (War Room 100vh)**, **Tablet (Split Stack & 2-Col KPI)**, dan **Smartphone / HP (Single Col, Touch Tab Swiping, Compact Cards)**.
+4. **CI/CD Otomatis & Dockerized VPS**:
+   - Terintegrasi penuh dengan GitHub Actions (`.github/workflows/deploy-vps.yml`) untuk deployment otomatis ke VPS Nginx Reverse Proxy ber-SSL Let's Encrypt di [https://whoami.labados.my.id/](https://whoami.labados.my.id/).
+

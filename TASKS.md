@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: TASKS-WHOIAM-2026-002  
-**Versi**: 3.0.0  
-**Tanggal Inisiasi**: 22 Oktober 2026 (Terakhir Diperbarui: 27 Oktober 2026)  
+**Nomor Dokumen**: TASKS-WHOIAM-2026-003  
+**Versi**: 3.2.0  
+**Tanggal Inisiasi**: 22 Oktober 2026 (Terakhir Diperbarui: 28 Oktober 2026)  
 **Status Proyek**: 100% IMPLEMENTED & VERIFIED  
 **Role Pengguna**: `user`  
 **Referensi**: [BRD.md](file:///e:/watax-player/BRD.md) | [PRD.md](file:///e:/watax-player/PRD.md) | [FSD.md](file:///e:/watax-player/FSD.md) | [SUBTASKS.md](file:///e:/watax-player/SUBTASKS.md) | [SCAFFOLDING.md](file:///e:/watax-player/SCAFFOLDING.md)  
@@ -27,7 +27,8 @@
 | **FASE 8** | Forensik Ground Zero (Datetime Release) & Geolokasi BTS | 4 | 4 | `COMPLETED` |
 | **FASE 9** | Pembersihan File Usang, Streamlined 2-Tab & Final QA | 5 | 5 | `COMPLETED` |
 | **FASE 10** | Fitur Forensik Lanjutan (Flight Lines, GAN & Comparator) | 5 | 5 | `COMPLETED` |
-| **TOTAL** | **10 FASE UTAMA** | **43** | **43** | **100% COMPLETED** |
+| **FASE 11** | Responsivitas Multi-Device, Ethical Scraping & Live VPS | 5 | 5 | `COMPLETED` |
+| **TOTAL** | **11 FASE UTAMA** | **48** | **48** | **100% COMPLETED** |
 
 ---
 
@@ -128,3 +129,14 @@
 - [x] **TASK-43 [P1] Ekstraksi Topik & Awan Kata Kunci (Topic Cloud Badges)**
   - Menampilkan entitas kata kunci dominan yang diamplifikasi akun target beserta frekuensi dan tingkat ancaman.
 
+### FASE 11: Responsivitas Multi-Device, Ethical Scraping & Live VPS
+- [x] **TASK-44 [P0] Tata Letak Responsif Lintas Desktop, Tablet, & Smartphone / HP**
+  - Implementasi media queries adaptif (`max-width: 1024px`, `768px`, `480px`) pada `warroom.css`, flex-wrapping bar kontrol, tab navigasi touch-scrollable, dan kartu KPI compact.
+- [x] **TASK-45 [P0] Engine Ethical Scraping & Kepatuhan robots.txt (urllib.robotparser & Politeness Cache)**
+  - Engine `ethical_scraper.py` untuk parsing direktif User-agent, Disallow, dan Crawl-delay dengan in-memory cache TTL 3600 detik.
+- [x] **TASK-46 [P0] Live Regional Buzzer Harvester & Dynamic SNA Generation**
+  - Engine `live_buzzer_harvester.py` untuk mengumpulkan konten regional live secara asinkron, menghitung skor bot dinamis, dan merender graf SNA dinamis.
+- [x] **TASK-47 [P0] Validasi Keamanan Anti-SSRF & Endpoint Audit Robots.txt (`/check-robots`)**
+  - Pencegahan SSRF (RFC 1918, link-local, loopback, cloud metadata), serta penyediaan endpoint instan audit `robots.txt` untuk verifikasi pengguna.
+- [x] **TASK-48 [P0] Integrasi CI/CD GitHub Actions & Deployment Live VPS Docker Nginx SSL**
+  - Workflow `.github/workflows/deploy-vps.yml` otomatis deploy ke server produksi live di `https://whoami.labados.my.id/`.

@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: PRD-WHOIAM-2026-002  
-**Versi**: 3.0.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: PRD-WHOIAM-2026-003  
+**Versi**: 3.2.0  
+**Tanggal Rilis**: 28 Oktober 2026  
 **Status**: APPROVED & PRODUCTION READY  
 **Target Pengguna**: Analis Intelijen Media Sosial, Tim Forensik Siber, Pemeriksa Fakta & Penyelidik OSINT  
 **Role Pengguna**: `user`  
@@ -43,7 +43,8 @@
 3. **Forensic Geolocation Radar**: Setiap akun mencurigakan dilacak hingga koordinat lintang/bujur (Latitude/Longitude), menara pemancar BTS, dan penyedia layanan internet (ISP), serta dapat difokuskan langsung ke peta melalui tombol aksi interaktif.
 4. **Cross-Platform Interconnection**: Menganalisis penyebaran narasi lintas platform (X/Twitter, Instagram, Facebook, TikTok, Bot Farms) dalam sebuah Social Network Analysis (SNA) interkoneksi.
 5. **Streamlined 2-Tab User Experience**: Menghilangkan modal popup yang bertumpuk dan terminologi militer yang membingungkan. Antarmuka disederhanakan menjadi 2 ruang kerja operasional: `PETA & SEBARAN BUZZER` dan `PELACAK AKUN MEDSOS`.
-6. **Independence & Zero API Cost**: Beroperasi secara mandiri tanpa memerlukan lisensi API berbayar yang mahal, memanfaatkan protokol publik oEmbed dan generator telemetri forensik deterministik.
+6. **Independence & Ethical Scraping**: Beroperasi secara mandiri mematuhi regulasi `robots.txt` domain target (politeness delay & in-memory cache) dengan pengamanan Anti-SSRF.
+7. **Multi-Device Responsiveness**: Pengalaman visual optimal di layar Desktop (100vh War Room), Tablet (2-kolom split stack), hingga Smartphone / HP (single kolom dengan touch swipe).
 
 ---
 
@@ -76,6 +77,8 @@
 | **Geolokasi & Menara BTS** | Informasi presisi koordinat GPS, BTS sektor, ISP, dan link flyTo peta | `P0` | Tab 1 & Tab 2 |
 | **Cross-Platform SNA** | Graf interaktif relasi antar platform (X, Instagram, Facebook, TikTok) | `P0` | Tab 1 & Tab 2 |
 | **OSINT URL Profiler** | Analisis instan tautan medsos tanpa popup modal | `P0` | Tab 2: `OsintInlineView` |
+| **Ethical Scraper & Robots.txt** | Validasi kepatuhan crawling etis dan indikator domain hijau | `P0` | Tab 1 & Tab 2 |
+| **Responsif Multi-Device** | Adaptasi layout mulus Desktop, Tablet, dan Mobile/HP | `P0` | Global (`warroom.css`) |
 | **Pemantau Berita Daerah** | Aliran berita resmi daerah terverifikasi per provinsi terpilih | `P1` | Tab 1: Kolom Informasi |
 | **Postingan Medsos Provinsi** | Cuplikan status dan sentimen medsos aktif di provinsi terpilih | `P1` | Tab 1: Kolom Informasi |
 | **Buku Panduan Sistem** | Modal panduan operasional sistem lengkap dan mudah dipahami | `P2` | Modal: `GuideModal` |

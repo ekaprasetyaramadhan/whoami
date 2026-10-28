@@ -4,9 +4,9 @@
 
 ---
 
-**Nomor Dokumen**: SUBTASKS-WHOIAM-2026-002  
-**Versi**: 3.0.0  
-**Tanggal Inisiasi**: 22 Oktober 2026 (Terakhir Diperbarui: 27 Oktober 2026)  
+**Nomor Dokumen**: SUBTASKS-WHOIAM-2026-003  
+**Versi**: 3.2.0  
+**Tanggal Inisiasi**: 22 Oktober 2026 (Terakhir Diperbarui: 28 Oktober 2026)  
 **Status**: 100% EXECUTED & VERIFIED  
 **Role**: `user`  
 **Referensi Induk**: [TASKS.md](file:///e:/watax-player/TASKS.md)  
@@ -113,4 +113,17 @@
 - [x] **SUBTASK-42.1**: Implementasikan engine komparasi korelasi 2 akun di `osint_engine.py` (Jaccard similarity, temporal gap delta, BTS proximity, single operator verdict).
 - [x] **SUBTASK-42.2**: Bangun Sub-Tab 3 (*Side-by-Side Synchronicity Comparator*) di `OsintInlineView.js` dengan preset testing dan scorecard komparasi.
 - [x] **SUBTASK-43.1**: Kembangkan ekstraksi topik dan awan kata kunci (`topic_cloud`) di `osint_engine.py` dan render badge frekuensi di `OsintInlineView.js`.
+
+---
+
+### FASE 11: Responsivitas Multi-Device, Ethical Scraping & Live VPS
+- [x] **SUBTASK-44.1**: Terapkan media queries adaptif breakpoint (`max-width: 1024px`, `768px`, `480px`) di `warroom.css`.
+- [x] **SUBTASK-44.2**: Atur navigasi tab horizontal touch-scrollable dan stack vertikal fleksibel untuk mobile di `HeaderBar.js` dan `OsintInlineView.js`.
+- [x] **SUBTASK-45.1**: Bangun modul `ethical_scraper.py` dengan parser `urllib.robotparser.RobotFileParser` dan in-memory cache TTL 3600 detik.
+- [x] **SUBTASK-45.2**: Terapkan User-Agent `whoiam-ForensicBot/3.2` dan kepatuhan politeness crawl-delay.
+- [x] **SUBTASK-46.1**: Bangun engine `live_buzzer_harvester.py` untuk penarikan konten berita/diskusi regional live dan evaluasi `bot_engine` dinamis.
+- [x] **SUBTASK-46.2**: Rancang topologi graf SNA dinamis berdasarkan entitas live dan integrasikan ke endpoint `/api/v1/geo/province-sna/{province}`.
+- [x] **SUBTASK-47.1**: Implementasikan validasi Anti-SSRF (`is_safe_public_url`) untuk mencegah akses ke RFC 1918, link-local, loopback, dan cloud metadata.
+- [x] **SUBTASK-47.2**: Buat endpoint `GET /api/v1/osint/check-robots` dan tampilkan banner audit `robots.txt` pada UI forensik.
+- [x] **SUBTASK-48.1**: Konfigurasikan GitHub Actions workflow `.github/workflows/deploy-vps.yml` dan deploy ke VPS live di `https://whoami.labados.my.id/`.
 
