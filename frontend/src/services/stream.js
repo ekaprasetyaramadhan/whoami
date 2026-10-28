@@ -9,7 +9,19 @@ class StreamService {
   constructor() {
     this.ws = null;
     this.reconnectTimer = null;
-    this.url = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/telemetry';
+
+    const customWs = import.meta.env.VITE_WS_URL;
+    const customApi = import.meta.env.VITE_API_URL;
+
+    if (customWs) {
+      this.url = customWs;
+    } else if (customApi) {
+      const wsProtocol = customApi.startsWith('https') ? 'wss://' : 'ws://';
+      const cleanHost = customApi.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+      this.url = `${wsProtocol}${cleanHost}/ws/telemetry`;
+    } else {
+      this.url = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/telemetry';
+    }
   }
 
   connect() {
