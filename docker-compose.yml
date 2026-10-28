@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: whoiam-platform
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       - APP_ENV=production
       - HOST=0.0.0.0
