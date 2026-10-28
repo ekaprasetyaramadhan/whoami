@@ -30,6 +30,7 @@ class StreamService {
 
       this.ws.onopen = () => {
         console.log('[whoiam STREAM] Terhubung ke WebSocket Telemetri Backend');
+        window.dispatchEvent(new CustomEvent('whoiam:ws_status', { detail: { connected: true } }));
         if (this.reconnectTimer) {
           clearTimeout(this.reconnectTimer);
           this.reconnectTimer = null;
@@ -47,15 +48,18 @@ class StreamService {
 
       this.ws.onclose = () => {
         console.warn('[whoiam STREAM] Koneksi terputus. Menghubungkan kembali dalam 3 detik...');
+        window.dispatchEvent(new CustomEvent('whoiam:ws_status', { detail: { connected: false } }));
         this.scheduleReconnect();
       };
 
       this.ws.onerror = (err) => {
         console.error('[whoiam STREAM] Kesalahan WebSocket:', err);
+        window.dispatchEvent(new CustomEvent('whoiam:ws_status', { detail: { connected: false } }));
         this.ws.close();
       };
     } catch (e) {
       console.warn('[whoiam STREAM] Gagal inisiasi WebSocket:', e);
+      window.dispatchEvent(new CustomEvent('whoiam:ws_status', { detail: { connected: false } }));
       this.scheduleReconnect();
     }
   }
@@ -63,10 +67,13 @@ class StreamService {
   handlePacket(packet) {
     if (packet.event_type === 'NEW_TELEMETRY_POST') {
       CognitiveStore.addPost(packet.payload);
+      window.dispatchEvent(new CustomEvent('whoiam:new_post', { detail: packet.payload }));
     } else if (packet.event_type === 'DEFCON_ALERT_UPDATE') {
       CognitiveStore.setThreatLevel(packet.payload.threat_level, packet.payload.defcon);
+      window.dispatchEvent(new CustomEvent('whoiam:alert_update', { detail: packet.payload }));
     } else if (packet.event_type === 'TELEMETRY_REFRESH') {
       CognitiveStore.setEwsTelemetry(packet.payload);
+      window.dispatchEvent(new CustomEvent('whoiam:telemetry_refresh', { detail: packet.payload }));
     }
   }
 

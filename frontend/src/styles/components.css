@@ -368,4 +368,39 @@
   color: #050b14;
 }
 
+/* Floating Live Stream Notification Banner (Ide 2) */
+.floating-stream-banner {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96));
+  border: 1px solid var(--color-cyan);
+  box-shadow: 0 4px 16px rgba(0, 229, 255, 0.35);
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.72rem;
+  color: #fff;
+  cursor: pointer;
+  animation: bounceIn 0.35s ease;
+  z-index: 10;
+  margin-bottom: 8px;
+}
+
+.floating-stream-banner:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: #38bdf8;
+}
+
+@keyframes bounceIn {
+  0% { transform: translateY(-8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  0% { transform: translateY(-12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+
 

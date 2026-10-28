@@ -30,6 +30,8 @@ export class GeoBuzzerView {
     this.flightLinesData = [];
     this.showFlightLines = true;
     this.isMapRegistered = false;
+    this.pendingIncomingPosts = [];
+    this.autoStreamEnabled = false;
     this.init();
   }
 
@@ -172,13 +174,31 @@ export class GeoBuzzerView {
             </div>
 
             <!-- Tab Content 3: Scraping Feeds Medsos (X, IG, FB) -->
-            <div id="main-geo-tab-view-social" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <div style="font-size: 0.75rem; color: #fff; font-weight: 600;">
+            <div id="main-geo-tab-view-social" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px; position: relative;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 6px;">
+                <div style="font-size: 0.75rem; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-satellite-dish text-amber"></i> POSTINGAN BUZZER TERDETEKSI
                 </div>
-                <div id="main-geo-social-count-badge" class="tag-badge" style="font-size: 0.65rem;">0 POSTS</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label style="font-size: 0.65rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;" title="Otomatis masukkan postingan baru tanpa perlu klik banner">
+                    <input type="checkbox" id="chk-auto-stream-toggle" style="accent-color: var(--color-cyan); cursor: pointer;">
+                    Auto-Stream
+                  </label>
+                  <div id="main-geo-social-count-badge" class="tag-badge" style="font-size: 0.65rem;">0 POSTS</div>
+                </div>
               </div>
+
+              <!-- FLOATING BANNER NOTIFIKASI POSTINGAN BARU (IDE 2) -->
+              <div id="main-geo-new-posts-banner" class="floating-stream-banner" style="display: none;" title="Klik untuk menampilkan postingan terbaru">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span class="fa-solid fa-bolt" style="color: #f59e0b;"></span>
+                  <span id="main-geo-new-posts-text">⚡ 1 Postingan Baru Masuk</span>
+                </div>
+                <button id="main-btn-show-new-posts" class="btn-tactical cyan" style="padding: 2px 8px; font-size: 0.65rem; font-weight: 700;">
+                  TAMPILKAN ↑
+                </button>
+              </div>
+
               <div id="main-geo-social-feed-list" style="display: flex; flex-direction: column; gap: 10px;">
                 <!-- Diisi dinamis -->
               </div>
@@ -301,6 +321,32 @@ export class GeoBuzzerView {
     if (tabSnaBtn) tabSnaBtn.onclick = () => switchTab('sna');
     if (tabNewsBtn) tabNewsBtn.onclick = () => switchTab('news');
     if (tabSocialBtn) tabSocialBtn.onclick = () => switchTab('social');
+
+    // Auto-Stream Ingestion Toggle
+    const autoStreamChk = document.getElementById('chk-auto-stream-toggle');
+    if (autoStreamChk) {
+      autoStreamChk.onchange = (e) => {
+        this.autoStreamEnabled = e.target.checked;
+        if (this.autoStreamEnabled && this.pendingIncomingPosts.length > 0) {
+          this.flushPendingPosts();
+        }
+      };
+    }
+
+    // Show New Posts Button on Floating Banner
+    const showNewPostsBtn = document.getElementById('main-btn-show-new-posts');
+    if (showNewPostsBtn) {
+      showNewPostsBtn.onclick = () => {
+        this.flushPendingPosts();
+      };
+    }
+
+    // Ingestion WebSocket Event Listener
+    window.addEventListener('whoiam:new_post', (e) => {
+      if (e.detail) {
+        this.handleIncomingTelemetryPost(e.detail);
+      }
+    });
   }
 
   async loadAllData() {
@@ -885,87 +931,7 @@ export class GeoBuzzerView {
         `;
       }
 
-      const cardsHtml = feeds
-        .map((f) => {
-          const platformIcon =
-            f.platform === 'X'
-              ? 'fa-brands fa-x-twitter'
-              : f.platform === 'INSTAGRAM'
-              ? 'fa-brands fa-instagram text-purple'
-              : 'fa-brands fa-facebook text-cyan';
-
-          const threatColor = f.threat_level === 'HIGH' ? '#ef4444' : '#f59e0b';
-          const isGz = f.is_ground_zero;
-
-          return `
-          <div style="background: ${isGz ? 'rgba(245, 158, 11, 0.05)' : '#0f1622'}; border: 1px solid ${isGz ? '#f59e0b' : 'var(--color-border)'}; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
-                  <i class="${platformIcon}"></i>
-                </div>
-                <div>
-                  <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
-                    ${escapeHtml(f.author_name || f.author)} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle || f.handle)}</span>
-                    ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
-                    ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px;"><i class="fa-solid fa-satellite-dish"></i> DATA ASLI (LIVE SCRAPED)</span>' : ''}
-                  </div>
-                  <div style="font-size: 0.65rem; color: var(--color-text-muted);">
-                    ${escapeHtml(f.city || f.province)}, ${escapeHtml(f.province)} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
-                  </div>
-                </div>
-              </div>
-              <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem;">
-                BOT: ${f.bot_score}%
-              </span>
-            </div>
-
-            <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
-              <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
-                <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp)}
-              </span>
-              <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
-                ${escapeHtml(f.time_delta || f.time_delta_label || 'T+0m')}
-              </span>
-            </div>
-
-            <!-- Konten Postingan -->
-            <div style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-              ${escapeHtml(f.content)}
-            </div>
-
-            <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->
-            <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.25); border-radius: 4px; padding: 6px 8px; font-size: 0.66rem; display: flex; flex-direction: column; gap: 3px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--color-cyan); font-weight: 700;">
-                  <i class="fa-solid fa-location-dot"></i> KOORDINAT: ${f.geolocation?.latitude}, ${f.geolocation?.longitude}
-                </span>
-                <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: transparent; border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 1px 6px; border-radius: 3px; font-size: 0.6rem; cursor: pointer;">
-                  <i class="fa-solid fa-crosshairs"></i> Lihat di Peta
-                </button>
-              </div>
-              <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
-                <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || f.geolocation?.bts_tower || '-'}</div>
-                <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || f.geolocation?.network_type || '-'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
-              </div>
-            </div>
-
-            <!-- Footer Engagement & Tagar -->
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-              <span style="color: #38bdf8; font-weight: 600;">
-                ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
-              </span>
-              <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
-                <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares || f.retweets || 0}</span>
-                <span><i class="fa-regular fa-heart"></i> ${f.likes || 0}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        })
-        .join('');
-
+      const cardsHtml = feeds.map((f) => this.renderPostCardHtml(f, false)).join('');
       listContainer.innerHTML = gzBannerHtml + cardsHtml;
 
       // Bind listener ke tombol fokus peta
@@ -981,6 +947,220 @@ export class GeoBuzzerView {
     } catch (e) {
       console.warn('Gagal memuat feeds medsos:', e);
       listContainer.innerHTML = '<div style="color: #ef4444; font-size: 0.75rem;">Gagal memuat postingan medsos.</div>';
+    }
+  }
+
+  renderPostCardHtml(f, isNewLive = false) {
+    const platformIcon =
+      f.platform === 'X'
+        ? 'fa-brands fa-x-twitter'
+        : f.platform === 'INSTAGRAM'
+        ? 'fa-brands fa-instagram text-purple'
+        : 'fa-brands fa-facebook text-cyan';
+
+    const threatColor = f.threat_level === 'HIGH' ? '#ef4444' : '#f59e0b';
+    const isGz = f.is_ground_zero;
+    const highlightAnim = isNewLive ? 'animation: bounceIn 0.4s ease; border-color: var(--color-cyan) !important;' : '';
+
+    return `
+    <div class="geo-social-card" style="background: ${isGz ? 'rgba(245, 158, 11, 0.05)' : '#0f1622'}; border: 1px solid ${isGz ? '#f59e0b' : 'var(--color-border)'}; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; ${highlightAnim}">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+            <i class="${platformIcon}"></i>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
+              ${escapeHtml(f.author_name || f.author || 'Pengguna Medsos')} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle || f.handle || '@unknown')}</span>
+              ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
+              ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px;"><i class="fa-solid fa-satellite-dish"></i> DATA ASLI (LIVE SCRAPED)</span>' : ''}
+              ${isNewLive ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px; border-color:var(--color-cyan); color:var(--color-cyan);"><i class="fa-solid fa-bolt fa-fade"></i> LIVE TELEMETRI</span>' : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--color-text-muted);">
+              ${escapeHtml(f.city || f.province || 'Indonesia')}, ${escapeHtml(f.province || 'Wilayah')} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
+            </div>
+          </div>
+        </div>
+        <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem;">
+          BOT: ${f.bot_score || 0}%
+        </span>
+      </div>
+
+      <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
+        <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
+          <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp || 'Baru Saja')}
+        </span>
+        <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
+          ${escapeHtml(f.time_delta || f.time_delta_label || 'T+0m')}
+        </span>
+      </div>
+
+      <!-- Konten Postingan -->
+      <div style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
+        ${escapeHtml(f.content || '')}
+      </div>
+
+      <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->
+      <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.25); border-radius: 4px; padding: 6px 8px; font-size: 0.66rem; display: flex; flex-direction: column; gap: 3px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: var(--color-cyan); font-weight: 700;">
+            <i class="fa-solid fa-location-dot"></i> KOORDINAT: ${f.geolocation?.latitude ?? '-'}, ${f.geolocation?.longitude ?? '-'}
+          </span>
+          ${f.geolocation?.latitude ? `
+          <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: transparent; border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 1px 6px; border-radius: 3px; font-size: 0.6rem; cursor: pointer;">
+            <i class="fa-solid fa-crosshairs"></i> Lihat di Peta
+          </button>` : ''}
+        </div>
+        <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
+          <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || f.geolocation?.bts_tower || 'BTS Tower Regional'}</div>
+          <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || f.geolocation?.network_type || 'Mobile 4G/5G Network'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
+        </div>
+      </div>
+
+      <!-- Footer Engagement & Tagar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+        <span style="color: #38bdf8; font-weight: 600;">
+          ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
+        </span>
+        <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
+          <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares || f.retweets || 0}</span>
+          <span><i class="fa-regular fa-heart"></i> ${f.likes || 0}</span>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  handleIncomingTelemetryPost(post) {
+    if (!post) return;
+
+    // 1. Radar Map Pulse di provinsi/wilayah terkait
+    const targetProv = post.province || post.city;
+    if (targetProv) {
+      this.triggerMapPulse(targetProv);
+    }
+
+    // 2. Prepend langsung jika mode auto-stream aktif, atau tampung di banner jika manual
+    if (this.autoStreamEnabled) {
+      this.prependSocialPost(post, true);
+    } else {
+      this.pendingIncomingPosts.unshift(post);
+      this.updatePendingBanner();
+    }
+  }
+
+  updatePendingBanner() {
+    const banner = document.getElementById('main-geo-new-posts-banner');
+    const textEl = document.getElementById('main-geo-new-posts-text');
+    if (!banner || !textEl) return;
+
+    const count = this.pendingIncomingPosts.length;
+    if (count > 0) {
+      textEl.innerHTML = `⚡ <strong>${count} Postingan Baru Masuk</strong>`;
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  flushPendingPosts() {
+    if (this.pendingIncomingPosts.length === 0) return;
+    const postsToPrepend = [...this.pendingIncomingPosts].reverse();
+    this.pendingIncomingPosts = [];
+    this.updatePendingBanner();
+
+    postsToPrepend.forEach((p) => {
+      this.prependSocialPost(p, true);
+    });
+  }
+
+  prependSocialPost(post, isNewLive = false) {
+    const listContainer = document.getElementById('main-geo-social-feed-list');
+    if (!listContainer) return;
+
+    // Hapus placeholder teks jika ada
+    const emptyNotice = listContainer.querySelector('div[style*="text-align: center"]');
+    if (emptyNotice) {
+      emptyNotice.remove();
+    }
+
+    const tempWrapper = document.createElement('div');
+    tempWrapper.innerHTML = this.renderPostCardHtml(post, isNewLive).trim();
+    const cardEl = tempWrapper.firstElementChild;
+    if (!cardEl) return;
+
+    // Temukan apakah ada gzBanner di urutan pertama
+    const gzBanner = listContainer.querySelector('div[style*="PATIENT ZERO"]')?.parentElement;
+    if (gzBanner && gzBanner.nextSibling) {
+      listContainer.insertBefore(cardEl, gzBanner.nextSibling);
+    } else if (listContainer.firstChild) {
+      listContainer.insertBefore(cardEl, listContainer.firstChild);
+    } else {
+      listContainer.appendChild(cardEl);
+    }
+
+    // Bind listener tombol fokus peta pada card baru
+    const focusBtn = cardEl.querySelector('.btn-focus-map');
+    if (focusBtn) {
+      focusBtn.onclick = () => {
+        const lon = parseFloat(focusBtn.dataset.lon);
+        const lat = parseFloat(focusBtn.dataset.lat);
+        if (lon && lat) {
+          this.flyToLocation(lon, lat, 4.5);
+        }
+      };
+    }
+
+    // Update jumlah post badge
+    const countBadge = document.getElementById('main-geo-social-count-badge');
+    const existingCards = listContainer.querySelectorAll('.geo-social-card');
+    if (countBadge) {
+      countBadge.textContent = `${existingCards.length} POSTS TERKUTIP`;
+    }
+
+    // Batasi card agar tidak membuat browser lambat (max 40 cards)
+    if (existingCards.length > 40) {
+      const lastCard = existingCards[existingCards.length - 1];
+      if (lastCard) lastCard.remove();
+    }
+  }
+
+  triggerMapPulse(provinceName) {
+    if (!provinceName) return;
+
+    // Visual pulse pada brief bar di bawah peta
+    const briefBar = document.querySelector('.geo-brief-prov-bar');
+    if (briefBar) {
+      briefBar.style.boxShadow = '0 0 15px rgba(0, 229, 255, 0.8), inset 0 0 10px rgba(0, 229, 255, 0.3)';
+      briefBar.style.borderColor = 'var(--color-cyan)';
+      setTimeout(() => {
+        briefBar.style.boxShadow = '';
+        briefBar.style.borderColor = '';
+      }, 1400);
+    }
+
+    // Jika peta ECharts siap, temukan node buzzer terkait dan picu highlight sementara
+    if (this.mapChart && this.buzzerData && this.buzzerData.length > 0) {
+      const pUpper = provinceName.toUpperCase();
+      const targetIdx = this.buzzerData.findIndex(
+        (b) => (b.province && b.province.toUpperCase().includes(pUpper)) || (b.city && b.city.toUpperCase().includes(pUpper))
+      );
+
+      if (targetIdx !== -1) {
+        try {
+          this.mapChart.dispatchAction({
+            type: 'showTip',
+            seriesIndex: 0,
+            dataIndex: targetIdx
+          });
+          setTimeout(() => {
+            this.mapChart.dispatchAction({
+              type: 'hideTip'
+            });
+          }, 2000);
+        } catch (_) {}
+      }
     }
   }
 

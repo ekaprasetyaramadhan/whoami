@@ -28,7 +28,8 @@
 | **FASE 9** | Pembersihan File Usang, Streamlined 2-Tab & Final QA | 5 | 5 | `COMPLETED` |
 | **FASE 10** | Fitur Forensik Lanjutan (Flight Lines, GAN & Comparator) | 5 | 5 | `COMPLETED` |
 | **FASE 11** | Responsivitas Multi-Device, Ethical Scraping & Live VPS | 5 | 5 | `COMPLETED` |
-| **TOTAL** | **11 FASE UTAMA** | **48** | **48** | **100% COMPLETED** |
+| **FASE 12** | UI/UX User Journey & Real-time Telemetry Ingestion | 4 | 4 | `COMPLETED` |
+| **TOTAL** | **12 FASE UTAMA** | **52** | **52** | **100% COMPLETED** |
 
 ---
 
@@ -140,3 +141,13 @@
   - Pencegahan SSRF (RFC 1918, link-local, loopback, cloud metadata), serta penyediaan endpoint instan audit `robots.txt` untuk verifikasi pengguna.
 - [x] **TASK-48 [P0] Integrasi CI/CD GitHub Actions & Deployment Live VPS Docker Nginx SSL**
   - Workflow `.github/workflows/deploy-vps.yml` otomatis deploy ke server produksi live di `https://whoami.labados.my.id/`.
+
+### FASE 12: UI/UX User Journey & Real-time Telemetry Ingestion
+- [x] **TASK-49 [P0] Onboarding Tour Interaktif (`OnboardingModal.js`) & Tombol Tur Cepat**
+  - Carousel panduan 3 langkah bagi pengguna baru, indikator titik progress, penyimpanan status di `localStorage`, dan tombol pemicu manual `[ 💡 TUR 1 MENIT ]` pada bilah atas.
+- [x] **TASK-50 [P0] Breadcrumb Langkah, Preset Quick-Action Chips & Actionable Verdict Card**
+  - Breadcrumb navigasi 3 langkah analitis, preset URL kasus viral/asli satu kali klik (`⚡ Contoh Kasus Hoaks Viral`, `⚡ Contoh Akun Warganet Asli`), chip tagar instan (`#bansos`, `#pilkada`, `#gempa`), dan kartu vonis detil dengan rekomendasi tindakan nyata.
+- [x] **TASK-51 [P1] Glosarium Microcopy Sederhana & Contextual Tooltip Popovers `(?)`**
+  - Penjelasan bahasa awam pada 5 pilar forensik (Bot Score, Sintesis AI, Sinkronisasi Koordinasi, Forensik Geolokasi, Kepatuhan Etis), serta tooltip popover pada seluruh label kontrol.
+- [x] **TASK-52 [P0] Ingestion Aliran Data Telemetri Real-time via WebSocket, Floating Banner & Radar Pulse**
+  - Propagasi event real-time `StreamBus` -> `/ws/telemetry` -> frontend, bilah floating toast notifikasi (`#main-geo-new-posts-banner`), sakelar `Auto-Stream Ingestion`, dan efek radar map pulse pada peta wilayah saat data masuk.

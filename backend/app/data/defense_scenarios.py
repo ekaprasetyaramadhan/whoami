@@ -189,13 +189,25 @@ def generate_telemetry_post(forced_scenario=None, is_spike=False) -> dict:
         is_cib = template.get("is_cib", False)
         cluster_id = template.get("cluster_id")
 
+    sample_provinces = [
+        "DKI JAKARTA", "JAWA BARAT", "JAWA TENGAH", "JAWA TIMUR", 
+        "SUMATERA UTARA", "SULAWESI SELATAN", "BALI", "KALIMANTAN TIMUR", 
+        "BANTEN", "SUMATERA SELATAN", "PAPUA", "ACEH", "RIAU", "LAMPUNG"
+    ]
+    assigned_prov = random.choice(sample_provinces)
+
     return {
         "id": post_id,
-        "platform": random.choice(["TWITTER", "TIKTOK", "NEWS_PORTAL"]),
+        "platform": random.choice(["X", "INSTAGRAM", "THREADS", "FACEBOOK"]),
         "author_id": f"usr_{abs(hash(author_handle)) % 100000}",
         "author_handle": author_handle,
         "author_name": display_name,
         "content": template["text"],
+        "province": assigned_prov,
+        "city": assigned_prov.title(),
+        "date_time_release": now.strftime("%Y-%m-%d %H:%M:%S WIB"),
+        "time_delta": "T+0m",
+        "is_ground_zero": True if (is_cib and random.random() < 0.3) else False,
         "timestamp": now.strftime("%H:%M:%S"),
         "created_at": now.isoformat(),
         "bot_score": bot_score,
@@ -208,3 +220,4 @@ def generate_telemetry_post(forced_scenario=None, is_spike=False) -> dict:
         "shares": random.randint(0, 140) if is_cib else random.randint(2, 45),
         "likes": random.randint(1, 350)
     }
+
