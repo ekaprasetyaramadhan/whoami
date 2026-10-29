@@ -104,6 +104,19 @@ function initKomando() {
 
   // 7. Render Seluruh Ikon Lucide
   renderLucideIcons(document);
+
+  // 8. Global Resize Listener untuk refit responsif semua grafik
+  window.addEventListener('resize', () => {
+    if (dashboardInstance && typeof dashboardInstance.resize === 'function') {
+      dashboardInstance.resize();
+    }
+    if (petaSebaranInstance && typeof petaSebaranInstance.resize === 'function') {
+      petaSebaranInstance.resize();
+    }
+    if (pelacakAkunInstance && typeof pelacakAkunInstance.resize === 'function') {
+      pelacakAkunInstance.resize();
+    }
+  });
 }
 
 function bootstrap() {

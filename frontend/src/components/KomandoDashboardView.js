@@ -41,6 +41,8 @@ export class KomandoDashboardView {
     this.sovChart = null;
     this.genderChart = null;
     this.radarChart = null;
+    this.radarResizeObserver = null;
+    this.currentDefcon = 5;
 
     // State untuk Lower Section Cards
     this.selectedHashtagMetric = 'post'; // 'post' | 'engagement'
@@ -726,55 +728,109 @@ export class KomandoDashboardView {
         </div>
 
         <!-- ===================================================================
-             SECTION 8: TACTICAL DEFCON BAROMETER (RETAINED AT BOTTOM)
+             SECTION 8: TACTICAL DEFCON BAROMETER (EARLY WARNING SYSTEM)
              =================================================================== -->
-        <div class="komando-card" style="display: flex; flex-direction: column; gap: 12px; background: #ffffff; border-radius: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-            <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 0.95rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-shield-halved text-cyan"></i> Sistem Peringatan Dini Pertahanan Kognitif (Early Warning Barometer)
+        <div class="early-warning-card" id="card-early-warning-barometer">
+          <!-- Header Barometer -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 12px; background: rgba(2, 132, 199, 0.12); color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.05rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  Sistem Peringatan Dini Pertahanan Kognitif (Early Warning Barometer)
+                  <span id="ews-status-pill" style="font-size: 0.65rem; background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 2px 8px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.04em;">NORMAL MONITORING</span>
+                </div>
+                <div style="font-size: 0.72rem; color: #64748b;">
+                  Deteksi dini lonjakan anomali volume percakapan, eskalasi narasi polarisasi, dan pemetaan dinamika emosi publik
+                </div>
+              </div>
             </div>
-            <div style="display: flex; gap: 8px;">
-              <button id="btn-komando-inject-spike" class="btn-tactical" style="padding: 3px 10px; font-size: 0.68rem; border-color: var(--color-amber); color: var(--color-amber);">
-                <i class="fa-solid fa-bolt"></i> UJI LONJAKAN SPIKE
+
+            <!-- Action Controls -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <button id="btn-komando-inject-spike" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 0.72rem; font-weight: 700; font-family: var(--font-mono); border-radius: 10px; border: 1px solid #f59e0b; background: #fffbeb; color: #b45309; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(245, 158, 11, 0.1);" title="Uji ketahanan deteksi dini dengan simulasi lonjakan pesan">
+                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> UJI LONJAKAN SPIKE
               </button>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: center;">
-            <div>
-              <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 8px;">
-                Indeks DEFCON Komando Siber (Tingkat Kesiapsiagaan & Anomali Aliran Pesan)
+          <!-- Responsive Two-Column Grid -->
+          <div class="early-warning-grid">
+            
+            <!-- LEFT PANEL: INDEKS DEFCON & TELEMETRI -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; min-width: 0;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <span style="font-size: 0.76rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-gauge-high" style="color: #0284c7;"></i> Indeks DEFCON Komando Siber
+                  </span>
+                  <span style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Kesiapsiagaan & Aliran Pesan</span>
+                </div>
+
+                <!-- 5 DEFCON Scales (Clean, Responsive Grid) -->
+                <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; font-family: var(--font-mono); text-align: center;" id="komando-defcon-scale-container">
+                  <div class="defcon-scale-item" id="komando-scale-defcon-1" data-defcon="1" style="background: #ffffff; border: 1px solid #fca5a5; border-radius: 10px; padding: 8px 4px; color: #dc2626; cursor: pointer; transition: all 0.2s ease;" title="Klik untuk menguji DEFCON 1">
+                    <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.1;">DEFCON 1</div>
+                    <div style="font-size: 0.58rem; font-weight: 700; margin-top: 2px;">KRITIS</div>
+                  </div>
+                  <div class="defcon-scale-item" id="komando-scale-defcon-2" data-defcon="2" style="background: #ffffff; border: 1px solid #fdba74; border-radius: 10px; padding: 8px 4px; color: #ea580c; cursor: pointer; transition: all 0.2s ease;" title="Klik untuk menguji DEFCON 2">
+                    <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.1;">DEFCON 2</div>
+                    <div style="font-size: 0.58rem; font-weight: 700; margin-top: 2px;">BAHAYA</div>
+                  </div>
+                  <div class="defcon-scale-item" id="komando-scale-defcon-3" data-defcon="3" style="background: #ffffff; border: 1px solid #fcd34d; border-radius: 10px; padding: 8px 4px; color: #d97706; cursor: pointer; transition: all 0.2s ease;" title="Klik untuk menguji DEFCON 3">
+                    <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.1;">DEFCON 3</div>
+                    <div style="font-size: 0.58rem; font-weight: 700; margin-top: 2px;">WASPADA</div>
+                  </div>
+                  <div class="defcon-scale-item" id="komando-scale-defcon-4" data-defcon="4" style="background: #ffffff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 8px 4px; color: #2563eb; cursor: pointer; transition: all 0.2s ease;" title="Klik untuk menguji DEFCON 4">
+                    <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.1;">DEFCON 4</div>
+                    <div style="font-size: 0.58rem; font-weight: 700; margin-top: 2px;">SIAGA</div>
+                  </div>
+                  <div class="defcon-scale-item active-defcon" id="komando-scale-defcon-5" data-defcon="5" style="background: #ecfdf5; border: 2px solid #10b981; border-radius: 10px; padding: 8px 4px; color: #047857; font-weight: 800; box-shadow: 0 3px 10px rgba(16, 185, 129, 0.2); cursor: pointer; transition: all 0.2s ease;" title="DEFCON 5 Normal (Aktif)">
+                    <div style="font-size: 0.72rem; font-weight: 800; line-height: 1.1;">DEFCON 5</div>
+                    <div style="font-size: 0.58rem; font-weight: 700; margin-top: 2px;">NORMAL</div>
+                  </div>
+                </div>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; font-family: var(--font-mono); text-align: center; font-size: 0.68rem;">
-                <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 6px 2px; color: #b91c1c; font-weight: 700;">
-                  DEFCON 1<br><span style="font-size: 0.58rem; font-weight: 600;">KRITIS</span>
+
+              <!-- 3 Flexible Telemetry Micro-Cards -->
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 4px;">
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                  <span style="font-size: 0.65rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Velocity</span>
+                  <span style="font-size: 0.95rem; font-weight: 700; color: #0284c7; font-family: var(--font-mono);" id="komando-val-velocity">38 PPM</span>
+                  <span style="font-size: 0.58rem; color: #94a3b8;">Laju pesan/menit</span>
                 </div>
-                <div style="background: #fff7ed; border: 1px solid #fdba74; border-radius: 8px; padding: 6px 2px; color: #c2410c; font-weight: 700;">
-                  DEFCON 2<br><span style="font-size: 0.58rem; font-weight: 600;">BAHAYA</span>
+
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                  <span style="font-size: 0.65rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Z-Score</span>
+                  <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a; font-family: var(--font-mono);" id="komando-val-zscore">0.84σ</span>
+                  <span style="font-size: 0.58rem; color: #94a3b8;">Deviasi standar</span>
                 </div>
-                <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 6px 2px; color: #b45309; font-weight: 700;">
-                  DEFCON 3<br><span style="font-size: 0.58rem; font-weight: 600;">WASPADA</span>
+
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                  <span style="font-size: 0.65rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Polarisasi</span>
+                  <span style="font-size: 0.95rem; font-weight: 700; color: #d97706; font-family: var(--font-mono);" id="komando-val-polarisasi">28.5%</span>
+                  <span style="font-size: 0.58rem; color: #94a3b8;">Keterbelahan opini</span>
                 </div>
-                <div style="background: #eff6ff; border: 1px solid #93c5fd; border-radius: 8px; padding: 6px 2px; color: #1d4ed8; font-weight: 700;">
-                  DEFCON 4<br><span style="font-size: 0.58rem; font-weight: 600;">SIAGA</span>
-                </div>
-                <div style="background: rgba(16, 185, 129, 0.2); border: 2px solid var(--color-cyan); box-shadow: 0 0 10px rgba(0,229,255,0.4); border-radius: 4px; padding: 6px 2px; color: #10b981; font-weight: 700;">
-                  DEFCON 5<br><span style="font-size: 0.55rem; font-weight: normal;">NORMAL</span>
-                </div>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: #94a3b8; margin-top: 8px;">
-                <span>Velocity: <strong style="color: var(--color-cyan);" id="komando-val-velocity">38 PPM</strong></span>
-                <span>Z-Score: <strong style="color: #fff;" id="komando-val-zscore">0.84σ</strong></span>
-                <span>Polarisasi: <strong style="color: var(--color-amber);">28.5%</strong></span>
               </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <div style="font-size: 0.72rem; color: #94a3b8; align-self: flex-start;">
-                Spektrum Emosi Publik (4 Dimensi Analisis)
+            <!-- RIGHT PANEL: SPEKTRUM EMOSI PUBLIK -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.76rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-brain" style="color: #6366f1;"></i> Spektrum Emosi Publik
+                </span>
+                <span style="font-size: 0.65rem; background: #ede9fe; color: #6d28d9; padding: 2px 8px; border-radius: 9999px; font-weight: 600;">4 Dimensi Analisis</span>
               </div>
-              <div id="komando-radar-chart-container" style="width: 100%; height: 160px;"></div>
+
+              <!-- Radar Container with flexible width and robust padding -->
+              <div style="position: relative; width: 100%; height: 185px; min-height: 185px; display: flex; align-items: center; justify-content: center;">
+                <div id="komando-radar-chart-container" style="width: 100%; height: 185px; min-width: 220px;"></div>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -936,12 +992,14 @@ export class KomandoDashboardView {
       };
     }
 
-    // 2. DEFCON Spike Injection
+    // 2. DEFCON Spike Injection & Interactive Scale Bar
     const btnSpike = this.container.querySelector('#btn-komando-inject-spike');
     if (btnSpike) {
       btnSpike.onclick = async () => {
         btnSpike.disabled = true;
         btnSpike.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENYUNTIK...';
+        // Feedback visual langsung saat spike disuntikkan
+        this.setDefconLevel(1, { currentVelocity: 185, spikeIndex: 4.35, polarizationIndex: 78.5, emotionRadar: [85, 78, 14, 60] });
         try {
           await ApiService.injectSpike();
         } catch (e) {
@@ -949,11 +1007,25 @@ export class KomandoDashboardView {
         } finally {
           setTimeout(() => {
             btnSpike.disabled = false;
-            btnSpike.innerHTML = '<i class="fa-solid fa-bolt"></i> UJI LONJAKAN SPIKE';
-          }, 1000);
+            btnSpike.innerHTML = '<i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> UJI LONJAKAN SPIKE';
+          }, 1200);
         }
       };
     }
+
+    // Klik interaktif pada pill skala DEFCON
+    const defconPills = this.container.querySelectorAll('#komando-defcon-scale-container .defcon-scale-item');
+    defconPills.forEach((pill) => {
+      pill.onclick = () => {
+        const lvl = parseInt(pill.dataset.defcon, 10);
+        if (lvl) {
+          this.setDefconLevel(lvl);
+        }
+      };
+    });
+
+    // Subskripsi state global CognitiveStore untuk pembaruan telemetri EWS otomatis
+    this.subscribeToStore();
 
     // 3. Top Hashtags: Metric Switcher (Post vs Engagement)
     const hashtagSegBtns = this.container.querySelectorAll('#ctrl-hashtag-metric .dash-seg-btn');
@@ -2361,6 +2433,14 @@ export class KomandoDashboardView {
 
     const option = {
       backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: '#ffffff',
+        borderColor: '#e2e8f0',
+        textStyle: { color: '#0f172a', fontSize: 11 },
+        borderWidth: 1,
+        extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;'
+      },
       radar: {
         indicator: [
           { name: 'Kemarahan', max: 100 },
@@ -2368,12 +2448,26 @@ export class KomandoDashboardView {
           { name: 'Kepercayaan', max: 100 },
           { name: 'Antisipasi', max: 100 }
         ],
-        center: ['50%', '52%'],
-        radius: '68%',
+        center: ['50%', '50%'],
+        radius: '52%',
         splitNumber: 3,
-        axisName: { color: '#475569', fontSize: 9, fontWeight: 'bold' },
+        axisName: {
+          color: '#334155',
+          fontSize: 10,
+          fontWeight: 600,
+          padding: [3, 6],
+          borderRadius: 6,
+          backgroundColor: '#ffffff',
+          borderWidth: 1,
+          borderColor: '#e2e8f0'
+        },
         splitLine: { lineStyle: { color: '#e2e8f0' } },
-        splitArea: { show: false },
+        splitArea: {
+          show: true,
+          areaStyle: {
+            color: ['rgba(248, 250, 252, 0.8)', 'rgba(255, 255, 255, 0.8)']
+          }
+        },
         axisLine: { lineStyle: { color: '#cbd5e1' } }
       },
       series: [
@@ -2383,11 +2477,11 @@ export class KomandoDashboardView {
           data: [
             {
               value: [22, 18, 65, 30],
-              name: 'Emosi Publik',
-              symbolSize: 3,
-              itemStyle: { color: '#00e5ff' },
-              areaStyle: { color: 'rgba(0, 229, 255, 0.25)' },
-              lineStyle: { width: 1.5, color: '#00e5ff' }
+              name: 'Emosi Publik (%)',
+              symbolSize: 4,
+              itemStyle: { color: '#0284c7' },
+              areaStyle: { color: 'rgba(2, 132, 199, 0.2)' },
+              lineStyle: { width: 2, color: '#0284c7' }
             }
           ]
         }
@@ -2395,6 +2489,178 @@ export class KomandoDashboardView {
     };
 
     this.radarChart.setOption(option);
+
+    // Otomatis adaptasi ukuran radar jika container berubah dimensi
+    if (window.ResizeObserver && !this.radarResizeObserver) {
+      this.radarResizeObserver = new ResizeObserver(() => {
+        if (this.radarChart) {
+          this.radarChart.resize();
+        }
+      });
+      this.radarResizeObserver.observe(el);
+    }
+  }
+
+  /* =========================================================================
+     DEFCON LOGIC & STORE SUBSCRIPTION
+     ========================================================================= */
+  subscribeToStore() {
+    CognitiveStore.subscribe((state) => {
+      if (state && state.defcon !== undefined) {
+        this.setDefconLevel(state.defcon, state);
+      }
+    });
+  }
+
+  setDefconLevel(level, state = {}) {
+    const num = Math.min(5, Math.max(1, Number(level) || 5));
+    this.currentDefcon = num;
+
+    // 1. Highlight Visual Scale Pills
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById(`komando-scale-defcon-${i}`);
+      if (!el) continue;
+      if (i === num) {
+        el.classList.add('active-defcon');
+        if (i === 1) {
+          el.style.background = '#fef2f2';
+          el.style.border = '2px solid #ef4444';
+          el.style.boxShadow = '0 3px 10px rgba(239, 68, 68, 0.25)';
+          el.style.color = '#dc2626';
+          el.style.fontWeight = '800';
+        } else if (i === 2) {
+          el.style.background = '#fff7ed';
+          el.style.border = '2px solid #f97316';
+          el.style.boxShadow = '0 3px 10px rgba(249, 115, 22, 0.25)';
+          el.style.color = '#ea580c';
+          el.style.fontWeight = '800';
+        } else if (i === 3) {
+          el.style.background = '#fffbeb';
+          el.style.border = '2px solid #f59e0b';
+          el.style.boxShadow = '0 3px 10px rgba(245, 158, 11, 0.25)';
+          el.style.color = '#d97706';
+          el.style.fontWeight = '800';
+        } else if (i === 4) {
+          el.style.background = '#eff6ff';
+          el.style.border = '2px solid #3b82f6';
+          el.style.boxShadow = '0 3px 10px rgba(59, 130, 246, 0.25)';
+          el.style.color = '#2563eb';
+          el.style.fontWeight = '800';
+        } else {
+          el.style.background = '#ecfdf5';
+          el.style.border = '2px solid #10b981';
+          el.style.boxShadow = '0 3px 10px rgba(16, 185, 129, 0.25)';
+          el.style.color = '#047857';
+          el.style.fontWeight = '800';
+        }
+      } else {
+        el.classList.remove('active-defcon');
+        el.style.boxShadow = 'none';
+        el.style.fontWeight = 'normal';
+        if (i === 1) {
+          el.style.background = '#ffffff';
+          el.style.border = '1px solid #fca5a5';
+          el.style.color = '#dc2626';
+        } else if (i === 2) {
+          el.style.background = '#ffffff';
+          el.style.border = '1px solid #fdba74';
+          el.style.color = '#ea580c';
+        } else if (i === 3) {
+          el.style.background = '#ffffff';
+          el.style.border = '1px solid #fcd34d';
+          el.style.color = '#d97706';
+        } else if (i === 4) {
+          el.style.background = '#ffffff';
+          el.style.border = '1px solid #bfdbfe';
+          el.style.color = '#2563eb';
+        } else {
+          el.style.background = '#ffffff';
+          el.style.border = '1px solid #a7f3d0';
+          el.style.color = '#059669';
+        }
+      }
+    }
+
+    // 2. Update Header Status Pill
+    const pill = document.getElementById('ews-status-pill');
+    if (pill) {
+      if (num === 1) {
+        pill.textContent = 'DEFCON 1 — KRITIS';
+        pill.style.background = '#fef2f2';
+        pill.style.borderColor = '#fca5a5';
+        pill.style.color = '#b91c1c';
+      } else if (num === 2) {
+        pill.textContent = 'DEFCON 2 — BAHAYA';
+        pill.style.background = '#fff7ed';
+        pill.style.borderColor = '#fdba74';
+        pill.style.color = '#c2410c';
+      } else if (num === 3) {
+        pill.textContent = 'DEFCON 3 — WASPADA';
+        pill.style.background = '#fffbeb';
+        pill.style.borderColor = '#fcd34d';
+        pill.style.color = '#b45309';
+      } else if (num === 4) {
+        pill.textContent = 'DEFCON 4 — SIAGA';
+        pill.style.background = '#eff6ff';
+        pill.style.borderColor = '#bfdbfe';
+        pill.style.color = '#1d4ed8';
+      } else {
+        pill.textContent = 'DEFCON 5 — NORMAL MONITORING';
+        pill.style.background = '#ecfdf5';
+        pill.style.borderColor = '#a7f3d0';
+        pill.style.color = '#059669';
+      }
+    }
+
+    // 3. Update Metrics (Velocity, Z-Score, Polarisasi)
+    const velEl = document.getElementById('komando-val-velocity');
+    if (velEl) {
+      const v = state.currentVelocity !== undefined ? state.currentVelocity : (num === 1 ? 168 : (num === 2 ? 112 : (num === 3 ? 74 : (num === 4 ? 52 : 38))));
+      velEl.textContent = `${v} PPM`;
+      velEl.style.color = num <= 2 ? '#dc2626' : (num === 3 ? '#d97706' : '#0284c7');
+    }
+
+    const zEl = document.getElementById('komando-val-zscore');
+    if (zEl) {
+      const z = typeof state.spikeIndex === 'number' ? state.spikeIndex : (num === 1 ? 4.12 : (num === 2 ? 2.85 : (num === 3 ? 1.76 : (num === 4 ? 1.15 : 0.84))));
+      zEl.textContent = `${Number(z).toFixed(2)}σ`;
+      zEl.style.color = num <= 2 ? '#dc2626' : '#0f172a';
+    }
+
+    const polEl = document.getElementById('komando-val-polarisasi');
+    if (polEl) {
+      const p = state.polarizationIndex !== undefined ? state.polarizationIndex : (num === 1 ? 76.4 : (num === 2 ? 62.1 : (num === 3 ? 45.8 : (num === 4 ? 34.2 : 28.5))));
+      polEl.textContent = `${Number(p).toFixed(1)}%`;
+      polEl.style.color = num <= 2 ? '#dc2626' : '#d97706';
+    }
+
+    // 4. Update Radar Emosi sesuai tingkatan DEFCON
+    if (this.radarChart) {
+      let radarData = state.emotionRadar;
+      if (!radarData || !Array.isArray(radarData) || radarData.length < 4) {
+        if (num === 1) radarData = [85, 78, 14, 60];
+        else if (num === 2) radarData = [68, 60, 30, 48];
+        else if (num === 3) radarData = [45, 42, 50, 40];
+        else if (num === 4) radarData = [32, 28, 58, 35];
+        else radarData = [22, 18, 65, 30];
+      }
+      this.radarChart.setOption({
+        series: [
+          {
+            data: [
+              {
+                value: radarData,
+                name: 'Emosi Publik (%)',
+                symbolSize: 4,
+                itemStyle: { color: num <= 2 ? '#ef4444' : '#0284c7' },
+                areaStyle: { color: num <= 2 ? 'rgba(239, 68, 68, 0.25)' : 'rgba(2, 132, 199, 0.2)' },
+                lineStyle: { width: 2, color: num <= 2 ? '#ef4444' : '#0284c7' }
+              }
+            ]
+          }
+        ]
+      });
+    }
   }
 
   resize() {

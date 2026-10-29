@@ -1262,3 +1262,56 @@
 .badge-youtube { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 .badge-threads { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
 .badge-default { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+/* ==========================================================================
+   8. SECTION 8: EARLY WARNING BAROMETER & DEFCON
+   ========================================================================== */
+.early-warning-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 22px 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #0f172a;
+  width: 100%;
+}
+
+.early-warning-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.08);
+}
+
+.early-warning-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (max-width: 1080px) {
+  .early-warning-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+
+.defcon-scale-item {
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.defcon-scale-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.defcon-scale-item:active {
+  transform: translateY(0);
+}
+
