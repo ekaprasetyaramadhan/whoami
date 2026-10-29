@@ -29,7 +29,6 @@ export class Sidebar {
         <div class="sidebar-brand-box">
           <img src="/Komando.png" alt="Komando Logo" class="sidebar-logo-img" onerror="this.src='./Komando.png'" />
           <div class="sidebar-brand-text">
-            <div class="sidebar-brand-eyebrow">KOMANDO PLATFORM</div>
             <div class="sidebar-brand-title">KOMANDO</div>
             <div class="sidebar-brand-sub">
               KOMANDO MONITORING DAN<br>ANALISIS NARASI DIGITAL ONLINE

@@ -19,9 +19,6 @@ export class HeaderBar {
       <div class="brand-wrapper" style="display: flex; align-items: center; gap: 14px;">
         <img src="/Komando.png" alt="Logo Komando" style="height: 62px; width: 62px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.7)); flex-shrink: 0;">
         <div>
-          <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; color: #f59e0b; text-transform: uppercase;">
-            KOMANDO PLATFORM
-          </div>
           <div class="brand-title" style="font-size: 1.45rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; line-height: 1.05; margin: 1px 0 3px 0;">
             KOMANDO
           </div>
