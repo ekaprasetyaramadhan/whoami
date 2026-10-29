@@ -20,14 +20,6 @@ export class LoginView {
     this.container.innerHTML = `
       <div class="komando-login-wrapper">
         <div class="komando-login-card">
-          <!-- Tactical Top Status -->
-          <div class="login-tactical-header">
-            <span class="login-status-badge">
-              <span class="status-indicator-dot"></span>
-              KONEKSI SERVER: AKTIF
-            </span>
-            <span class="login-version-badge">v3.2.0 SECURE</span>
-          </div>
 
           <!-- Brand & Logo -->
           <div class="login-brand-section">
@@ -36,10 +28,6 @@ export class LoginView {
             </div>
             <h1 class="login-title">KOMANDO</h1>
             <p class="login-subtitle">KOMANDO MONITORING DAN ANALISIS NARASI DIGITAL ONLINE</p>
-            <div class="login-system-tag">
-              <i data-lucide="shield-alert" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i>
-              OTENTIKASI AKSES WAR ROOM
-            </div>
           </div>
 
           <!-- Error Alert Banner -->
@@ -51,49 +39,34 @@ export class LoginView {
           <!-- Login Form -->
           <form id="komando-login-form" class="login-form">
             <div class="login-input-group">
-              <label for="login-username" class="login-label">
-                <i data-lucide="user" style="width: 14px; height: 14px;"></i> USERNAME
-              </label>
-              <div class="input-with-icon">
-                <input 
-                  type="text" 
-                  id="login-username" 
-                  class="login-input" 
-                  placeholder="Masukkan username Anda" 
-                  autocomplete="username"
-                  required 
-                />
-              </div>
+              <label for="login-username" class="login-label">USERNAME</label>
+              <input 
+                type="text" 
+                id="login-username" 
+                class="login-input" 
+                placeholder="Masukkan username" 
+                autocomplete="username"
+                required 
+              />
             </div>
 
             <div class="login-input-group">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="login-password" class="login-label">
-                  <i data-lucide="key-round" style="width: 14px; height: 14px;"></i> PASSWORD
-                </label>
+                <label for="login-password" class="login-label">PASSWORD</label>
                 <button type="button" id="btn-toggle-password" class="login-text-btn" tabindex="-1">
                   <span id="toggle-pw-text">Lihat</span>
                 </button>
               </div>
-              <div class="input-with-icon">
-                <input 
-                  type="password" 
-                  id="login-password" 
-                  class="login-input" 
-                  placeholder="Masukkan password Anda" 
-                  autocomplete="current-password"
-                  required 
-                />
-              </div>
+              <input 
+                type="password" 
+                id="login-password" 
+                class="login-input" 
+                placeholder="Masukkan password" 
+                autocomplete="current-password"
+                required 
+              />
             </div>
 
-            <!-- Quick Fill Demo Account Button -->
-            <div class="login-quick-fill-box">
-              <button type="button" id="btn-quick-fill" class="quick-fill-btn">
-                <i data-lucide="clipboard-copy" style="width: 13px; height: 13px;"></i>
-                Gunakan Akun: <strong>komando1</strong>
-              </button>
-            </div>
 
             <!-- Submit Button -->
             <button type="submit" id="btn-login-submit" class="login-submit-btn">
@@ -104,11 +77,6 @@ export class LoginView {
             </button>
           </form>
 
-          <!-- Security Notice Footer -->
-          <div class="login-footer-notice">
-            <i data-lucide="lock" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle; color: #64748b;"></i>
-            <span>Sesi terenkripsi &bull; Seluruh aktivitas dicatat ke dalam log audit forensik.</span>
-          </div>
         </div>
       </div>
     `;
@@ -138,14 +106,6 @@ export class LoginView {
       };
     }
 
-    // Quick Fill Akun: komando1 / Komando2026!
-    if (quickFillBtn) {
-      quickFillBtn.onclick = () => {
-        if (usernameInput) usernameInput.value = 'komando1';
-        if (passwordInput) passwordInput.value = 'Komando2026!';
-        this.hideError();
-      };
-    }
 
     // Form Submit
     if (form) {
