@@ -118,7 +118,7 @@ export class KomandoDashboardView {
         <!-- ===================================================================
              SECTION 2: FOUR PRIMARY KPI STATISTIC CARDS
              =================================================================== -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+        <div class="kpi-summary-grid">
           
           <!-- Card 1: Total Conversations -->
           <div class="komando-card" style="border-top: 3px solid #2563eb;">
@@ -225,7 +225,7 @@ export class KomandoDashboardView {
         <!-- ===================================================================
              SECTION 3: TREND ANALYSIS & SHARE OF VOICE (INTACT)
              =================================================================== -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+        <div class="dash-analytics-row">
           
           <!-- Chart 1: Trend Analysis -->
           <div class="komando-card" style="display: flex; flex-direction: column; gap: 10px;">

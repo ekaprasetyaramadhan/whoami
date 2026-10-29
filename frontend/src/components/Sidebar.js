@@ -85,8 +85,42 @@ export class Sidebar {
       </aside>
     `;
 
+    this.ensureBackdrop();
     this.bindEvents();
     renderLucideIcons(this.container);
+  }
+
+  ensureBackdrop() {
+    let backdrop = document.getElementById('sidebar-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'sidebar-backdrop';
+      backdrop.className = 'sidebar-backdrop';
+      document.body.appendChild(backdrop);
+      backdrop.addEventListener('click', () => this.close());
+    }
+    this.backdrop = backdrop;
+  }
+
+  open() {
+    const aside = this.container.querySelector('.komando-sidebar');
+    if (aside) aside.classList.add('open');
+    if (this.backdrop) this.backdrop.classList.add('active');
+  }
+
+  close() {
+    const aside = this.container.querySelector('.komando-sidebar');
+    if (aside) aside.classList.remove('open');
+    if (this.backdrop) this.backdrop.classList.remove('active');
+  }
+
+  toggle() {
+    const aside = this.container.querySelector('.komando-sidebar');
+    if (aside && aside.classList.contains('open')) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
   updateUser(user) {
@@ -98,6 +132,11 @@ export class Sidebar {
   }
 
   bindEvents() {
+    // Listen for toggle event from TopBar
+    document.addEventListener('komando:toggle-sidebar', () => {
+      this.toggle();
+    });
+
     const items = this.container.querySelectorAll('.sidebar-nav-item');
     items.forEach((item) => {
       item.addEventListener('click', (e) => {
@@ -106,6 +145,10 @@ export class Sidebar {
         if (route && this.onNavigate) {
           this.setActiveRoute(route);
           this.onNavigate(route);
+          // Auto-close on mobile/tablet
+          if (window.innerWidth <= 1024) {
+            this.close();
+          }
         }
       });
     });

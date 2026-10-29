@@ -20,6 +20,11 @@ export class TopBar {
     this.container.innerHTML = `
       <header class="komando-topbar">
         <div class="topbar-left">
+          <!-- Mobile Hamburger Toggle -->
+          <button class="topbar-menu-toggle" id="btn-toggle-sidebar" title="Buka Menu Navigasi" aria-label="Toggle Navigation">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
           <div class="topbar-page-title" id="topbar-title">
             <span class="nav-icon" id="topbar-icon"><i data-lucide="layout-dashboard"></i></span>
             <span id="topbar-heading">Dashboard</span>
@@ -29,24 +34,24 @@ export class TopBar {
 
         <div class="topbar-right">
           <!-- Date Range Quick Filter -->
-          <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; padding: 3px 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <span style="font-size: 0.68rem; color: #64748b; font-weight: 600; padding: 0 4px;">
+          <div class="topbar-date-filter-box">
+            <span class="topbar-date-label">
               <i data-lucide="calendar" style="width: 13px; height: 13px; display: inline-block; vertical-align: middle;"></i> RENTANG:
             </span>
-            <button class="btn-tactical topbar-date-btn" data-range="24h" style="padding: 2px 8px; font-size: 0.65rem;">24 Jam</button>
-            <button class="btn-tactical topbar-date-btn active" data-range="7d" style="padding: 2px 8px; font-size: 0.65rem; color: #2563eb; border-color: #93c5fd; background: #eff6ff;">7 Hari</button>
-            <button class="btn-tactical topbar-date-btn" data-range="30d" style="padding: 2px 8px; font-size: 0.65rem;">30 Hari</button>
+            <button class="btn-tactical topbar-date-btn" data-range="24h">24 Jam</button>
+            <button class="btn-tactical topbar-date-btn active" data-range="7d">7 Hari</button>
+            <button class="btn-tactical topbar-date-btn" data-range="30d">30 Hari</button>
           </div>
 
           <!-- DEFCON Status Pill -->
-          <div id="topbar-defcon-pill" class="defcon-badge green" style="font-size: 0.68rem; padding: 4px 10px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 9999px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+          <div id="topbar-defcon-pill" class="defcon-badge green">
             <i class="fa-solid fa-shield-halved"></i>
             <span id="topbar-defcon-text">STATUS AMAN</span>
           </div>
 
           <!-- Guide / Bantuan Button -->
-          <button class="btn-tactical" id="btn-topbar-guide" style="padding: 5px 10px; font-size: 0.72rem;">
-            <i class="fa-solid fa-circle-question"></i> PANDUAN
+          <button class="btn-tactical topbar-guide-btn" id="btn-topbar-guide" title="Panduan Penggunaan">
+            <i class="fa-solid fa-circle-question"></i> <span class="guide-btn-text">PANDUAN</span>
           </button>
         </div>
       </header>
@@ -58,6 +63,13 @@ export class TopBar {
   }
 
   bindEvents() {
+    const toggleBtn = this.container.querySelector('#btn-toggle-sidebar');
+    if (toggleBtn) {
+      toggleBtn.onclick = () => {
+        document.dispatchEvent(new CustomEvent('komando:toggle-sidebar'));
+      };
+    }
+
     const dateBtns = this.container.querySelectorAll('.topbar-date-btn');
     dateBtns.forEach((btn) => {
       btn.onclick = () => {

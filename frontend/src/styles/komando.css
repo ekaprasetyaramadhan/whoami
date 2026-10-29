@@ -1621,4 +1621,341 @@
   gap: 6px;
 }
 
+/* ==========================================================================
+   10. RESPONSIVE DESIGN SYSTEM & MOBILE OFF-CANVAS DRAWER
+   Desktop (>= 1025px), Tablet (769px - 1024px), Mobile (<= 768px)
+   ========================================================================== */
+
+/* Mobile Backdrop Overlay */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 990;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+  pointer-events: none;
+}
+
+.sidebar-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* TopBar Hamburger Toggle */
+.topbar-menu-toggle {
+  display: none;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.topbar-menu-toggle:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.topbar-menu-toggle:active {
+  transform: translateY(0);
+}
+
+/* TopBar Components */
+.topbar-date-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f8fafc;
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.topbar-date-label {
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 600;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.topbar-date-btn {
+  padding: 2px 8px;
+  font-size: 0.65rem;
+}
+
+/* Dashboard Semantic Grid Utilities */
+.kpi-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+.dash-analytics-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Pelacak Akun Medsos Responsive Classes */
+.osint-search-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.osint-platform-select {
+  min-width: 140px;
+}
+
+.osint-query-wrap {
+  flex: 1;
+  min-width: 240px;
+}
+
+.osint-profile-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+}
+
+/* My Agent Cards Responsive Grid */
+.agent-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+/* Peta Sebaran Buzzer Tabs & Toolbars */
+.geo-main-tab-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.geo-main-tab-btn {
+  flex-shrink: 0;
+}
+
+.executive-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   TABLET BREAKPOINT: <= 1024px
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  /* Convert Sidebar to Off-Canvas Drawer */
+  .komando-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    height: 100vh !important;
+    transform: translateX(-100%);
+    z-index: 1000 !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .komando-sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  /* Show Hamburger in TopBar */
+  .topbar-menu-toggle {
+    display: inline-flex;
+  }
+
+  /* Make Main Viewport Full Width */
+  .komando-main {
+    width: 100vw !important;
+  }
+
+  /* Dashboard Adaptations */
+  .kpi-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-analytics-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-lower-card {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  /* OSINT Profil Grid */
+  .osint-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Executive KPI Bar */
+  .executive-kpi-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE BREAKPOINT: <= 768px
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .komando-topbar {
+    padding: 0 12px;
+    gap: 8px;
+    height: 52px;
+    min-height: 52px;
+  }
+
+  .topbar-page-title {
+    font-size: 0.96rem;
+  }
+
+  .topbar-page-sub {
+    display: none !important;
+  }
+
+  .topbar-date-label {
+    display: none;
+  }
+
+  .topbar-date-btn {
+    padding: 2px 6px;
+    font-size: 0.62rem;
+  }
+
+  .guide-btn-text {
+    display: none;
+  }
+
+  .topbar-guide-btn {
+    padding: 5px 8px;
+  }
+
+  /* 1 Column Stack for Metric Cards */
+  .kpi-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .executive-kpi-bar {
+    grid-template-columns: 1fr;
+  }
+
+  /* OSINT Search Row Full Width Stack */
+  .osint-search-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .osint-platform-select,
+  .osint-query-wrap,
+  .osint-submit-btn {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* My Agent Responsive Header & Grid */
+  .my-agent-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .my-agent-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .my-agent-actions button {
+    flex: 1;
+  }
+
+  .agent-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Geo Buzzer Toolbar */
+  .geo-control-toolbar {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  #main-geo-province-select {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Login Card Small Mobile */
+  .login-card {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    padding: 26px 20px !important;
+  }
+
+  .login-brand-title {
+    font-size: 1.6rem !important;
+  }
+
+  /* General Page Viewport Padding */
+  .komando-page-viewport {
+    padding: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   SMALL MOBILE BREAKPOINT: <= 480px
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 22px 16px !important;
+  }
+
+  #topbar-defcon-pill {
+    padding: 3px 6px;
+    font-size: 0.62rem;
+  }
+
+  #topbar-defcon-text {
+    display: none;
+  }
+
+  .sidebar-brand-box {
+    padding: 12px 14px;
+  }
+
+  .sidebar-logo-img {
+    width: 52px;
+    height: 52px;
+  }
+}
+
 

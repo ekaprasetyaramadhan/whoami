@@ -72,7 +72,7 @@ export class MyAgentView {
       <div style="display: flex; flex-direction: column; gap: 20px; padding: 20px; width: 100%; max-width: 1600px; margin: 0 auto;">
         
         <!-- Page Header & Action Button -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+        <div class="my-agent-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
           <div>
             <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.3rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 10px;">
               <i data-lucide="bot" style="color: var(--color-cyan, #00e5ff); width: 24px; height: 24px;"></i>
@@ -83,7 +83,7 @@ export class MyAgentView {
             </div>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="my-agent-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Disclaimer Simulator Badge -->
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 6px 12px; font-size: 0.68rem; color: #1e40af;">
               <i class="fa-solid fa-microchip"></i> Agent Environment: <strong>Standar Modular Terisolasi</strong>
@@ -114,7 +114,7 @@ export class MyAgentView {
         </div>
 
         <!-- Agent Cards Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px;" id="agent-cards-grid">
+        <div class="agent-cards-grid" id="agent-cards-grid">
           <!-- Render Cards Dinamis -->
         </div>
 

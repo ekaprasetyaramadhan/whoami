@@ -78,10 +78,10 @@ export class PelacakAkunMedsosView {
 
         <!-- Search Bar & Platform Selector Controls -->
         <div class="komando-card" style="display: flex; flex-direction: column; gap: 12px; background: #ffffff;">
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div class="osint-search-row">
             
             <!-- Platform Dropdown -->
-            <select id="osint-platform-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.78rem; padding: 8px 12px; border-radius: 6px; min-width: 140px;">
+            <select id="osint-platform-select" class="form-select osint-platform-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.78rem; padding: 8px 12px; border-radius: 6px;">
               <option value="ALL">Semua Platform</option>
               <option value="X" selected>𝕏 (Twitter)</option>
               <option value="TIKTOK">TikTok</option>
@@ -92,13 +92,13 @@ export class PelacakAkunMedsosView {
             </select>
 
             <!-- Input Query -->
-            <div style="flex: 1; position: relative; min-width: 260px;">
+            <div class="osint-query-wrap" style="position: relative;">
               <input type="text" id="osint-query-input" value="@daboriba_buzz" placeholder="Masukkan @username, nama profil, tagar (#28Oktober), atau URL akun..." class="tactical-input" style="padding-left: 36px; font-size: 0.82rem;" />
               <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 0.85rem;"></i>
             </div>
 
             <!-- Submit Button -->
-            <button id="btn-osint-submit" class="btn-tactical cyan" style="padding: 8px 18px; font-size: 0.78rem;">
+            <button id="btn-osint-submit" class="btn-tactical cyan osint-submit-btn" style="padding: 8px 18px; font-size: 0.78rem;">
               <i class="fa-solid fa-satellite-dish"></i> LACAK AKUN
             </button>
           </div>
@@ -133,7 +133,7 @@ export class PelacakAkunMedsosView {
         <div id="osint-result-container" style="display: flex; flex-direction: column; gap: 16px;">
           
           <!-- Top Row: Profile Card & Bot Score Meter -->
-          <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px;">
+          <div class="osint-profile-grid">
             
             <!-- Profile Identity Card -->
             <div class="komando-card" style="display: flex; flex-direction: column; gap: 14px;">
