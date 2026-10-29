@@ -26,6 +26,7 @@ from app.api.report_router import router as report_router
 from app.api.sim_router import router as sim_router
 from app.api.osint_router import router as osint_router
 from app.api.geo_buzzer_router import router as geo_buzzer_router
+from app.api.auth_router import router as auth_router
 
 async def on_new_telemetry_post(post: dict):
     """
@@ -93,6 +94,7 @@ app.include_router(report_router, prefix=API_PREFIX)
 app.include_router(sim_router, prefix=API_PREFIX)
 app.include_router(osint_router, prefix=API_PREFIX)
 app.include_router(geo_buzzer_router, prefix=API_PREFIX)
+app.include_router(auth_router, prefix=API_PREFIX)
 
 import os
 from fastapi.staticfiles import StaticFiles

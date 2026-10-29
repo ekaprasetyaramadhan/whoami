@@ -8,6 +8,7 @@
  */
 
 import { renderLucideIcons } from '../utils/icons.js';
+import { authService } from '../services/auth.js';
 
 export class Sidebar {
   constructor(containerId, onNavigate) {
@@ -19,6 +20,8 @@ export class Sidebar {
 
   init() {
     if (!this.container) return;
+
+    const user = authService.getUser() || { full_name: 'Operator Komando 1', role: 'user' };
 
     this.container.innerHTML = `
       <aside class="komando-sidebar">
@@ -69,8 +72,8 @@ export class Sidebar {
               <div class="sidebar-user-online-dot" title="Online Terverifikasi"></div>
             </div>
             <div style="flex: 1; overflow: hidden;">
-              <div class="sidebar-user-name">Analis Komando</div>
-              <div class="sidebar-user-role">KOMANDO OPERASIONAL</div>
+              <div class="sidebar-user-name" id="sidebar-display-name">${user.full_name || 'Operator Komando 1'}</div>
+              <div class="sidebar-user-role" id="sidebar-display-role">ROLE: ${(user.role || 'user').toUpperCase()}</div>
             </div>
           </div>
 
@@ -84,6 +87,14 @@ export class Sidebar {
 
     this.bindEvents();
     renderLucideIcons(this.container);
+  }
+
+  updateUser(user) {
+    if (!user) return;
+    const nameEl = this.container.querySelector('#sidebar-display-name');
+    const roleEl = this.container.querySelector('#sidebar-display-role');
+    if (nameEl) nameEl.textContent = user.full_name || 'Operator Komando 1';
+    if (roleEl) roleEl.textContent = `ROLE: ${(user.role || 'user').toUpperCase()}`;
   }
 
   bindEvents() {
@@ -101,10 +112,9 @@ export class Sidebar {
 
     const logoutBtn = this.container.querySelector('#btn-sidebar-logout');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if (confirm('Konfirmasi Log Out: Apakah Anda yakin ingin keluar dari Sesi Intelijen Komando?')) {
-          alert('Sesi berhasil ditutup dengan aman.');
-          window.location.hash = '#/dashboard';
+      logoutBtn.addEventListener('click', async () => {
+        if (confirm('Konfirmasi Log Out: Apakah Anda yakin ingin keluar dari Sesi Komando?')) {
+          await authService.logout();
         }
       });
     }

@@ -4,9 +4,11 @@
  */
 
 import { streamService } from './services/stream.js';
+import { authService } from './services/auth.js';
 import { Sidebar } from './components/Sidebar.js';
 import { TopBar } from './components/TopBar.js';
 import { GuideModal } from './components/GuideModal.js';
+import { LoginView } from './components/LoginView.js';
 import { KomandoDashboardView } from './components/KomandoDashboardView.js';
 import { GeoBuzzerView } from './components/GeoBuzzerView.js';
 import { PelacakAkunMedsosView } from './components/PelacakAkunMedsosView.js';
@@ -18,6 +20,7 @@ console.log('🛡️ Memulai KOMANDO: Komando Monitoring dan Analisis Narasi Dig
 
 let sidebarInstance = null;
 let topbarInstance = null;
+let loginInstance = null;
 let dashboardInstance = null;
 let petaSebaranInstance = null;
 let pelacakAkunInstance = null;
@@ -31,14 +34,29 @@ function initKomando() {
     guideBtn.onclick = () => guideModal.open();
   }
 
-  // 2. Inisialisasi 4 Halaman Utama
+  // 2. Inisialisasi Halaman Login
+  loginInstance = new LoginView('view-login', (user) => {
+    if (sidebarInstance) sidebarInstance.updateUser(user);
+    if (!streamService.ws) {
+      streamService.connect();
+    }
+    if (window.router) {
+      window.router.navigate('/dashboard', {}, true);
+    }
+  });
+
+  // 3. Inisialisasi 4 Halaman Utama
   dashboardInstance = new KomandoDashboardView('view-dashboard');
   petaSebaranInstance = new GeoBuzzerView('view-peta-sebaran');
   pelacakAkunInstance = new PelacakAkunMedsosView('view-pelacak-akun');
   myAgentInstance = new MyAgentView('view-my-agent');
 
-  // 3. Konfigurasi Client-Side Router
+  // 4. Konfigurasi Client-Side Router
   const router = new AppRouter({
+    '/login': () => {
+      const v = document.getElementById('view-login');
+      if (v) v.style.display = 'block';
+    },
     '/dashboard': () => {
       const v = document.getElementById('view-dashboard');
       if (v) v.style.display = 'block';
@@ -99,8 +117,10 @@ function initKomando() {
   router.setComponents(sidebarInstance, topbarInstance);
   router.init();
 
-  // 6. Hubungkan WebSocket Telemetry Stream
-  streamService.connect();
+  // 6. Hubungkan WebSocket Telemetry Stream jika terautentikasi
+  if (authService.isAuthenticated()) {
+    streamService.connect();
+  }
 
   // 7. Render Seluruh Ikon Lucide
   renderLucideIcons(document);

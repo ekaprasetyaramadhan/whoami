@@ -1,13 +1,18 @@
-/**
- * API Client Service
- * Abstraksi pemanggilan REST endpoint backend
- */
+import { authService } from './auth.js';
 
 const API_BASE = '/api/v1';
 
+function authHeaders(custom = {}) {
+  const token = authService.getToken();
+  return {
+    ...custom,
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+}
+
 export const ApiService = {
   async getEwsTelemetry() {
-    const res = await fetch(`${API_BASE}/ews/telemetry`);
+    const res = await fetch(`${API_BASE}/ews/telemetry`, { headers: authHeaders() });
     return await res.json();
   },
 
