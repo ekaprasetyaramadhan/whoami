@@ -17,8 +17,8 @@
    1. SIDEBAR NAVIGATION - ENTERPRISE EXECUTIVE CLEAN WHITE
    ========================================================================== */
 .komando-sidebar {
-  width: 280px;
-  min-width: 280px;
+  width: 240px;
+  min-width: 240px;
   height: 100vh;
   background: #ffffff;
   border-right: 1px solid #e2e8f0;
@@ -34,19 +34,19 @@
 }
 
 .sidebar-brand-box {
-  padding: 16px 16px 16px 16px;
+  padding: 14px 12px 14px 14px;
   border-bottom: 1px solid #e2e8f0;
   background: #ffffff;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   position: relative;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-logo-img {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   flex-shrink: 0;
   transition: all 0.25s ease;
@@ -55,15 +55,15 @@
 .sidebar-brand-text {
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  max-width: 180px;
+  width: 150px;
+  max-width: 150px;
   overflow: hidden;
   transition: opacity 0.2s ease;
 }
 
 .sidebar-brand-title {
   font-family: var(--font-display, "Space Grotesk", sans-serif);
-  font-size: 1.62rem;
+  font-size: 1.54rem;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: 0.05em;
@@ -78,8 +78,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 3px;
-  margin-top: 4px;
+  gap: 2.5px;
+  margin-top: 3.5px;
 }
 
 .brand-sub-line {
@@ -88,7 +88,7 @@
   align-items: center;
   width: 100%;
   font-family: var(--font-sans, "IBM Plex Sans", sans-serif);
-  font-size: 0.52rem;
+  font-size: 0.50rem;
   font-weight: 700;
   color: #64748b;
   letter-spacing: 0.01em;
@@ -1987,7 +1987,7 @@
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    width: 280px !important;
+    width: 240px !important;
     height: 100vh !important;
     transform: translateX(-100%);
     z-index: 1000 !important;

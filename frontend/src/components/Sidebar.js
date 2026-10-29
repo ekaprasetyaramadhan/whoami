@@ -48,6 +48,8 @@ export class Sidebar {
               <div class="brand-sub-line">
                 <span>ANALISIS</span>
                 <span>NARASI</span>
+              </div>
+              <div class="brand-sub-line">
                 <span>DIGITAL</span>
                 <span>ONLINE</span>
               </div>
