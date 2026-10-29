@@ -34,6 +34,11 @@ export class Sidebar {
 
     this.container.innerHTML = `
       <aside class="komando-sidebar ${this.isCollapsed ? 'collapsed' : ''}" id="komando-sidebar">
+        <!-- Sidebar Edge Toggle Handle on Border (Image 1 side arrow style) -->
+        <button class="sidebar-edge-toggle" id="btn-sidebar-edge-toggle" title="${this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar'}" aria-label="Toggle Sidebar">
+          <i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>
+        </button>
+
         <!-- Logo & Branding -->
         <div class="sidebar-brand-box">
           <img src="/Komando.png" alt="Komando Logo" class="sidebar-logo-img" onerror="this.src='./Komando.png'" />
@@ -53,10 +58,6 @@ export class Sidebar {
               </div>
             </div>
           </div>
-          <!-- Collapse Toggle Button (Collapsible Sidebar) -->
-          <button class="sidebar-collapse-btn" id="btn-sidebar-collapse" title="${this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar'}" aria-label="Toggle Sidebar Collapse">
-            <i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>
-          </button>
         </div>
 
         <!-- 4 Primary Navigation Items (Exact Required Order) -->
@@ -117,7 +118,7 @@ export class Sidebar {
     localStorage.setItem('komando_sidebar_collapsed', this.isCollapsed ? 'true' : 'false');
 
     const aside = this.container.querySelector('.komando-sidebar');
-    const collapseBtn = this.container.querySelector('#btn-sidebar-collapse');
+    const edgeToggleBtn = this.container.querySelector('#btn-sidebar-edge-toggle');
     const appLayout = document.getElementById('app-layout');
 
     if (aside) {
@@ -136,10 +137,10 @@ export class Sidebar {
       }
     }
 
-    if (collapseBtn) {
-      collapseBtn.setAttribute('title', this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar');
-      collapseBtn.innerHTML = `<i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>`;
-      renderLucideIcons(collapseBtn);
+    if (edgeToggleBtn) {
+      edgeToggleBtn.setAttribute('title', this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar');
+      edgeToggleBtn.innerHTML = `<i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>`;
+      renderLucideIcons(edgeToggleBtn);
     }
 
     // Trigger visual resize on charts (ECharts & containers)
@@ -199,9 +200,9 @@ export class Sidebar {
       this.toggle();
     });
 
-    const collapseBtn = this.container.querySelector('#btn-sidebar-collapse');
-    if (collapseBtn) {
-      collapseBtn.addEventListener('click', (e) => {
+    const edgeToggleBtn = this.container.querySelector('#btn-sidebar-edge-toggle');
+    if (edgeToggleBtn) {
+      edgeToggleBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         this.toggleCollapse();

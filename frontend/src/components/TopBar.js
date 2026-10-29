@@ -20,9 +20,14 @@ export class TopBar {
     this.container.innerHTML = `
       <header class="komando-topbar">
         <div class="topbar-left">
-          <!-- Mobile Hamburger Toggle -->
-          <button class="topbar-menu-toggle" id="btn-toggle-sidebar" title="Buka Menu Navigasi" aria-label="Toggle Navigation">
-            <i class="fa-solid fa-bars"></i>
+          <!-- Menu Toggle Button (Image 2 style) -->
+          <button class="topbar-menu-btn" id="btn-toggle-sidebar" title="Ciutkan / Buka Menu Navigasi" aria-label="Toggle Sidebar">
+            <span class="menu-icon-bars" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="menu-btn-text">Menu</span>
           </button>
 
           <div class="topbar-page-title" id="topbar-title">
