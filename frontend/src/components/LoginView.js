@@ -19,6 +19,9 @@ export class LoginView {
 
     this.container.innerHTML = `
       <div class="komando-login-wrapper">
+        <!-- Falling Binary 1010 Matrix Rain Canvas -->
+        <canvas id="login-binary-canvas" class="login-binary-canvas"></canvas>
+
         <div class="komando-login-card">
 
           <!-- Brand & Logo -->
@@ -82,6 +85,7 @@ export class LoginView {
     `;
 
     this.bindEvents();
+    this.startBinaryRain();
     renderLucideIcons(this.container);
   }
 
@@ -174,6 +178,89 @@ export class LoginView {
         <span>MASUK KE SISTEM</span>
       `;
       renderLucideIcons(btnContent);
+    }
+  }
+
+  startBinaryRain() {
+    this.stopBinaryRain();
+    const canvas = this.container.querySelector('#login-binary-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const fontSize = 15;
+    const columns = Math.floor(width / fontSize);
+    const drops = [];
+
+    // Inisialisasi posisi jatuh awal acak untuk setiap kolom
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.floor(Math.random() * -60);
+    }
+
+    const chars = ['0', '1'];
+    let lastTime = 0;
+    const fps = 32; // 32 FPS untuk pergerakan mulus dan hemat CPU
+    const interval = 1000 / fps;
+
+    const render = (time) => {
+      this.animationFrameId = requestAnimationFrame(render);
+
+      const delta = time - lastTime;
+      if (delta < interval) return;
+      lastTime = time - (delta % interval);
+
+      // Fade trail hitam-navy transparan untuk efek ekor bayangan
+      ctx.fillStyle = 'rgba(8, 13, 26, 0.085)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.font = `600 ${fontSize}px "IBM Plex Mono", monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        // Warna stabil cyan neon yang tenang dan elegan tanpa efek kedip-kedip
+        ctx.fillStyle = 'rgba(0, 229, 255, 0.55)';
+        ctx.shadowBlur = 0;
+        ctx.fillText(char, x, y);
+
+        // Jika tetesan melewati bawah layar, reset ke atas dengan jeda acak
+        if (y > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    };
+
+    this.animationFrameId = requestAnimationFrame(render);
+
+    this.onResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      const newCols = Math.floor(width / fontSize);
+      drops.length = 0;
+      for (let i = 0; i < newCols; i++) {
+        drops[i] = Math.floor(Math.random() * -60);
+      }
+    };
+
+    window.addEventListener('resize', this.onResize);
+  }
+
+  stopBinaryRain() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    if (this.onResize) {
+      window.removeEventListener('resize', this.onResize);
+      this.onResize = null;
     }
   }
 }

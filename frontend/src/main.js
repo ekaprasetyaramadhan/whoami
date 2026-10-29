@@ -56,8 +56,10 @@ function initKomando() {
     '/login': () => {
       const v = document.getElementById('view-login');
       if (v) v.style.display = 'block';
+      if (loginInstance) loginInstance.startBinaryRain();
     },
     '/dashboard': () => {
+      if (loginInstance) loginInstance.stopBinaryRain();
       const v = document.getElementById('view-dashboard');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
