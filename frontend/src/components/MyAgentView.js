@@ -76,7 +76,7 @@ export class MyAgentView {
           <div>
             <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.3rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 10px;">
               <i data-lucide="bot" style="color: var(--color-cyan, #00e5ff); width: 24px; height: 24px;"></i>
-              My Agent
+              Agen Saya
             </div>
 
           </div>
@@ -84,12 +84,12 @@ export class MyAgentView {
           <div class="my-agent-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Disclaimer Simulator Badge -->
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 6px 12px; font-size: 0.68rem; color: #1e40af;">
-              <i class="fa-solid fa-microchip"></i> Agent Environment: <strong>Standar Modular Terisolasi</strong>
+              <i class="fa-solid fa-microchip"></i> Lingkungan Agen: <strong>Standar Modular Terisolasi</strong>
             </div>
 
             <!-- Create Agent Button -->
             <button id="btn-create-agent-modal" class="btn-tactical cyan" style="padding: 8px 16px; font-size: 0.75rem;">
-              <i class="fa-solid fa-plus"></i> BUAT AGENT BARU
+              <i class="fa-solid fa-plus"></i> BUAT AGEN BARU
             </button>
           </div>
         </div>
@@ -99,7 +99,7 @@ export class MyAgentView {
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="font-size: 0.82rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
               <i class="fa-solid fa-spinner fa-spin text-cyan"></i>
-              <span id="agent-running-name">Menjalankan Agent...</span>
+              <span id="agent-running-name">Menjalankan Agen...</span>
             </div>
             <span class="tag-badge" style="border-color: var(--color-cyan); color: var(--color-cyan); font-size: 0.65rem;">EKSEKUSI TAHAP ANALISIS</span>
           </div>
@@ -123,7 +123,7 @@ export class MyAgentView {
         <div class="modal-card" style="max-width: 720px;">
           <div class="modal-header">
             <div class="modal-title" id="result-modal-title">
-              <i class="fa-solid fa-file-shield text-cyan"></i> Laporan Hasil Eksekusi Agent
+              <i class="fa-solid fa-file-shield text-cyan"></i> Laporan Hasil Eksekusi Agen
             </div>
             <button class="modal-close-btn" id="btn-close-result-modal">&times;</button>
           </div>
@@ -146,7 +146,7 @@ export class MyAgentView {
         <div class="modal-card" style="max-width: 600px;">
           <div class="modal-header">
             <div class="modal-title" id="form-modal-title">
-              <i class="fa-solid fa-robot text-cyan"></i> Konfigurasi AI Agent
+              <i class="fa-solid fa-robot text-cyan"></i> Konfigurasi Agen AI
             </div>
             <button class="modal-close-btn" id="btn-close-form-modal">&times;</button>
           </div>
@@ -155,13 +155,13 @@ export class MyAgentView {
               <input type="hidden" id="form-agent-id" value="" />
               
               <div>
-                <label style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">NAMA AGENT</label>
+                <label style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">NAMA AGEN</label>
                 <input type="text" id="form-agent-name" placeholder="Mis. Narasi Hoax Infiltrator" class="tactical-input" required />
               </div>
 
               <div>
                 <label style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">DESKRIPSI TUGAS</label>
-                <textarea id="form-agent-desc" rows="2" placeholder="Jelaskan peran operasional agent ini..." class="tactical-textarea" required></textarea>
+                <textarea id="form-agent-desc" rows="2" placeholder="Jelaskan peran operasional agen ini..." class="tactical-textarea" required></textarea>
               </div>
 
               <div>
@@ -193,7 +193,7 @@ export class MyAgentView {
           </div>
           <div class="modal-footer">
             <button class="btn-tactical" id="btn-cancel-agent-form">BATAL</button>
-            <button class="btn-tactical cyan" id="btn-save-agent-form">SIMPAN AGENT</button>
+            <button class="btn-tactical cyan" id="btn-save-agent-form">SIMPAN AGEN</button>
           </div>
         </div>
       </div>
@@ -213,10 +213,10 @@ export class MyAgentView {
       let statusBadge = 'SIAP';
       if (a.status === 'RUNNING') {
         statusColor = 'var(--color-cyan)';
-        statusBadge = 'RUNNING';
+        statusBadge = 'SEDANG BERJALAN';
       } else if (a.status === 'COMPLETED') {
         statusColor = '#38bdf8';
-        statusBadge = 'COMPLETED';
+        statusBadge = 'SELESAI';
       }
 
       return `

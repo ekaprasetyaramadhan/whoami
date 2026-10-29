@@ -100,14 +100,8 @@ export class TopBar {
   }
 
   updateHeader(title, subtitle, iconName) {
-    const heading = this.container.querySelector('#topbar-heading');
-    const iconContainer = this.container.querySelector('#topbar-icon');
-
-    if (heading) heading.textContent = title || '';
-    if (iconContainer && iconName) {
-      iconContainer.innerHTML = `<i data-lucide="${iconName}"></i>`;
-      renderLucideIcons(iconContainer);
-    }
+    // Page title and breadcrumbs are rendered within individual page views for modern topbar cleanliness
+    this.currentRoute = title || '';
   }
 
   subscribeToStore() {

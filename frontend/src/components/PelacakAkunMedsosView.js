@@ -61,8 +61,8 @@ export class PelacakAkunMedsosView {
             <div style="font-size: 0.65rem; color: #f87171;">Tingkat probabilitas bot tinggi</div>
           </div>
 
-          <div class="komando-card" style="border-top: 3px solid #8b5cf6; padding: 14px 16px;">
-            <div style="font-size: 0.68rem; color: #94a3b8; font-weight: 600; text-transform: uppercase;">TOTAL ESTIMASI REACH</div>
+            <div class="komando-card" style="border-top: 3px solid #8b5cf6; padding: 14px 16px;">
+            <div style="font-size: 0.68rem; color: #94a3b8; font-weight: 600; text-transform: uppercase;">TOTAL ESTIMASI JANGKAUAN</div>
             <div style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: #0f172a; margin: 2px 0;">14.8 Juta</div>
             <div style="font-size: 0.65rem; color: #c084fc;">Potensi paparan audiens publik</div>
           </div>
@@ -143,7 +143,7 @@ export class PelacakAkunMedsosView {
                   <div>
                     <div style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
                       <span id="osint-profile-name">Daboriba Buzzer Network</span>
-                      <span class="tag-badge bot" id="osint-profile-risk">HIGH THREAT</span>
+                      <span class="tag-badge bot" id="osint-profile-risk">ANCAMAN TINGGI</span>
                     </div>
                     <div style="font-size: 0.75rem; color: #38bdf8; font-family: var(--font-mono);" id="osint-profile-handle">
                       @daboriba_buzz &bull; ID: 1748291038592
@@ -161,19 +161,19 @@ export class PelacakAkunMedsosView {
               <!-- 4 Public Account Metrics -->
               <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-family: var(--font-mono); text-align: center;">
                 <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                  <div style="font-size: 0.62rem; color: #94a3b8;">FOLLOWERS</div>
+                  <div style="font-size: 0.62rem; color: #94a3b8;">PENGIKUT</div>
                   <strong style="color: #38bdf8; font-size: 0.95rem;">1,240,500</strong>
                 </div>
                 <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                  <div style="font-size: 0.62rem; color: #94a3b8;">FOLLOWING</div>
+                  <div style="font-size: 0.62rem; color: #94a3b8;">MENGIKUTI</div>
                   <strong style="color: #0f172a; font-size: 0.95rem;">420</strong>
                 </div>
                 <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                  <div style="font-size: 0.62rem; color: #94a3b8;">TOTAL POSTS</div>
+                  <div style="font-size: 0.62rem; color: #94a3b8;">TOTAL POSTINGAN</div>
                   <strong style="color: #0f172a; font-size: 0.95rem;">4,850</strong>
                 </div>
                 <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                  <div style="font-size: 0.62rem; color: #94a3b8;">ENGAGEMENT</div>
+                  <div style="font-size: 0.62rem; color: #94a3b8;">INTERAKSI</div>
                   <strong style="color: #10b981; font-size: 0.95rem;">14.2%</strong>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export class PelacakAkunMedsosView {
             <div class="komando-card" style="display: flex; flex-direction: column; gap: 10px;">
               <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
                 <div style="font-size: 0.8rem; font-weight: 700; color: #0f172a;">
-                  <i class="fa-solid fa-robot text-amber"></i> Unified Bot Probability Score
+                  <i class="fa-solid fa-robot text-amber"></i> Skor Probabilitas Bot Terpadu
                 </div>
                 <span class="tag-badge bot" style="font-size: 0.65rem;">88% (PROBABILITAS TINGGI)</span>
               </div>

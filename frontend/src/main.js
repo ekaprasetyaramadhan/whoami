@@ -99,7 +99,7 @@ function initKomando() {
       const v = document.getElementById('view-my-agent');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
-        topbarInstance.updateHeader('My Agent', '', 'bot');
+        topbarInstance.updateHeader('Agen Saya', '', 'bot');
       }
     }
   });

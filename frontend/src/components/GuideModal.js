@@ -23,7 +23,7 @@ export class GuideModal {
           <div class="modal-title">
             <i class="fa-solid fa-circle-question text-cyan"></i> PANDUAN PENGGUNAAN & MEMBACA DATA
             <span style="font-size: 0.65rem; background: rgba(0, 229, 255, 0.15); color: var(--color-cyan); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--color-cyan); margin-left: 8px;">
-              WHOIAM INTELIJEN
+              KOMANDO INTELIJEN
             </span>
           </div>
           <button class="modal-close-btn" id="btn-close-guide">
