@@ -30,10 +30,7 @@ export class TopBar {
             <span class="menu-btn-text">Menu</span>
           </button>
 
-          <div class="topbar-page-title" id="topbar-title">
-            <span class="nav-icon" id="topbar-icon"><i data-lucide="layout-dashboard"></i></span>
-            <span id="topbar-heading">Dashboard</span>
-          </div>
+
 
         </div>
 
@@ -106,7 +103,7 @@ export class TopBar {
     const heading = this.container.querySelector('#topbar-heading');
     const iconContainer = this.container.querySelector('#topbar-icon');
 
-    if (heading) heading.textContent = title;
+    if (heading) heading.textContent = title || '';
     if (iconContainer && iconName) {
       iconContainer.innerHTML = `<i data-lucide="${iconName}"></i>`;
       renderLucideIcons(iconContainer);
