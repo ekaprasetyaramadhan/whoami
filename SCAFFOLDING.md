@@ -79,62 +79,58 @@ e:\watax-player\
 │       │   ├── stream_bus.py           # Antrian event telemetri asinkron
 │       │   ├── ews_engine.py           # Engine moving average & z-score
 │       │   └── ws_manager.py           # Koneksi & broadcast WebSocket
-│       ├── data/                       # Dataset dan skenario simulasi
-│       │   ├── __init__.py
-│       │   ├── defense_scenarios.py    # Profil akun & template narasi simulasi
-│       │   └── keywords.py             # Kamus kata kunci dan evidensi token
-│       └── models/                     # Skema data Pydantic type-safe
-│           ├── __init__.py
-│           └── schemas.py              # Pydantic data contracts
-│
-├── frontend/                           # === LAYANAN FRONTEND (VITE SPA) ===
+│       ├── data/                       # Dataset dan s├── frontend/                           # === LAYANAN FRONTEND (VITE SPA) ===
 │   ├── package.json                    # Konfigurasi npm package dan build scripts
-│   ├── index.html                      # Template HTML utama dashboard 2-Tab
+│   ├── index.html                      # Template HTML utama dashboard & viewports
 │   ├── public/                         # Aset publik statis (data/indonesia-provinces.json, favicon)
 │   ├── dist/                           # Direktori hasil build produksi (Vite compilation)
 │   └── src/                            # Kode sumber antarmuka
-│       ├── main.js                     # Inisialisasi aplikasi dan tab switching
-│       ├── index.css                   # Sistem styling Glassmorphism Dark Mode
-│       ├── components/                 # Modul komponen UI AKTIF (4 Komponen Bersih)
-│       │   ├── HeaderBar.js            # Identitas sistem, 2-tab switch, tombol buku panduan
-│       │   ├── GeoBuzzerView.js        # TAB 1: Peta 38 Provinsi, Flight Lines, Timeframe, SNA, News
-│       │   ├── OsintInlineView.js      # TAB 2: Bedah URL, Lacak Tagar, GAN Forensics, Compare 2 Akun
+│       ├── main.js                     # Bootstrap aplikasi, route handlers, dan global listeners
+│       ├── router.js                   # Client-side router berbasis hash dengan auth-guard
+│       ├── components/                 # Modul komponen UI AKTIF
+│       │   ├── Sidebar.js              # Navigasi utama kiri: Dashboard, Peta, Pelacak, Agen
+│       │   ├── TopBar.js               # Bar atas: toggle menu, filter rentang waktu, DEFCON pill
+│       │   ├── LoginView.js            # Layar autentikasi bergaya tactical command center
+│       │   ├── KomandoDashboardView.js # Dasbor eksekutif intelijen (KPI, Trend, SoV, Barometer)
+│       │   ├── GeoBuzzerView.js        # Peta 38 Provinsi, SNA Full Canvas, Ground Zero, Feeds
+│       │   ├── PelacakAkunMedsosView.js# Forensik profil akun & pengukur probabilitas bot
+│       │   ├── MyAgentView.js          # Ruang kerja agen intelijen mandiri (persistent)
 │       │   └── GuideModal.js           # Modal: Buku Panduan Operasional Sistem & Glosarium
 │       ├── services/                   # Layanan komunikasi HTTP & WebSocket
 │       │   ├── api.js                  # Klien API fetch wrapper ke backend FastAPI
-│       │   └── stream.js               # Handler stream koneksi
+│       │   ├── auth.js                 # Layanan autentikasi & token sesi
+│       │   └── stream.js               # Handler stream koneksi WebSocket real-time
 │       ├── state/                      # State Management
 │       │   └── store.js                # CognitiveStore (Observer Pub/Sub pattern)
-│       └── styles/                     # CSS Modular
-│           ├── components.css          # Gaya visual kartu dan widget
-│           ├── variables.css           # Token warna desain (Cyan, Amber, Crimson, Dark)
-│           └── warroom.css             # Penataan layout dan kontainer
+│       ├── styles/                     # CSS Modular & Design System
+│       │   ├── components.css          # Gaya visual kartu dan widget
+│       │   ├── warroom.css             # Penataan layout dan kontainer
+│       │   └── komando.css             # Tata letak Komando modern enterprise
+│       └── utils/                      # Helper & Utilities
+│           └── icons.js                # Wrapper render Lucide Icons dinamis
 │
 └── docs/                               # === DOKUMENTASI PENDUKUNG & PRESENTASI ===
     ├── README.md                       # Indeks dokumentasi pendukung
-    ├── PROPOSAL-TEKNIS.md              # Proposal teknis arsitektur solusi whoiam
+    ├── PROPOSAL-TEKNIS.md              # Proposal teknis arsitektur solusi KOMANDO
     ├── SKRIP-VIDEO-DEMO.md             # Panduan skenario demonstrasi video walk-through
-    └── SLIDE-PRESENTASI.md             # Materi slide presentasi sistem whoiam
+    └── SLIDE-PRESENTASI.md             # Materi slide presentasi sistem KOMANDO
 ```
 
 ---
 
 ## 3. AUDIT PEMBERSIHAN FILE USANG (CLEANUP LOG)
 
-Untuk menjaga performa dan kebersihan arsitektur, 10 file komponen lama yang sudah usang dan digantikan oleh arsitektur 2-Tab telah **dihapus sepenuhnya** dari `frontend/src/components/`:
+Untuk menjaga performa dan kebersihan arsitektur, berkas komponen yang telah usang atau digantikan oleh arsitektur modular terkini telah **dihapus sepenuhnya** dari `frontend/src/components/`:
 
 | File Dihapus | Alasan Penghapusan & Pengganti |
 |---|---|
-| `CognitiveInspector.js` | Digantikan oleh kartu profil dan rincian XAI inline di `OsintInlineView.js` dan `GeoBuzzerView.js`. |
-| `EmotionRadar.js` | Digantikan oleh grafik visualisasi interkoneksi SNA dan metrik risiko provinsi. |
-| `GeoBuzzerModal.js` | Digantikan oleh tampilan halaman penuh interaktif `GeoBuzzerView.js`. |
-| `HoaxSandbox.js` | Digantikan oleh analisis inline postingan pada `OsintInlineView.js`. |
-| `LiveFeedTicker.js` | Dihapus karena menyita ruang layar; digantikan oleh feed postingan per provinsi. |
-| `OsintModal.js` | Digantikan oleh tampilan ruang kerja mandiri `OsintInlineView.js`. |
+| `HeaderBar.js` | Digantikan oleh komponen terpadu `Sidebar.js` dan `TopBar.js`. |
+| `DashboardView.js` | Digantikan oleh dasbor eksekutif komprehensif `KomandoDashboardView.js`. |
+| `OsintInlineView.js` | Digantikan oleh modul forensik modern `PelacakAkunMedsosView.js`. |
+| `CognitiveInspector.js` | Digantikan oleh kartu profil dan rincian XAI di `PelacakAkunMedsosView.js`. |
+| `HoaxSandbox.js` | Diintegrasikan ke dalam analisis inline postingan. |
+| `OsintModal.js` | Digantikan oleh tampilan mandiri `PelacakAkunMedsosView.js`. |
 | `ReportModal.js` | Disederhanakan untuk efisiensi alur kerja tanpa popup yang bertumpuk. |
-| `SimulatorControls.js` | Dihapus demi kesederhanaan operasional antarmuka. |
-| `SnaGraphCanvas.js` | Diintegrasikan langsung ke dalam kanvas SNA provinsi dan SNA lintas medsos. |
-| `SpikeMonitor.js` | Digantikan oleh indikator kecepatan propagasi Ground Zero ($T_0$ delta). |
 
 Hasil verifikasi: Kompilasi build `npm run build` berhasil 100% tanpa error, menghasilkan bundle produksi optimal.
 
@@ -144,14 +140,16 @@ Hasil verifikasi: Kompilasi build `npm run build` berhasil 100% tanpa error, men
 
 ```
 +-------------------------------------------------------------------------------------------------------+
-| Komponen UI           | Sumber Data API                 | Data Kunci yang Dirender                     |
+| Komponen UI             | Sumber Data API                 | Data Kunci yang Dirender                  |
 +-------------------------------------------------------------------------------------------------------+
-| HeaderBar.js          | State Store                     | Navigasi 2-Tab, Logo, Tombol Buku Panduan    |
-| GeoBuzzerView.js      | /geo-buzzer/provinces           | 38 Marker Peta, Indikator Risiko, Total Reach|
-|                       | /geo-buzzer/province/{id}       | Ground Zero, Datetime Release, Koordinat BTS,|
-|                       |                                 | Berita Resmi Daerah vs Medsos, SNA Provinsi  |
-| OsintInlineView.js    | /osint/inspect-url              | Profil Akun, Unified Bot Score, Ground Zero  |
-|                       |                                 | Timeline Mutasi, Geofix BTS, Cross-SNA       |
-| GuideModal.js         | Statis / Lokal                  | Panduan Penggunaan, Penjelasan 5 Fitur Utama |
+| Sidebar.js              | authService & router            | Navigasi 4 Rute, Profil Pengguna, Logout  |
+| TopBar.js               | CognitiveStore                  | Toggle Sidebar, Rentang Waktu, Status DEFCON |
+| LoginView.js            | /api/v1/auth/login              | Form Login, Animasi Binary Matrix, Token  |
+| KomandoDashboardView.js | CognitiveStore & Dashboard Data | 4 KPI Cards, Trend, SoV, Hashtags, DEFCON |
+| GeoBuzzerView.js        | /api/v1/geo/*                   | 38 Marker Peta, SNA Full Canvas, Ground   |
+|                         |                                 | Zero, Berita Resmi vs Medsos Feeds        |
+| PelacakAkunMedsosView.js| /api/v1/osint/*                 | Profil Akun, Unified Bot Score, Historis  |
+| MyAgentView.js          | localStorage                    | Daftar Agen AI, Eksekusi Otonom, Laporan  |
+| GuideModal.js           | Statis / Lokal                  | Panduan Penggunaan & Glosarium Sistem     |
 +-------------------------------------------------------------------------------------------------------+
 ```

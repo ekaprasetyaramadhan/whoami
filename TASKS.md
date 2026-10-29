@@ -128,3 +128,18 @@
 - [x] **TASK-43 [P1] Ekstraksi Topik & Awan Kata Kunci (Topic Cloud Badges)**
   - Menampilkan entitas kata kunci dominan yang diamplifikasi akun target beserta frekuensi dan tingkat ancaman.
 
+### FASE 11: Transformasi Modern Enterprise KOMANDO & Clean Code
+- [x] **TASK-44 [P0] Refaktor Arsitektur 4-Rute Utama & Navigasi Sidebar**
+  - Implementasi navigasi sisi kiri terpadu (`Sidebar.js`): Dashboard, Peta Sebaran Buzzer, Pelacak Akun Medsos, dan Agen Saya.
+- [x] **TASK-45 [P0] Standarisasi Bahasa Indonesia Baku pada Antarmuka**
+  - Lokalisasi menyeluruh metrik KPI, kartu analitik, tombol interaktif, dan modal forensik ke Bahasa Indonesia profesional.
+- [x] **TASK-46 [P0] Resolusi Masalah Rendering Kanvas SNA (Hidden Tab Bug)**
+  - Memperbaiki kegagalan render kanvas grafik jejaring aktor SNA saat berpindah tab dengan memasang `ResizeObserver` dan inisialisasi instan tanpa perlu memicu event resize/F12.
+- [x] **TASK-47 [P0] Persistensi State Agen AI (MyAgentView)**
+  - Menyimpan konfigurasi dan status eksekusi agen AI ke `localStorage` agar tidak hilang saat refresh peramban.
+- [x] **TASK-48 [P0] Pembersihan Berkas Usang (`HeaderBar.js`, `DashboardView.js`, `OsintInlineView.js`)**
+  - Menghapus komponen legacy yang sudah digantikan arsitektur modern demi efisiensi bundle produksi.
+- [x] **TASK-49 [P0] Penyelarasan Branding & Reaktivitas Filter TopBar**
+  - Menyeragamkan identitas aplikasi ke KOMANDO di seluruh backend, websocket bus, dan menghubungkan selektor rentang waktu TopBar ke metrik KPI Dashboard.
+
+

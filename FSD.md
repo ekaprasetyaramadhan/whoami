@@ -1,15 +1,16 @@
 # FUNCTIONAL SPECIFICATION DOCUMENT (FSD)
-## PROYEK: whoiam
-### SISTEM INTELIJEN MEDIA SOSIAL, FORENSIK GEOLOKASI & DETEKSI BUZZER 38 PROVINSI
+## PROYEK: KOMANDO
+### KOMANDO MONITORING DAN ANALISIS NARASI DIGITAL ONLINE
+**Sistem Intelijen Media Sosial, Forensik Akun, & Peta Sebaran Buzzer 38 Provinsi**
 
 ---
 
-**Nomor Dokumen**: FSD-WHOIAM-2026-003  
-**Versi**: 3.1.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: FSD-KOMANDO-2026-004  
+**Versi**: 4.0.0  
+**Tanggal Rilis**: 29 Oktober 2026  
 **Status**: APPROVED & IMPLEMENTED  
 **Target Pengguna**: Tim Rekayasa Perangkat Lunak, DevOps, QA, dan Analis Sistem  
-**Role Pengguna**: `user`  
+**Role Pengguna**: `user`, `admin`  
 
 ---
 
@@ -22,16 +23,17 @@
    - [3.2 OsintEngine (URL Profiler, GAN Avatar Detector, Topic Cloud & Account Comparator)](#32-osintengine-url-profiler-gan-avatar-detector-topic-cloud--account-comparator)
    - [3.3 BotEngine & HoaxEngine (XAI & Bot Score)](#33-botengine--hoaxengine-xai--bot-score)
 4. [SPESIFIKASI API BACKEND (REST & DATA CONTRACTS)](#4-spesifikasi-api-backend-rest--data-contracts)
-   - [4.1 GET /api/v1/geo-buzzer/distribution](#41-get-apiv1geo-buzzerdistribution)
-   - [4.2 GET /api/v1/geo-buzzer/propagation-lines](#42-get-apiv1geo-buzzerpropagation-lines)
+   - [4.1 GET /api/v1/geo/buzzer-distribution](#41-get-apiv1geobuzzer-distribution)
+   - [4.2 GET /api/v1/geo/propagation-lines](#42-get-apiv1geopropagation-lines)
    - [4.3 POST /api/v1/osint/inspect-url](#43-post-apiv1osintinspect-url)
    - [4.4 POST /api/v1/osint/compare-accounts](#44-post-apiv1osintcompare-accounts)
 5. [SPESIFIKASI MODUL & KOMPONEN FRONTEND](#5-spesifikasi-modul--komponen-frontend)
-   - [5.1 Komponen HeaderBar](#51-komponen-headerbar)
-   - [5.2 Komponen GeoBuzzerView (Tab 1: Peta, Sebaran Buzzer, Flight Lines & Timeframe)](#52-komponen-geobuzzerview-tab-1-peta-sebaran-buzzer-flight-lines--timeframe)
-   - [5.3 Komponen OsintInlineView (Tab 2: Pelacak Medsos, GAN Detector & Sync Comparator)](#53-komponen-osintinlineview-tab-2-pelacak-medsos-gan-detector--sync-comparator)
-   - [5.4 Komponen GuideModal (Buku Panduan)](#54-komponen-guidemodal-buku-panduan)
-   - [5.5 Layanan API Klien (`services/api.js`)](#55-layanan-api-klien-servicesapijs)
+   - [5.1 Komponen Sidebar & TopBar](#51-komponen-sidebar--topbar)
+   - [5.2 Komponen KomandoDashboardView (Rute 1: Dasbor Eksekutif)](#52-komponen-komandodashboardview-rute-1-dasbor-eksekutif)
+   - [5.3 Komponen GeoBuzzerView (Rute 2: Peta 38 Provinsi & SNA Full Canvas)](#53-komponen-geobuzzerview-rute-2-peta-38-provinsi--sna-full-canvas)
+   - [5.4 Komponen PelacakAkunMedsosView (Rute 3: Forensik Akun Medsos)](#54-komponen-pelacakakunmedsosview-rute-3-forensik-akun-medsos)
+   - [5.5 Komponen MyAgentView (Rute 4: Agen AI Otonom)](#55-komponen-myagentview-rute-4-agen-ai-otonom)
+   - [5.6 Komponen GuideModal & Layanan API Klien](#56-komponen-guidemodal--layanan-api-klien)
 6. [SEQUENCE DIAGRAM ALUR KERJA UTAMA](#6-sequence-diagram-alur-kerja-utama)
 7. [MANAJEMEN ENERGI, MEMORI & FALLBACK HANDLING](#7-manajemen-energi-memori--fallback-handling)
 
@@ -39,29 +41,38 @@
 
 ## 1. ARSITEKTUR SISTEM & TOPOLOGI KOMPONEN
 
-Sistem **whoiam** mengadopsi arsitektur terpisah (*Decoupled Client-Server Monorepo*):
-* **Frontend**: Single Page Application (SPA) berbasis Vanilla JavaScript ES6 modern dan Vite 5, meminimalkan latensi render DOM serta mengintegrasikan visualisasi peta interaktif dan graf jaringan Apache ECharts 5.
+Sistem **KOMANDO** mengadopsi arsitektur terpisah (*Decoupled Client-Server Monorepo*):
+* **Frontend**: Single Page Application (SPA) berbasis Vanilla JavaScript ES6 modern dan Vite 5, meminimalkan latensi render DOM serta mengintegrasikan visualisasi peta interaktif dan graf jaringan Apache ECharts 5 dengan ResizeObserver.
 * **Backend**: Layanan asinkron Python FastAPI berkecepatan tinggi yang menangani komputasi analitik, penguraian OSINT, pemetaan 38 provinsi Indonesia, rekonstruksi Ground Zero, dan kalkulasi BTS geolokasi.
 
 ```
 +-------------------------------------------------------------------------------+
 |                            CLIENT PERAMBAN (FRONTEND SPA)                     |
 |  +-------------------------------------------------------------------------+  |
-|  |                             whoiam Application                          |  |
-|  |  [HeaderBar] (Branding, Tab Switcher: Peta vs Pelacak, Guide Button)    |  |
+|  |                             KOMANDO Application                         |  |
+|  |  [Sidebar] (Navigasi 4 Rute, Profil Operator, Collapse Toggle)          |  |
+|  |  [TopBar] (Menu Trigger, Filter Rentang Waktu 24h-30d, DEFCON Pill)     |  |
 |  |                                                                         |  |
-|  |  TAB 1: [GeoBuzzerView]                                                 |  |
-|  |   - Interactive Map 38 Provinsi (Leaflet / Interactive Markers)         |  |
-|  |   - Province Data Cards (Ground Zero, Datetime Release, Propagation)    |  |
-|  |   - Forensic Geolocation Radar (GPS Lat/Long, BTS Cell, ISP Backbone)   |  |
-|  |   - Regional News Feed vs Provincial Social Disinformation Stream       |  |
-|  |   - Cross-Platform Network SNA Canvas (ECharts Force Graph)             |  |
+|  |  RUTE 1: [KomandoDashboardView]                                         |  |
+|  |   - 4 KPI Metrik Reaktif (Percakapan, Interaksi, Jangkauan, Penulis)    |  |
+|  |   - Trend Analysis & Share of Voice                                     |  |
+|  |   - Top Hashtags, Top Authors, Gender, Top Words, Virality Tracker      |  |
+|  |   - Barometer DEFCON 1-5 & Early Warning System                         |  |
 |  |                                                                         |  |
-|  |  TAB 2: [OsintInlineView]                                               |  |
-|  |   - URL Input & Instant Platform Detector (X, Threads, IG, FB)          |  |
-|  |   - Inline Profile Card, Unified Bot Score, XAI Hoax Rationale           |  |
-|  |   - Ground Zero Timeline & Cross-Platform Propagation Graph              |  |
-|  |   - Precision Geolocation Fix & BTS Sector Radar                        |  |
+|  |  RUTE 2: [GeoBuzzerView]                                                |  |
+|  |   - Peta Interaktif GeoJSON 38 Provinsi ECharts & Flight Lines          |  |
+|  |   - Jejaring Aktor (SNA Full Canvas Force Layout dengan ResizeObserver) |  |
+|  |   - Deteksi Ground Zero & Geofix BTS Radar                              |  |
+|  |   - Feed Medsos Live vs Berita Daerah Terverifikasi Dewan Pers          |  |
+|  |                                                                         |  |
+|  |  RUTE 3: [PelacakAkunMedsosView]                                        |  |
+|  |   - Multi-Platform OSINT Profiler (X, TikTok, IG, FB, Threads, YouTube) |  |
+|  |   - Skor Probabilitas Bot Terpadu (Entropi, Burst Temporal, Kluster)   |  |
+|  |   - Grafik Batang Historis Aktivitas 30 Hari                            |  |
+|  |                                                                         |  |
+|  |  RUTE 4: [MyAgentView]                                                  |  |
+|  |   - AI Agent Management Form & Multi-Step Execution Simulation          |  |
+|  |   - Persistensi LocalStorage untuk Konfigurasi & Status Agen            |  |
 |  |                                                                         |  |
 |  |  MODAL: [GuideModal] (Buku Panduan Operasional Sistem & Glosarium)      |  |
 |  +-------------------------------------------------------------------------+  |

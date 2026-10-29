@@ -1,31 +1,31 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
-## PROYEK: whoiam
-### SISTEM INTELIJEN MEDIA SOSIAL, FORENSIK GEOLOKASI & DETEKSI BUZZER 38 PROVINSI
+## PROYEK: KOMANDO
+### KOMANDO MONITORING DAN ANALISIS NARASI DIGITAL ONLINE
+**Sistem Intelijen Media Sosial, Forensik Akun, & Peta Sebaran Buzzer 38 Provinsi**
 
 ---
 
-**Nomor Dokumen**: PRD-WHOIAM-2026-002  
-**Versi**: 3.0.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: PRD-KOMANDO-2026-003  
+**Versi**: 4.0.0  
+**Tanggal Rilis**: 29 Oktober 2026  
 **Status**: APPROVED & PRODUCTION READY  
 **Target Pengguna**: Analis Intelijen Media Sosial, Tim Forensik Siber, Pemeriksa Fakta & Penyelidik OSINT  
-**Role Pengguna**: `user`  
+**Role Pengguna**: `user`, `admin`  
 
 ---
 
 ## DAFTAR ISI
 
 1. [RINGKASAN PRODUK & PRINSIP DESAIN](#1-ringkasan-produk--prinsip-desain)
-2. [5 PILAR FITUR UTAMA (CORE CAPABILITIES)](#2-5-pilar-fitur-utama-core-capabilities)
+2. [4 MODUL UTAMA APLIKASI](#2-4-modul-utama-aplikasi)
 3. [FEATURE MATRIX & HIERARKI AKSES](#3-feature-matrix--hierarki-akses)
 4. [SPESIFIKASI DETAIL MODUL APLIKASI](#4-spesifikasi-detail-modul-aplikasi)
-   - [4.1 Modul 01: Peta & Sebaran Buzzer Nasional 38 Provinsi](#41-modul-01-peta--sebaran-buzzer-nasional-38-provinsi)
-   - [4.2 Modul 02: Deteksi Sumber Postingan Utama (Ground Zero / Patient Zero)](#42-modul-02-deteksi-sumber-postingan-utama-ground-zero--patient-zero)
-   - [4.3 Modul 03: Forensik Geolokasi Presisi (GPS, BTS & ISP Backbone)](#43-modul-03-forensik-geolokasi-presisi-gps-bts--isp-backbone)
-   - [4.4 Modul 04: Interkoneksi Lintas Medsos (Cross-Platform SNA)](#44-modul-04-interkoneksi-lintas-medsos-cross-platform-sna)
-   - [4.5 Modul 05: Pelacak Akun Medsos & OSINT URL Profiler](#45-modul-05-pelacak-akun-medsos--osint-url-profiler)
-   - [4.6 Modul 06: Crawling Berita Resmi Daerah vs Narasi Hoaks Medsos](#46-modul-06-crawling-berita-resmi-daerah-vs-narasi-hoaks-medsos)
-5. [SPESIFIKASI TATA LETAK & DESAIN UI (STREAMLINED 2-TAB)](#5-spesifikasi-tata-letak--desain-ui-streamlined-2-tab)
+   - [4.1 Modul 01: Dashboard Eksekutif Intelijen](#41-modul-01-dashboard-eksekutif-intelijen)
+   - [4.2 Modul 02: Peta & Sebaran Buzzer Nasional 38 Provinsi](#42-modul-02-peta--sebaran-buzzer-nasional-38-provinsi)
+   - [4.3 Modul 03: Deteksi Ground Zero & Forensik Geolokasi](#43-modul-03-deteksi-ground-zero--forensik-geolokasi)
+   - [4.4 Modul 04: Pelacak Akun Medsos & OSINT Profiler](#44-modul-04-pelacak-akun-medsos--osint-profiler)
+   - [4.5 Modul 05: Workspace Agen AI Mandiri](#45-modul-05-workspace-agen-ai-mandiri)
+5. [SPESIFIKASI TATA LETAK & DESAIN UI (MODERN ENTERPRISE)](#5-spesifikasi-tata-letak--desain-ui-modern-enterprise)
 6. [SPESIFIKASI TEKNIS & API DATA CONTRACTS](#6-spesifikasi-teknis--api-data-contracts)
 7. [LOGIKA ALGORITMA & MATEMATIKA INTI](#7-logika-algoritma--matematika-inti)
 8. [SKENARIO PENGUJIAN & PENANGANAN EDGE CASES](#8-skenario-pengujian--penanganan-edge-cases)
@@ -35,33 +35,29 @@
 ## 1. RINGKASAN PRODUK & PRINSIP DESAIN
 
 ### 1.1 Deskripsi Produk
-**whoiam** adalah platform intelijen media sosial (*Social Media Intelligence*) dan forensik digital terpadu yang dirancang khusus untuk memetakan dinamika opini publik, mendeteksi kampanye manipulasi buzzer terkoordinasi di seluruh **38 Provinsi Indonesia**, melacak sumber postingan pertama (Ground Zero) berdasarkan stempel waktu rilis (*datetime release*), dan mengidentifikasi jejak geolokasi presisi (koordinat GPS, sektor BTS seluler, dan backbone ISP) dari akun penyebar disinformasi.
+**KOMANDO** (*Komando Monitoring dan Analisis Narasi Digital Online*) adalah platform intelijen media sosial (*Social Media Intelligence*) dan forensik digital enterprise yang dirancang khusus untuk memetakan dinamika opini publik, mendeteksi kampanye manipulasi buzzer terkoordinasi di seluruh **38 Provinsi Indonesia**, melacak sumber postingan pertama (Ground Zero) berdasarkan stempel waktu rilis (*datetime release*), mengidentifikasi jejak geolokasi presisi (koordinat GPS, sektor BTS seluler, dan backbone ISP) dari akun penyebar disinformasi, serta menjalankan agen AI otonom untuk investigasi berkelanjutan.
 
 ### 1.2 Prinsip Desain Produk
-1. **National Full Scope (38 Provinsi)**: Memetakan 100% provinsi di Indonesia tanpa terkecuali, mencakup 76 simpul buzzer teridentifikasi dengan total potensi jangkauan (reach) mencapai >36,8 juta impresi.
+1. **National Full Scope (38 Provinsi)**: Memetakan 100% provinsi di Indonesia tanpa terkecuali, mencakup simpul buzzer teridentifikasi dengan total potensi jangkauan (reach) puluhan juta impresi.
 2. **Ground Zero Identification**: Menemukan akun sumber pertama yang memicu gelombang disinformasi (*patient zero*) berdasarkan kronologi stempel waktu absolut (ISO-8601) dan rentang waktu propagasi ($T+0\text{m}$, $T+3\text{m}$, dst.).
 3. **Forensic Geolocation Radar**: Setiap akun mencurigakan dilacak hingga koordinat lintang/bujur (Latitude/Longitude), menara pemancar BTS, dan penyedia layanan internet (ISP), serta dapat difokuskan langsung ke peta melalui tombol aksi interaktif.
-4. **Cross-Platform Interconnection**: Menganalisis penyebaran narasi lintas platform (X/Twitter, Instagram, Facebook, TikTok, Bot Farms) dalam sebuah Social Network Analysis (SNA) interkoneksi.
-5. **Streamlined 2-Tab User Experience**: Menghilangkan modal popup yang bertumpuk dan terminologi militer yang membingungkan. Antarmuka disederhanakan menjadi 2 ruang kerja operasional: `PETA & SEBARAN BUZZER` dan `PELACAK AKUN MEDSOS`.
-6. **Independence & Zero API Cost**: Beroperasi secara mandiri tanpa memerlukan lisensi API berbayar yang mahal, memanfaatkan protokol publik oEmbed dan generator telemetri forensik deterministik.
+4. **Cross-Platform Interconnection**: Menganalisis penyebaran narasi lintas platform (X/Twitter, Instagram, Facebook, TikTok, Threads, Bot Farms) dalam sebuah Social Network Analysis (SNA) interkoneksi.
+5. **Modern Enterprise 4-Route Navigation**: Navigasi sisi kiri terpadu (`Sidebar.js`) dengan 4 ruang kerja: `Dashboard`, `Peta Sebaran Buzzer`, `Pelacak Akun Medsos`, dan `Agen Saya`.
+6. **Independence & Zero API Cost**: Beroperasi secara mandiri tanpa ketergantungan pada API berbayar mahal, memanfaatkan protokol publik dan generator telemetri deterministik.
 
 ---
 
-## 2. 5 PILAR FITUR UTAMA (CORE CAPABILITIES)
+## 2. 4 MODUL UTAMA APLIKASI
 
 ```
 +---------------------------------------------------------------------------------------------------+
-|                                  WHOIAM 5 PILAR FORENSIK DIGITAL                                  |
+|                                  KOMANDO ENTERPRISE INTELLIGENCE                                  |
 +---------------------------------------------------------------------------------------------------+
-|  1. PETA 38 PROVINSI   |  2. GROUND ZERO           |  3. GEOLOKASI PRESISI   |  4. CROSS-SNA      |
-|  - 38 Provinsi Lengkap |  - Akun Penyebar Pertama  |  - Koordinat Lat/Long   |  - Interkoneksi    |
-|  - 76 Node Buzzer      |  - Stempel Waktu Rilis    |  - Sektor Menara BTS    |    X, IG, FB, TT   |
-|  - 36.8M+ Total Reach  |  - Kronologi Propagasi    |  - ISP Backbone & IP    |  - Sentralitas Hub |
-|  - Metrik Risiko       |  - Selisih Waktu T+Delta  |  - Tombol [Lihat Peta]  |  - Kluster Botnet  |
-+---------------------------------------------------------------------------------------------------+
-|                          5. VERIFIKASI BERITA RESMI DAERAH VS HOAKS MEDSOS                        |
-|  - RSS / Scraper Berita Resmi Pemda, Antara, & Portal Terverifikasi                              |
-|  - Perbandingan Langsung Narasi Buzzer Provokatif vs Fakta Valid Klarifikasi Instansi             |
+|  1. DASHBOARD EKSEKUTIF  |  2. PETA SEBARAN BUZZER   |  3. PELACAK AKUN MEDSOS |  4. AGEN SAYA    |
+|  - 4 Kartu KPI Reaktif   |  - 38 Provinsi Peta Geo   |  - Multi-Platform OSINT |  - AI Agent Form |
+|  - Trend & Share of Voice|  - Jejaring SNA Resolusi  |  - Skor Probabilitas Bot|  - Multi-Step Run|
+|  - Top Hashtag & Authors |  - Ground Zero Detection  |  - Tren 30 Hari Historis|  - LocalStorage  |
+|  - Barometer DEFCON 1-5  |  - Berita Daerah vs Feeds |  - Profil & Metrik Akun |    Persistence   |
 +---------------------------------------------------------------------------------------------------+
 ```
 
@@ -71,13 +67,14 @@
 
 | Fitur | Deskripsi | Prioritas | Tampilan / Komponen |
 |---|---|:---:|---|
-| **Peta Sebaran 38 Provinsi** | Peta interaktif Leaflet/Canvas dengan marker koordinat seluruh provinsi | `P0` | Tab 1: `GeoBuzzerView` |
-| **Ground Zero Forensics** | Panel identifikasi akun sumber pertama, waktu rilis, & timeline mutasi | `P0` | Tab 1 & Tab 2 |
-| **Geolokasi & Menara BTS** | Informasi presisi koordinat GPS, BTS sektor, ISP, dan link flyTo peta | `P0` | Tab 1 & Tab 2 |
-| **Cross-Platform SNA** | Graf interaktif relasi antar platform (X, Instagram, Facebook, TikTok) | `P0` | Tab 1 & Tab 2 |
-| **OSINT URL Profiler** | Analisis instan tautan medsos tanpa popup modal | `P0` | Tab 2: `OsintInlineView` |
-| **Pemantau Berita Daerah** | Aliran berita resmi daerah terverifikasi per provinsi terpilih | `P1` | Tab 1: Kolom Informasi |
-| **Postingan Medsos Provinsi** | Cuplikan status dan sentimen medsos aktif di provinsi terpilih | `P1` | Tab 1: Kolom Informasi |
+| **Dashboard Eksekutif** | 4 KPI Cards, Analisis Tren, Share of Voice, dan Barometer DEFCON | `P0` | Rute 1: `KomandoDashboardView` |
+| **Peta Sebaran 38 Provinsi** | Peta interaktif GeoJSON ECharts dengan sebaran buzzer 38 provinsi | `P0` | Rute 2: `GeoBuzzerView` |
+| **Jejaring Aktor (SNA)** | Graf interkoneksi akun pemicu vs bot farm dengan ResizeObserver | `P0` | Rute 2: `GeoBuzzerView` (Tab SNA) |
+| **Ground Zero Forensics** | Panel identifikasi akun sumber pertama, waktu rilis, & timeline mutasi | `P0` | Rute 2: `GeoBuzzerView` |
+| **Pelacak Akun Medsos** | Pencarian instan profil, skor probabilitas bot, dan tren historis 30 hari | `P0` | Rute 3: `PelacakAkunMedsosView` |
+| **Workspace Agen AI** | Pembuatan dan eksekusi agen intelijen dengan penyimpanan persisten | `P0` | Rute 4: `MyAgentView` |
+| **Top Navigation Bar** | Filter rentang waktu dinamis, DEFCON pill, dan tombol menu | `P0` | Global: `TopBar` |
+| **Sidebar Navigasi** | Panel navigasi kiri dapat diciutkan dengan profil operator aktif | `P0` | Global: `Sidebar` |
 | **Buku Panduan Sistem** | Modal panduan operasional sistem lengkap dan mudah dipahami | `P2` | Modal: `GuideModal` |
 
 ---

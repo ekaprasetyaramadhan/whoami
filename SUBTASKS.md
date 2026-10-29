@@ -111,6 +111,17 @@
 - [x] **SUBTASK-41.1**: Rancang modul deteksi wajah sintetis (`avatar_forensics`) di `osint_engine.py` (StyleGAN3/Diffusion detector, simetri pupil, artefak).
 - [x] **SUBTASK-41.2**: Tampilkan Pilar 4 (Deteksi Avatar AI GAN) pada kartu hasil inspeksi URL di `OsintInlineView.js`.
 - [x] **SUBTASK-42.1**: Implementasikan engine komparasi korelasi 2 akun di `osint_engine.py` (Jaccard similarity, temporal gap delta, BTS proximity, single operator verdict).
-- [x] **SUBTASK-42.2**: Bangun Sub-Tab 3 (*Side-by-Side Synchronicity Comparator*) di `OsintInlineView.js` dengan preset testing dan scorecard komparasi.
-- [x] **SUBTASK-43.1**: Kembangkan ekstraksi topik dan awan kata kunci (`topic_cloud`) di `osint_engine.py` dan render badge frekuensi di `OsintInlineView.js`.
+- [x] **SUBTASK-42.2**: Bangun Sub-Tab 3 (*Side-by-Side Synchronicity Comparator*) di `PelacakAkunMedsosView.js` dengan preset testing dan scorecard komparasi.
+- [x] **SUBTASK-43.1**: Kembangkan ekstraksi topik dan awan kata kunci (`topic_cloud`) di `osint_engine.py` dan render badge frekuensi di `PelacakAkunMedsosView.js`.
+
+---
+
+### FASE 11: Transformasi Modern Enterprise KOMANDO & Clean Code
+- [x] **SUBTASK-44.1**: Rancang navigasi sidebar kiri responsif terpadu (`Sidebar.js`) dengan 4 rute utama (/dashboard, /peta-sebaran-buzzer, /pelacak-akun-medsos, /my-agent).
+- [x] **SUBTASK-45.1**: Lokalisasi antarmuka secara penuh ke Bahasa Indonesia formal pada seluruh kartu ringkasan KPI, grafik, dan modal.
+- [x] **SUBTASK-46.1**: Pasang `ResizeObserver` pada kontainer grafik jejaring aktor SNA (`#main-geo-sna-chart-container`) dan perbaiki `switchMainView('sna')` untuk inisialisasi kanvas tanpa delay.
+- [x] **SUBTASK-47.1**: Implementasikan `loadAgents()` dan `saveAgentsToStorage()` berbasis `localStorage` pada `MyAgentView.js`.
+- [x] **SUBTASK-48.1**: Hapus berkas komponen usang (`HeaderBar.js`, `DashboardView.js`, `OsintInlineView.js`) dengan git rm.
+- [x] **SUBTASK-49.1**: Sambungkan callback selektor waktu TopBar ke pembaruan dinamis 4 kartu KPI di `KomandoDashboardView.js`.
+
 

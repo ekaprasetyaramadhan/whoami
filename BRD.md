@@ -1,16 +1,17 @@
 # BUSINESS REQUIREMENTS DOCUMENT (BRD)
-## PROYEK: whoiam
-### SISTEM INTELIJEN MEDIA SOSIAL & FORENSIK AKUN TERPADU (OSINT & GEOLOKASI)
+## PROYEK: KOMANDO
+### KOMANDO MONITORING DAN ANALISIS NARASI DIGITAL ONLINE
+**Sistem Intelijen Media Sosial, Forensik Akun, & Peta Sebaran Buzzer 38 Provinsi**
 
 ---
 
-**Nomor Dokumen**: BRD-WHOIAM-2026-003  
-**Versi**: 3.1.0  
-**Tanggal Rilis**: 27 Oktober 2026  
+**Nomor Dokumen**: BRD-KOMANDO-2026-003  
+**Versi**: 4.0.0  
+**Tanggal Rilis**: 29 Oktober 2026  
 **Status**: APPROVED & OPERATIONAL  
 **Klasifikasi Dokumen**: Spesifikasi Persyaratan Bisnis & Solusi Intelijen Forensik  
 **Target Pengguna**: Analis Media Sosial, Penyelidik OSINT, Tim Forensik Siber, & Pemeriksa Fakta  
-**Peran Sistem (Role)**: `user`  
+**Peran Sistem (Role)**: `user`, `admin`  
 
 ---
 
@@ -181,13 +182,13 @@ Sistem wajib mengekstrak dan menampilkan awan kata kunci serta tagar dominan yan
 | ID Kebutuhan | Kebutuhan Bisnis | Modul / Komponen Terkait | Kriteria Penerimaan |
 |:---:|---|---|---|
 | **REQ-01** | Peta 38 Provinsi Lengkap | `GeoBuzzerView.js` & `geo_buzzer_engine.py` | 38 provinsi muncul di peta dan daftar filter |
-| **REQ-02** | Deteksi Ground Zero & Datetime | `GeoBuzzerView.js` & `OsintInlineView.js` | Tampil username sumber, datetime release, dan timeline delta |
+| **REQ-02** | Deteksi Ground Zero & Datetime | `GeoBuzzerView.js` & `PelacakAkunMedsosView.js` | Tampil username sumber, datetime release, dan timeline delta |
 | **REQ-03** | Geolokasi & Menara BTS | `geo_buzzer_engine.py` & `osint_engine.py` | Tampil GPS, BTS sektor, ISP, dan tombol [Lihat di Peta] berfungsi |
-| **REQ-04** | Cross-Platform SNA | `GeoBuzzerView.js` & `OsintInlineView.js` | Graf menampilkan simpul X, IG, FB, TikTok, Bot Farms |
+| **REQ-04** | Cross-Platform SNA | `GeoBuzzerView.js` & `sna_engine.py` | Graf menampilkan simpul X, IG, FB, TikTok, Bot Farms |
 | **REQ-05** | Berita Resmi vs Medsos | `GeoBuzzerView.js` & `geo_buzzer_router.py` | Berita resmi dan medsos tampil berdampingan per provinsi |
-| **REQ-06** | UI 2-Tab Sederhana | `main.js`, `HeaderBar.js`, `index.html` | Tab navigasi berpindah lancar tanpa modal popup |
+| **REQ-06** | UI 4-Rute Enterprise | `main.js`, `Sidebar.js`, `TopBar.js` | Navigasi sidebar terpadu berpindah lancar tanpa modal bertumpuk |
 | **REQ-07** | Garis Propagasi Isu (Flight Lines) | `GeoBuzzerView.js` & `geo_buzzer_engine.py` | Garis animasi lengkung terbang terender di atas peta |
-| **REQ-08** | Filter Rentang Waktu (1h-7d) | `GeoBuzzerView.js` & `geo_buzzer_engine.py` | Pill 1h, 6h, 24h, 7d memfilter volume dan rute |
-| **REQ-09** | Deteksi Avatar AI GAN | `OsintInlineView.js` & `osint_engine.py` | Gauge probabilitas AI GAN dan artefak wajah tampil |
-| **REQ-10** | Komparasi 2 Akun (Sync Comparator) | `OsintInlineView.js` & `osint_engine.py` | Scorecard komparasi side-by-side & status operator tunggal |
-| **REQ-11** | Ekstraksi Topik & Tagar Cloud | `OsintInlineView.js` & `osint_engine.py` | Badge frekuensi topik dan sentimen ancaman tampil |
+| **REQ-08** | Filter Rentang Waktu (24h-30d) | `TopBar.js` & `KomandoDashboardView.js` | Pill 24h, 7d, 30d memfilter metrik KPI dan rute propagasi |
+| **REQ-09** | Skor Probabilitas Bot Terpadu | `PelacakAkunMedsosView.js` & `bot_engine.py` | Indikator bot probability, entropi semantik, dan burst temporal tampil |
+| **REQ-10** | Workspace Agen AI Mandiri | `MyAgentView.js` | Pembuatan, konfigurasi, dan eksekusi multi-step agen persisten |
+| **REQ-11** | Dasbor Eksekutif Intelijen | `KomandoDashboardView.js` & `ews_engine.py` | KPI, Trend, SoV, Top Hashtags, dan Barometer DEFCON 1-5 |
