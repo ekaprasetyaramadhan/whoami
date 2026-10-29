@@ -37,6 +37,9 @@ export class GeoBuzzerView {
     this.container = document.getElementById(containerId);
     this.mapChart = null;
     this.snaChart = null;
+    this.snaResizeObserver = null;
+    this.lastSnaData = null;
+    this.currentRenderedSnaData = null;
     this.selectedProvince = 'ALL';
     this.selectedPlatform = 'all';
     this.selectedTimeframe = '24h';
@@ -328,6 +331,7 @@ export class GeoBuzzerView {
     `;
 
     this.bindEvents();
+    this.setupResizeObservers();
 
     // Inisialisasi ECharts setelah kontainer terpasang di DOM dan memiliki dimensi
     setTimeout(() => {
@@ -470,12 +474,24 @@ export class GeoBuzzerView {
     });
 
     setTimeout(() => {
-      if (viewName === 'map' && this.mapChart) {
-        this.mapChart.resize();
-      } else if (viewName === 'sna' && this.snaChart) {
-        this.snaChart.resize();
+      if (viewName === 'map') {
+        if (this.mapChart) {
+          this.mapChart.resize();
+        } else {
+          this.renderMap();
+        }
+      } else if (viewName === 'sna') {
+        if (!this.snaChart || (this.lastSnaData && this.currentRenderedSnaData !== this.lastSnaData)) {
+          if (this.lastSnaData) {
+            this.renderSnaGraph(this.lastSnaData);
+          } else {
+            this.loadProvinceSna(this.selectedProvince);
+          }
+        } else {
+          this.snaChart.resize();
+        }
       }
-    }, 60);
+    }, 50);
   }
 
   async changeStreamPace(mode) {
@@ -1023,6 +1039,8 @@ export class GeoBuzzerView {
     const snaContainer = document.getElementById('main-geo-sna-chart-container');
     if (!snaContainer || snaContainer.clientWidth === 0) return;
 
+    this.currentRenderedSnaData = snaData;
+
     if (!this.snaChart) {
       this.snaChart = echarts.init(snaContainer);
     } else {
@@ -1537,10 +1555,38 @@ export class GeoBuzzerView {
 
     const snaContainer = document.getElementById('main-geo-sna-chart-container');
     if (snaContainer && snaContainer.clientWidth > 0) {
-      if (!this.snaChart && this.lastSnaData) {
-        this.renderSnaGraph(this.lastSnaData);
+      if (!this.snaChart || (this.lastSnaData && this.currentRenderedSnaData !== this.lastSnaData)) {
+        if (this.lastSnaData) {
+          this.renderSnaGraph(this.lastSnaData);
+        } else {
+          this.loadProvinceSna(this.selectedProvince);
+        }
       } else if (this.snaChart) {
         this.snaChart.resize();
+      }
+    }
+  }
+
+  setupResizeObservers() {
+    if (window.ResizeObserver && !this.snaResizeObserver) {
+      const snaContainer = document.getElementById('main-geo-sna-chart-container');
+      if (snaContainer) {
+        this.snaResizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+              if (!this.snaChart || (this.lastSnaData && this.currentRenderedSnaData !== this.lastSnaData)) {
+                if (this.lastSnaData) {
+                  this.renderSnaGraph(this.lastSnaData);
+                } else {
+                  this.loadProvinceSna(this.selectedProvince);
+                }
+              } else if (this.snaChart) {
+                this.snaChart.resize();
+              }
+            }
+          }
+        });
+        this.snaResizeObserver.observe(snaContainer);
       }
     }
   }
