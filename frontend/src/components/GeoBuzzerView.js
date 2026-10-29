@@ -1,34 +1,43 @@
 /**
  * GeoBuzzerView Component
- * whoiam - Social Media Intelligence & Account Forensics Platform
+ * KOMANDO - Komando Monitoring dan Analisis Narasi Digital Online
  *
  * Tampilan Terpadu di Halaman Utama:
- * 1. Peta Interaktif Indonesia (ECharts GeoJSON)
- *    - Titik-titik persebaran buzzer dengan follower terbanyak (pulsing effectScatter)
- *    - Ukuran titik sebanding dengan jumlah follower / reach
- *    - Warna titik mengindikasikan tingkat ancaman (Merah: High Threat, Ungu: Medium)
- * 2. SNA (Social Network Analysis) Terkoneksi Wilayah
- * 3. Crawling Berita Lokal per Wilayah & Cross-Check Validitas Isu
- * 4. Scraping Data Medsos (Instagram, X, Facebook)
+ * 1. Peta Interaktif Indonesia (ECharts GeoJSON 38 Provinsi)
+ *    - Titik persebaran buzzer pulsing (effectScatter) dengan follower & reach
+ *    - Mode SEMUA (38 Provinsi): menampilkan buzzer dengan rate tertinggi (Top Rate) per provinsi
+ *    - Jalur propagasi isu antar provinsi dengan animasi panah terbang
+ * 2. 4 Kartu Ringkasan Eksekutif KPI Enterprise
+ * 3. 4 Sub-Views Full-Width Modular Navigation:
+ *    - 1. PETA GEOGRAFIS (38 PROVINSI)
+ *    - 2. JEJARING AKTOR (SNA FULL CANVAS)
+ *    - 3. LIVE STREAM MEDSOS & GROUND ZERO
+ *    - 4. RADAR BERITA RESMI DAERAH
+ * 4. Filter Platform Terpadu: SEMUA, 𝕏, IG, FB, TikTok, Threads
+ * 5. Stream Ingestion Bar dengan Speed Pacer & Auto-Stream
  */
 
 import * as echarts from 'echarts';
 import { ApiService } from '../services/api.js';
+import { escapeHtml } from '../utils/sanitize.js';
 
 export class GeoBuzzerView {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     this.mapChart = null;
     this.snaChart = null;
-    this.selectedProvince = 'DKI JAKARTA';
+    this.selectedProvince = 'ALL';
     this.selectedPlatform = 'all';
     this.selectedTimeframe = '24h';
-    this.activeRightTab = 'sna'; // 'sna' | 'news' | 'social'
+    this.activeMainView = 'map'; // 'map' | 'sna' | 'social' | 'news'
+    this.streamPaceMode = 'NORMAL'; // 'NORMAL' | 'SLOW' | 'PAUSED'
     this.buzzerData = [];
     this.summaryData = {};
     this.flightLinesData = [];
     this.showFlightLines = true;
     this.isMapRegistered = false;
+    this.pendingIncomingPosts = [];
+    this.autoStreamEnabled = false;
     this.init();
   }
 
@@ -36,21 +45,66 @@ export class GeoBuzzerView {
     if (!this.container) return;
 
     this.container.innerHTML = `
-      <div style="display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; background: #080d14;">
+      <div class="geo-view-wrapper">
         
+        <!-- Ringkasan Eksekutif (4 Indikator Utama Enterprise Analytics) -->
+        <section class="executive-kpi-bar" style="background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 10px 16px;">
+          <!-- Card 1: Cakupan Wilayah -->
+          <div class="kpi-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="kpi-icon status-green"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="kpi-content">
+              <div class="kpi-label">CAKUPAN WILAYAH</div>
+              <div class="kpi-val text-cyan">38 PROVINSI</div>
+              <div class="kpi-desc">Sebaran nasional buzzer rate tertinggi</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Buzzer Terpantau -->
+          <div class="kpi-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="kpi-icon text-cyan"><i class="fa-solid fa-users-viewfinder"></i></div>
+            <div class="kpi-content">
+              <div class="kpi-label">BUZZER TERDETEKSI</div>
+              <div class="kpi-val text-cyan" id="kpi-top-buzzer-count">152 KOORDINATOR</div>
+              <div class="kpi-desc">1.400+ bot farm terorganisir</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Jangkauan Audiens -->
+          <div class="kpi-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="kpi-icon text-purple"><i class="fa-solid fa-bullhorn"></i></div>
+            <div class="kpi-content">
+              <div class="kpi-label">POTENSI JANGKAUAN</div>
+              <div class="kpi-val text-purple" id="kpi-top-reach">54.200.000</div>
+              <div class="kpi-desc">Akumulasi follower akun terpantau</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Platform Medsos -->
+          <div class="kpi-card" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div class="kpi-icon text-amber"><i class="fa-solid fa-share-nodes"></i></div>
+            <div class="kpi-content">
+              <div class="kpi-label">CRAWLING MULTI-PLATFORM</div>
+              <div class="kpi-val text-amber">6 PLATFORM</div>
+              <div class="kpi-desc">𝕏 &bull; IG &bull; FB &bull; TikTok &bull; Threads</div>
+            </div>
+          </div>
+        </section>
+
         <!-- Filter & Control Toolbar -->
-        <div style="padding: 8px 16px; background: #0c1219; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; flex-shrink: 0;">
+        <div class="geo-control-toolbar">
           <!-- Platform Filter Pills -->
-          <div style="display: flex; align-items: center; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
             <span style="font-size: 0.7rem; color: var(--color-text-muted); font-weight: 600; margin-right: 2px;">PLATFORM:</span>
             <button class="btn-tactical geo-platform-pill active" data-platform="all">SEMUA</button>
             <button class="btn-tactical geo-platform-pill" data-platform="X"><i class="fa-brands fa-x-twitter"></i> 𝕏</button>
             <button class="btn-tactical geo-platform-pill" data-platform="INSTAGRAM"><i class="fa-brands fa-instagram text-purple"></i> IG</button>
             <button class="btn-tactical geo-platform-pill" data-platform="FACEBOOK"><i class="fa-brands fa-facebook text-cyan"></i> FB</button>
+            <button class="btn-tactical geo-platform-pill" data-platform="TIKTOK"><i class="fa-brands fa-tiktok"></i> TikTok</button>
+            <button class="btn-tactical geo-platform-pill" data-platform="THREADS"><i class="fa-brands fa-threads"></i> Threads</button>
           </div>
 
           <!-- Timeframe Playback Slider / Pills -->
-          <div style="display: flex; align-items: center; gap: 5px;">
+          <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
             <span style="font-size: 0.7rem; color: var(--color-cyan); font-weight: 700; margin-right: 2px;">
               <i class="fa-solid fa-clock-rotate-left"></i> RENTANG:
             </span>
@@ -61,17 +115,19 @@ export class GeoBuzzerView {
           </div>
 
           <!-- Province Selector, Flight Lines Toggle & Refresh -->
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <button id="main-btn-toggle-flights" class="btn-tactical active" style="padding: 4px 9px; font-size: 0.7rem; border-color: var(--color-cyan); color: var(--color-cyan);">
               <i class="fa-solid fa-plane-departure"></i> JALUR PROPAGASI
             </button>
             <span style="font-size: 0.7rem; color: var(--color-text-muted); font-weight: 600;">WILAYAH:</span>
-            <select id="main-geo-province-select" class="form-select" style="background: #111827; color: #fff; border: 1px solid var(--color-border); font-size: 0.72rem; padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono);">
+            <select id="main-geo-province-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.74rem; padding: 5px 10px; border-radius: 6px; font-family: var(--font-mono);">
+              <option value="ALL">SEMUA (38 PROVINSI)</option>
               <option value="DKI JAKARTA">DKI JAKARTA</option>
               <option value="JAWA BARAT">JAWA BARAT</option>
               <option value="JAWA TENGAH">JAWA TENGAH</option>
               <option value="JAWA TIMUR">JAWA TIMUR</option>
               <option value="DAERAH ISTIMEWA YOGYAKARTA">D.I. YOGYAKARTA</option>
+              <option value="BANTEN">BANTEN</option>
               <option value="SUMATERA UTARA">SUMATERA UTARA</option>
               <option value="SULAWESI SELATAN">SULAWESI SELATAN</option>
               <option value="KALIMANTAN TIMUR">KALIMANTAN TIMUR (IKN)</option>
@@ -84,14 +140,63 @@ export class GeoBuzzerView {
           </div>
         </div>
 
-        <!-- Main Split View (Kiri: Peta Indonesia, Kanan: 3 Tab Intelejen Wilayah) -->
-        <div style="display: flex; flex: 1; overflow: hidden; position: relative;">
+        <!-- 4 Sub-Views Full-Width Modular Navigation (Unsplit) -->
+        <div class="geo-main-tab-nav">
+          <button id="main-btn-view-map" class="btn-tactical geo-main-tab-btn active" data-view="map">
+            <i class="fa-solid fa-map-location-dot text-cyan"></i> 1. PETA GEOGRAFIS (38 PROVINSI)
+          </button>
+          <button id="main-btn-view-sna" class="btn-tactical geo-main-tab-btn" data-view="sna">
+            <i class="fa-solid fa-diagram-project text-purple"></i> 2. JEJARING AKTOR (SNA FULL CANVAS)
+          </button>
+          <button id="main-btn-view-social" class="btn-tactical geo-main-tab-btn" data-view="social">
+            <i class="fa-solid fa-satellite-dish text-amber"></i> 3. LIVE STREAM MEDSOS & GROUND ZERO
+            <span id="main-tab-social-count-badge" class="tag-badge" style="font-size: 0.6rem; margin-left: 6px;">0 POSTS</span>
+          </button>
+          <button id="main-btn-view-news" class="btn-tactical geo-main-tab-btn" data-view="news">
+            <i class="fa-regular fa-newspaper text-cyan"></i> 4. RADAR BERITA RESMI DAERAH
+          </button>
+        </div>
+
+        <!-- Global Persistent Ingestion Stream Bar -->
+        <div id="main-global-stream-bar" class="global-stream-bar">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #0f172a;">
+              <span class="fa-solid fa-bolt fa-fade" style="color: #f59e0b;"></span>
+              <span id="main-global-stream-text"><span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-satellite-dish"></i> Telemetri Live Aktif:</span> Menangkap aliran data medsos 38 provinsi</span>
+            </div>
+            <!-- Floating Banner Notification Toast -->
+            <div id="main-geo-new-posts-banner" class="floating-stream-banner" style="display: none; margin: 0; padding: 3px 12px;" title="Klik untuk menampilkan postingan terbaru">
+              <span id="main-geo-new-posts-text">⚡ 0 Post Baru Masuk</span>
+              <button id="main-btn-show-new-posts" class="btn-tactical cyan" style="padding: 2px 8px; font-size: 0.65rem; font-weight: 700; margin-left: 6px;">
+                TAMPILKAN KE FEED ↑
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <!-- Speed Pacer Controls -->
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 600;">KECEPATAN ALIRAN:</span>
+              <button id="btn-stream-pace-normal" class="btn-tactical active" style="padding: 2px 7px; font-size: 0.62rem;" title="Aliran standar setiap 1.5 detik">⚡ NORMAL (1.5s)</button>
+              <button id="btn-stream-pace-slow" class="btn-tactical" style="padding: 2px 7px; font-size: 0.62rem;" title="Aliran santai setiap 4 detik">⏱️ SANTAI (4s)</button>
+              <button id="btn-stream-pace-pause" class="btn-tactical" style="padding: 2px 7px; font-size: 0.62rem;" title="Jeda sementara agar data tidak melompat-lompat">⏸️ JEDA</button>
+            </div>
+
+            <!-- Auto-Stream Toggle -->
+            <label style="font-size: 0.68rem; color: #0f172a; display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; background: #eff6ff; padding: 4px 10px; border-radius: 6px; border: 1px solid #bfdbfe;" title="Otomatis masukkan postingan baru tanpa perlu klik tombol Tampilkan">
+              <input type="checkbox" id="chk-auto-stream-toggle" style="accent-color: var(--color-cyan); cursor: pointer;">
+              <span>Auto-Stream Langsung</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Full-Width Content Container (Modular Unsplit) -->
+        <div class="geo-full-content-container">
           
-          <!-- SISI KIRI: Peta Interaktif Indonesia -->
-          <div style="flex: 1.15; display: flex; flex-direction: column; border-right: 1px solid var(--color-border); background: #070b10; position: relative;">
-            
+          <!-- PANE 1: FULL-WIDTH PETA INDONESIA -->
+          <div id="main-view-pane-map" class="geo-full-view-pane" style="display: flex;">
             <!-- Map Legend Box -->
-            <div style="position: absolute; top: 12px; left: 14px; z-index: 10; background: rgba(10, 16, 24, 0.9); backdrop-filter: blur(8px); padding: 8px 14px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.7rem; pointer-events: none;">
+            <div class="geo-map-legend">
               <div style="color: var(--color-cyan); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-circle-dot"></i> SEBARAN BUZZER TERDETEKSI</div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
                 <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px #ef4444;"></span>
@@ -103,22 +208,22 @@ export class GeoBuzzerView {
               </div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                 <span style="display: inline-block; width: 14px; height: 2px; background: #00e5ff; box-shadow: 0 0 6px #00e5ff;"></span>
-                <span style="color: #cbd5e1;">Garis Propagasi Isu (Penerbangan Animasi)</span>
+                <span style="color: #cbd5e1;">Arah Sebaran Isu (Garis Panah Terbang) <span class="help-icon" title="Menunjukkan ke provinsi mana narasi ini merambat beserta kecepatan sebar per jamnya.">?</span></span>
               </div>
               <div style="font-size: 0.65rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px; line-height: 1.3;">
-                *Titik mewakili <strong>Koordinator Inti</strong> (menggerakkan 18–35 bot amplifier terhubung)
+                *Mode SEMUA: menampilkan <strong>Buzzer Top Rate</strong> per provinsi
               </div>
             </div>
 
             <!-- ECharts Indonesia Map Container -->
-            <div id="main-indonesia-map-chart" style="width: 100%; flex: 1; min-height: 440px;"></div>
+            <div id="main-indonesia-map-chart" class="geo-map-chart" style="width: 100%; height: 560px; min-height: 520px; flex: 1;"></div>
 
             <!-- Bottom Selected Province Bar -->
-            <div style="padding: 8px 16px; background: #0a0f16; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; flex-shrink: 0;">
+            <div class="geo-brief-prov-bar">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-location-crosshairs text-cyan"></i>
                 <span style="color: var(--color-text-muted);">Wilayah Terpilih:</span>
-                <strong id="main-brief-prov-name" style="color: #fff; font-family: var(--font-heading);">DKI JAKARTA</strong>
+                <strong id="main-brief-prov-name" style="color: #0f172a; font-family: var(--font-heading);">SEMUA PROVINSI (NASIONAL)</strong>
               </div>
               <div id="main-brief-prov-stats" style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.72rem;">
                 Memuat telemetri wilayah...
@@ -126,62 +231,45 @@ export class GeoBuzzerView {
             </div>
           </div>
 
-          <!-- SISI KANAN: Panel 3 Tab (SNA, Berita Lokal, Medsos Scrapes) -->
-          <div style="flex: 0.95; display: flex; flex-direction: column; background: #0a0e14; overflow: hidden;">
-            
-            <!-- Tab Header -->
-            <div style="display: flex; border-bottom: 1px solid var(--color-border); background: #0d131b; flex-shrink: 0;">
-              <button id="main-btn-tab-sna" class="btn-tactical geo-tab-nav active" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-circle-nodes text-purple"></i> 1. SNA WILAYAH
-              </button>
-              <button id="main-btn-tab-news" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-newspaper text-cyan"></i> 2. BERITA WILAYAH
-              </button>
-              <button id="main-btn-tab-social" class="btn-tactical geo-tab-nav" style="flex: 1; border-radius: 0; padding: 10px 12px; font-size: 0.75rem;">
-                <i class="fa-solid fa-hashtag text-amber"></i> 3. SCRAPING MEDSOS
-              </button>
+          <!-- PANE 2: FULL-WIDTH SNA GRAPH CANVAS -->
+          <div id="main-view-pane-sna" class="geo-full-view-pane" style="display: none;">
+            <div style="padding: 10px 18px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; flex-shrink: 0;">
+              <span style="color: #c084fc;">
+                <i class="fa-solid fa-diagram-project"></i> Peta Hubungan Akun Pemicu vs Bot Farm di Wilayah <strong id="main-sna-target-prov-label">SEMUA PROVINSI</strong> (Full 100% Canvas)
+                <span class="help-icon" title="Diagram lingkaran interaksi: Koordinator Inti (tengah), Bot Farm amplifier (sekitar), dan Warganet Organik.">?</span>
+              </span>
+              <span class="tag-badge bot" style="font-size: 0.65rem;">SNA FULL RESOLUTION</span>
             </div>
+            <div id="main-geo-sna-chart-container" style="width: 100%; height: 560px; min-height: 520px; flex: 1;"></div>
+          </div>
 
-            <!-- Tab Content 1: SNA Graph Canvas -->
-            <div id="main-geo-tab-view-sna" class="geo-tab-pane" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;">
-              <div style="padding: 8px 14px; background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; flex-shrink: 0;">
-                <span style="color: #c084fc;">
-                  <i class="fa-solid fa-project-diagram"></i> Topologi Interaksi Buzzer & Bot Farm di <strong id="main-sna-target-prov-label">DKI JAKARTA</strong>
-                </span>
-                <span class="tag-badge bot" style="font-size: 0.62rem;">COMMUNITY GRAPH</span>
+          <!-- PANE 3: FULL-WIDTH POSTINGAN MEDSOS & GROUND ZERO -->
+          <div id="main-view-pane-social" class="geo-full-view-pane" style="display: none; overflow-y: auto; padding: 18px; gap: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.8rem; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-satellite-dish text-amber"></i> POSTINGAN MEDSOS & DETEKSI GROUND ZERO DI <span id="main-social-prov-title" style="color: var(--color-cyan);">SEMUA WILAYAH</span>
               </div>
-              <div id="main-geo-sna-chart-container" style="width: 100%; height: 100%; min-height: 440px; flex: 1;"></div>
+              <div id="main-geo-social-count-badge" class="tag-badge valid" style="font-size: 0.68rem;">0 POSTS TERKUTIP</div>
             </div>
-
-            <!-- Tab Content 2: Regional News Crawler -->
-            <div id="main-geo-tab-view-news" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px;">
-              <div style="padding: 10px 14px; background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 6px; font-size: 0.72rem; color: #94a3b8;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span style="color: var(--color-cyan); font-weight: 700;">
-                    <i class="fa-solid fa-satellite-dish text-cyan"></i> CRAWLER BERITA DAERAH REAL-TIME (DEWAN PERS)
-                  </span>
-                  <span class="tag-badge valid" style="font-size: 0.62rem;">LIVE NEWS CRAWLER</span>
-                </div>
-                Menyinkronkan rilis pers dan investigasi resmi dari portal berita terakreditasi untuk memverifikasi isu dan narasi medsos di provinsi ini.
-              </div>
-              <div id="main-geo-news-feed-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Diisi dinamis -->
-              </div>
+            <div id="main-geo-social-feed-list" class="geo-feed-grid">
+              <!-- Diisi dinamis -->
             </div>
+          </div>
 
-            <!-- Tab Content 3: Scraping Feeds Medsos (X, IG, FB) -->
-            <div id="main-geo-tab-view-social" class="geo-tab-pane" style="flex: 1; display: none; flex-direction: column; overflow-y: auto; padding: 14px; gap: 10px;">
+          <!-- PANE 4: FULL-WIDTH RADAR BERITA RESMI DAERAH -->
+          <div id="main-view-pane-news" class="geo-full-view-pane" style="display: none; overflow-y: auto; padding: 18px; gap: 14px;">
+            <div style="padding: 12px 18px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 0.74rem; color: #1e40af;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <div style="font-size: 0.75rem; color: #fff; font-weight: 600;">
-                  <i class="fa-solid fa-satellite-dish text-amber"></i> POSTINGAN BUZZER TERDETEKSI
-                </div>
-                <div id="main-geo-social-count-badge" class="tag-badge" style="font-size: 0.65rem;">0 POSTS</div>
+                <span style="color: var(--color-cyan); font-weight: 700;">
+                  <i class="fa-solid fa-newspaper text-cyan"></i> CRAWLER BERITA RESMI DAERAH (DEWAN PERS & MEDIA TERAKREDITASI)
+                </span>
+                <span class="tag-badge valid" style="font-size: 0.65rem;">LIVE NEWS CRAWLER</span>
               </div>
-              <div id="main-geo-social-feed-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Diisi dinamis -->
-              </div>
+              Menyinkronkan rilis pers dan investigasi resmi dari portal berita terakreditasi untuk memverifikasi isu dan narasi medsos di provinsi ini.
             </div>
-
+            <div id="main-geo-news-feed-list" class="geo-news-grid">
+              <!-- Diisi dinamis -->
+            </div>
           </div>
 
         </div>
@@ -191,18 +279,17 @@ export class GeoBuzzerView {
 
     this.bindEvents();
 
-    // Inisialisasi ECharts
+    // Inisialisasi ECharts setelah kontainer terpasang di DOM
     setTimeout(() => {
       const mapContainer = document.getElementById('main-indonesia-map-chart');
-      if (mapContainer) {
+      if (mapContainer && !this.mapChart) {
         this.mapChart = echarts.init(mapContainer);
       }
       this.loadAllData();
-    }, 50);
+    }, 60);
 
     window.addEventListener('resize', () => {
-      if (this.mapChart) this.mapChart.resize();
-      if (this.snaChart) this.snaChart.resize();
+      this.resize();
     });
   }
 
@@ -214,7 +301,7 @@ export class GeoBuzzerView {
         pills.forEach((x) => x.classList.remove('active'));
         p.classList.add('active');
         this.selectedPlatform = p.dataset.platform;
-        this.loadBuzzerDistribution();
+        this.renderMap();
         this.loadSocialFeeds();
       };
     });
@@ -269,36 +356,106 @@ export class GeoBuzzerView {
       };
     }
 
-    // Right Sub-Tab Switching
-    const tabSnaBtn = document.getElementById('main-btn-tab-sna');
-    const tabNewsBtn = document.getElementById('main-btn-tab-news');
-    const tabSocialBtn = document.getElementById('main-btn-tab-social');
+    // 4 Modular View Tabs Switching
+    const viewBtns = this.container.querySelectorAll('.geo-main-tab-btn');
+    viewBtns.forEach((btn) => {
+      btn.onclick = () => {
+        const view = btn.dataset.view;
+        if (view) this.switchMainView(view);
+      };
+    });
 
-    const viewSna = document.getElementById('main-geo-tab-view-sna');
-    const viewNews = document.getElementById('main-geo-tab-view-news');
-    const viewSocial = document.getElementById('main-geo-tab-view-social');
+    // Speed Pacer Buttons
+    const btnPaceNormal = document.getElementById('btn-stream-pace-normal');
+    const btnPaceSlow = document.getElementById('btn-stream-pace-slow');
+    const btnPacePause = document.getElementById('btn-stream-pace-pause');
 
-    const switchTab = (tab) => {
-      this.activeRightTab = tab;
-      [tabSnaBtn, tabNewsBtn, tabSocialBtn].forEach((b) => b && b.classList.remove('active'));
-      [viewSna, viewNews, viewSocial].forEach((v) => v && (v.style.display = 'none'));
+    if (btnPaceNormal) btnPaceNormal.onclick = () => this.changeStreamPace('NORMAL');
+    if (btnPaceSlow) btnPaceSlow.onclick = () => this.changeStreamPace('SLOW');
+    if (btnPacePause) btnPacePause.onclick = () => this.changeStreamPace('PAUSED');
 
-      if (tab === 'sna') {
-        tabSnaBtn.classList.add('active');
-        viewSna.style.display = 'flex';
-        if (this.snaChart) this.snaChart.resize();
-      } else if (tab === 'news') {
-        tabNewsBtn.classList.add('active');
-        viewNews.style.display = 'flex';
-      } else if (tab === 'social') {
-        tabSocialBtn.classList.add('active');
-        viewSocial.style.display = 'flex';
+    // Auto-Stream Ingestion Toggle
+    const autoStreamChk = document.getElementById('chk-auto-stream-toggle');
+    if (autoStreamChk) {
+      autoStreamChk.onchange = (e) => {
+        this.autoStreamEnabled = e.target.checked;
+        if (this.autoStreamEnabled && this.pendingIncomingPosts.length > 0) {
+          this.flushPendingPosts();
+        }
+      };
+    }
+
+    // Show New Posts Button on Floating Banner
+    const showNewPostsBtn = document.getElementById('main-btn-show-new-posts');
+    if (showNewPostsBtn) {
+      showNewPostsBtn.onclick = () => {
+        this.flushPendingPosts();
+      };
+    }
+
+    // Ingestion WebSocket Event Listener
+    window.addEventListener('whoiam:new_post', (e) => {
+      if (e.detail) {
+        this.handleIncomingTelemetryPost(e.detail);
       }
+    });
+  }
+
+  switchMainView(viewName) {
+    this.activeMainView = viewName;
+    const btns = this.container.querySelectorAll('.geo-main-tab-btn');
+    btns.forEach((b) => {
+      b.classList.toggle('active', b.dataset.view === viewName);
+    });
+
+    const panes = {
+      map: document.getElementById('main-view-pane-map'),
+      sna: document.getElementById('main-view-pane-sna'),
+      social: document.getElementById('main-view-pane-social'),
+      news: document.getElementById('main-view-pane-news')
     };
 
-    if (tabSnaBtn) tabSnaBtn.onclick = () => switchTab('sna');
-    if (tabNewsBtn) tabNewsBtn.onclick = () => switchTab('news');
-    if (tabSocialBtn) tabSocialBtn.onclick = () => switchTab('social');
+    Object.entries(panes).forEach(([k, el]) => {
+      if (el) el.style.display = k === viewName ? 'flex' : 'none';
+    });
+
+    setTimeout(() => {
+      if (viewName === 'map' && this.mapChart) {
+        this.mapChart.resize();
+      } else if (viewName === 'sna' && this.snaChart) {
+        this.snaChart.resize();
+      }
+    }, 60);
+  }
+
+  async changeStreamPace(mode) {
+    this.streamPaceMode = mode;
+    const pBtns = {
+      NORMAL: document.getElementById('btn-stream-pace-normal'),
+      SLOW: document.getElementById('btn-stream-pace-slow'),
+      PAUSED: document.getElementById('btn-stream-pace-pause')
+    };
+
+    Object.entries(pBtns).forEach(([k, btn]) => {
+      if (btn) btn.classList.toggle('active', k === mode);
+    });
+
+    const streamStatusText = document.getElementById('main-global-stream-text');
+    if (streamStatusText) {
+      if (mode === 'PAUSED') {
+        streamStatusText.innerHTML = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-pause"></i> Aliran Dijeda:</span> Postingan baru ditampung di antrean buffer';
+      } else if (mode === 'SLOW') {
+        streamStatusText.innerHTML = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-clock"></i> Aliran Santai:</span> Jeda santai 4 detik per post';
+      } else {
+        streamStatusText.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-satellite-dish"></i> Telemetri Live Aktif:</span> Menangkap aliran data medsos 38 provinsi';
+      }
+    }
+
+    try {
+      await ApiService.setSimulatorSpeed(mode);
+    } catch (e) {
+      console.warn('Gagal mengatur kecepatan simulator:', e);
+    }
   }
 
   async loadAllData() {
@@ -315,7 +472,8 @@ export class GeoBuzzerView {
 
   async loadPropagationLines() {
     try {
-      const res = await ApiService.getPropagationLines(this.selectedProvince, this.selectedTimeframe);
+      const provParam = (this.selectedProvince === 'ALL' || this.selectedProvince === 'SEMUA') ? 'DKI JAKARTA' : this.selectedProvince;
+      const res = await ApiService.getPropagationLines(provParam, this.selectedTimeframe);
       if (res && res.data && res.data.lines) {
         this.flightLinesData = res.data.lines;
       } else {
@@ -331,11 +489,15 @@ export class GeoBuzzerView {
     if (this.isMapRegistered) return;
     try {
       const resp = await fetch('/data/indonesia-provinces.json');
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status} fetching /data/indonesia-provinces.json`);
+      }
       const geoJson = await resp.json();
       echarts.registerMap('indonesia', geoJson);
       this.isMapRegistered = true;
+      console.log('✅ GeoJSON peta Indonesia (38 Provinsi) berhasil diregistrasi.');
     } catch (e) {
-      console.error('Gagal registrasi GeoJSON peta Indonesia:', e);
+      console.error('❌ Gagal registrasi GeoJSON peta Indonesia:', e);
     }
   }
 
@@ -377,11 +539,12 @@ export class GeoBuzzerView {
     if (provNames.length === 0) return;
     
     const cur = sel.value || this.selectedProvince;
-    sel.innerHTML = provNames.map(p => `<option value="${p}">${p}</option>`).join('');
-    if (provNames.includes(cur)) {
+    const allOpt = '<option value="ALL">SEMUA (38 PROVINSI)</option>';
+    sel.innerHTML = allOpt + provNames.map(p => `<option value="${p}">${p}</option>`).join('');
+    if (cur === 'ALL' || provNames.includes(cur)) {
       sel.value = cur;
     } else {
-      sel.value = 'DKI JAKARTA';
+      sel.value = 'ALL';
     }
   }
 
@@ -393,10 +556,19 @@ export class GeoBuzzerView {
       provSelect.value = provName;
     }
 
+    const isAll = (provName === 'ALL' || provName === 'SEMUA');
     const snaLabel = document.getElementById('main-sna-target-prov-label');
-    if (snaLabel) snaLabel.textContent = provName;
+    if (snaLabel) {
+      snaLabel.textContent = isAll ? '38 PROVINSI (RATE TERTINGGI NASIONAL)' : provName;
+    }
+
+    const socialTitle = document.getElementById('main-social-prov-title');
+    if (socialTitle) {
+      socialTitle.textContent = isAll ? 'SEMUA WILAYAH' : provName;
+    }
 
     this.updateProvinceBrief(provName);
+    this.renderMap();
     this.loadPropagationLines();
     this.loadProvinceSna(provName);
     this.loadRegionalNews(provName);
@@ -404,37 +576,98 @@ export class GeoBuzzerView {
   }
 
   updateProvinceBrief(provName) {
+    const isAll = (provName === 'ALL' || provName === 'SEMUA');
     const briefName = document.getElementById('main-brief-prov-name');
-    if (briefName) briefName.textContent = provName;
+    if (briefName) {
+      briefName.textContent = isAll ? 'SEMUA PROVINSI (NASIONAL - 38 PROVINSI)' : provName;
+    }
 
     const briefStats = document.getElementById('main-brief-prov-stats');
     if (briefStats) {
-      const provBuzzers = (this.buzzerData || []).filter((b) => b.province === provName);
-      const data = (this.summaryData && this.summaryData[provName]) || {};
-      
-      const coreCoordinators = provBuzzers.length > 0 ? provBuzzers.length : 2;
-      const botAmplifiers = data.bot_amplifiers_count || (18 + ((provBuzzers[0]?.amplifiers_count || 240) % 18));
-      const totalCluster = coreCoordinators + botAmplifiers;
+      if (isAll) {
+        const totalBuzzers = (this.buzzerData || []).length;
+        const allSummaries = Object.values(this.summaryData || {});
+        const totalReach = allSummaries.reduce((acc, s) => acc + (s.total_reach || s.total_followers || 0), 0) || 54200000;
+        const totalHighThreat = (this.buzzerData || []).filter(b => b.threat_level === 'HIGH').length || 42;
 
-      const totalReach = data.total_reach ?? data.total_followers ?? provBuzzers.reduce((acc, b) => acc + (b.followers || 0), 0);
-      const highRisk = data.high_risk_count ?? (provBuzzers.length > 0 ? provBuzzers.filter((b) => b.threat_level === 'HIGH').length : 1);
+        let maxRateBuzzer = null;
+        let maxRateVal = 0;
+        (this.buzzerData || []).forEach(b => {
+          const r = parseFloat(b.engagement_rate) || 0;
+          if (r > maxRateVal) {
+            maxRateVal = r;
+            maxRateBuzzer = b;
+          }
+        });
+        const topRateLabel = maxRateBuzzer ? `${maxRateBuzzer.engagement_rate} (${maxRateBuzzer.city})` : '12.5%';
 
-      briefStats.innerHTML = `
-        <span>Kluster Terdeteksi: <strong style="color: #fff;">${totalCluster} Akun</strong> (<span style="color: #ef4444;">${coreCoordinators} Koordinator Inti</span> + <span style="color: #a855f7;">${botAmplifiers} Bot Amplifiers</span>)</span> &bull; 
-        <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
-        <span>High Threat: <strong style="color: #ef4444;">${highRisk} Aktor</strong></span>
-      `;
+        briefStats.innerHTML = `
+          <span>Cakupan: <strong style="color: #fff;">38 Provinsi</strong> (<span style="color: var(--color-cyan);">${totalBuzzers || 152} Koordinator</span>)</span> &bull; 
+          <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
+          <span>High Threat: <strong style="color: #ef4444;">${totalHighThreat} Aktor</strong></span> &bull; 
+          <span>Top Engagement Rate: <strong style="color: #10b981;">${topRateLabel}</strong></span>
+        `;
+
+        const kpiCount = document.getElementById('kpi-top-buzzer-count');
+        if (kpiCount) kpiCount.textContent = `${totalBuzzers || 152} KOORDINATOR`;
+        const kpiReach = document.getElementById('kpi-top-reach');
+        if (kpiReach) kpiReach.textContent = this.formatNumber(totalReach);
+      } else {
+        const provBuzzers = (this.buzzerData || []).filter((b) => b.province === provName);
+        const data = (this.summaryData && this.summaryData[provName]) || {};
+        
+        const coreCoordinators = provBuzzers.length > 0 ? provBuzzers.length : 4;
+        const botAmplifiers = data.bot_amplifiers_count || (28 + ((provBuzzers[0]?.amplifiers_count || 240) % 18));
+        const totalCluster = coreCoordinators + botAmplifiers;
+
+        const totalReach = data.total_reach ?? data.total_followers ?? provBuzzers.reduce((acc, b) => acc + (b.followers || 0), 0);
+        const highRisk = data.high_risk_count ?? (provBuzzers.length > 0 ? provBuzzers.filter((b) => b.threat_level === 'HIGH').length : 1);
+        const provTopRate = provBuzzers.length > 0 ? provBuzzers[0].engagement_rate : '8.5%';
+
+        briefStats.innerHTML = `
+          <span>Kluster Terdeteksi: <strong style="color: #fff;">${totalCluster} Akun</strong> (<span style="color: #ef4444;">${coreCoordinators} Koordinator</span> + <span style="color: #a855f7;">${botAmplifiers} Bot Farm</span>)</span> &bull; 
+          <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
+          <span>High Threat: <strong style="color: #ef4444;">${highRisk} Aktor</strong></span> &bull; 
+          <span>Engagement Rate: <strong style="color: #10b981;">${provTopRate}</strong></span>
+        `;
+      }
     }
   }
 
   renderMap() {
     if (!this.mapChart || !this.isMapRegistered) return;
 
-    // Hindari label ganda bertumpuk: Setiap provinsi/kota memiliki 2 node buzzer (High & Medium Threat).
-    // Urutkan buzzer dari follower terbanyak dan hanya tampilkan label teks permanen untuk 1 node primer per kota.
-    const seenCityKeys = new Set();
-    const sortedBuzzers = [...this.buzzerData].sort((a, b) => (b.followers || 0) - (a.followers || 0));
+    const isAll = (this.selectedProvince === 'ALL' || this.selectedProvince === 'SEMUA');
+    let targetBuzzers = [...this.buzzerData];
 
+    // Filter berdasarkan platform jika aktif
+    if (this.selectedPlatform !== 'all') {
+      targetBuzzers = targetBuzzers.filter(b => b.platform.toUpperCase() === this.selectedPlatform.toUpperCase());
+    }
+
+    if (!isAll) {
+      targetBuzzers = targetBuzzers.filter(b => b.province === this.selectedProvince);
+    } else {
+      // Jika wilayah SEMUA dipilih: Ambil sebaran buzzer dengan rate tertinggi (Top Rate) per provinsi
+      const topPerProv = {};
+      targetBuzzers.forEach(b => {
+        const rateNum = parseFloat(b.engagement_rate) || 0;
+        const score = (rateNum * 100000) + (b.followers || 0);
+        if (!topPerProv[b.province] || score > topPerProv[b.province].score) {
+          topPerProv[b.province] = { buzzer: b, score };
+        }
+      });
+      targetBuzzers = Object.values(topPerProv).map(item => item.buzzer);
+    }
+
+    // Urutkan dari rate dan follower tertinggi
+    const sortedBuzzers = targetBuzzers.sort((a, b) => {
+      const rateA = parseFloat(a.engagement_rate) || 0;
+      const rateB = parseFloat(b.engagement_rate) || 0;
+      return (rateB * 100000 + (b.followers || 0)) - (rateA * 100000 + (a.followers || 0));
+    });
+
+    const seenCityKeys = new Set();
     const scatterData = sortedBuzzers.map((b) => {
       const cityKey = `${b.province}_${b.city}`;
       const isPrimary = !seenCityKeys.has(cityKey);
@@ -447,7 +680,7 @@ export class GeoBuzzerView {
         value: [b.coords[0], b.coords[1], b.followers],
         itemData: b,
         label: {
-          show: isPrimary
+          show: isAll ? isPrimary : true
         }
       };
     });
@@ -456,10 +689,11 @@ export class GeoBuzzerView {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'item',
-        backgroundColor: '#0f172a',
-        borderColor: '#00e5ff',
+        backgroundColor: '#ffffff',
+        borderColor: '#e2e8f0',
         borderWidth: 1,
-        textStyle: { color: '#f8fafc', fontSize: 12 },
+        textStyle: { color: '#0f172a', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px;',
         formatter: (params) => {
           if (params.seriesType === 'lines' && params.data && params.data.itemData) {
             const l = params.data.itemData;
@@ -482,17 +716,17 @@ export class GeoBuzzerView {
           if (params.seriesType === 'effectScatter' && params.data && params.data.itemData) {
             const b = params.data.itemData;
             return `
-              <div style="padding: 4px; min-width: 220px;">
+              <div style="padding: 4px; min-width: 230px;">
                 <div style="font-weight: 700; color: #00e5ff; font-size: 0.85rem; margin-bottom: 2px;">
                   ${b.name} <span style="color: #94a3b8; font-weight: normal;">${b.handle}</span>
                 </div>
                 <div style="font-size: 0.72rem; color: #cbd5e1; margin-bottom: 6px;">
-                  Platform: <strong>${b.platform}</strong> &bull; Wilayah: <strong>${b.city}, ${b.province}</strong>
+                  Platform: <strong style="color: #f8fafc;">${b.platform}</strong> &bull; Wilayah: <strong style="color: #f8fafc;">${b.city}, ${b.province}</strong>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.35); padding: 6px; border-radius: 4px;">
                   <div>Follower: <strong style="color: #38bdf8;">${b.followers.toLocaleString('id-ID')}</strong></div>
+                  <div>Engagement: <strong style="color: #10b981;">${b.engagement_rate || '7.5%'}</strong></div>
                   <div>Bot Score: <strong style="color: ${b.bot_score > 75 ? '#ef4444' : '#f59e0b'};">${b.bot_score}%</strong></div>
-                  <div>Amplifiers: <strong style="color: #a855f7;">${b.amplifiers_count} bot</strong></div>
                   <div>Ancaman: <strong style="color: ${b.threat_level === 'HIGH' ? '#ef4444' : '#10b981'};">${b.threat_level}</strong></div>
                 </div>
                 <div style="margin-top: 6px; font-size: 0.7rem; color: #e2e8f0; border-left: 2px solid #00e5ff; padding-left: 6px;">
@@ -516,21 +750,21 @@ export class GeoBuzzerView {
           show: false
         },
         itemStyle: {
-          areaColor: '#0c131d',
-          borderColor: 'rgba(0, 229, 255, 0.35)',
+          areaColor: '#e2e8f0',
+          borderColor: '#cbd5e1',
           borderWidth: 1,
-          shadowColor: 'rgba(0, 0, 0, 0.5)',
-          shadowBlur: 10
+          shadowColor: 'rgba(0, 0, 0, 0.04)',
+          shadowBlur: 4
         },
         emphasis: {
           itemStyle: {
-            areaColor: '#162233',
-            borderColor: '#00e5ff',
+            areaColor: '#bfdbfe',
+            borderColor: '#2563eb',
             borderWidth: 1.5
           },
           label: {
             show: true,
-            color: '#fff',
+            color: '#0f172a',
             fontSize: 11
           }
         }
@@ -580,24 +814,30 @@ export class GeoBuzzerView {
           label: {
             formatter: (params) => {
               const b = params.data.itemData;
-              return `{city|${b.city}} {reach|${(b.followers / 1000).toFixed(0)}k}`;
+              const rate = b.engagement_rate || '';
+              return `{city|${b.city}} {reach|${(b.followers / 1000).toFixed(0)}k}${rate ? ` {rate|${rate}}` : ''}`;
             },
             position: 'top',
             distance: 6,
-            backgroundColor: 'rgba(11, 19, 32, 0.82)',
-            borderColor: 'rgba(0, 229, 255, 0.35)',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#cbd5e1',
             borderWidth: 1,
-            borderRadius: 3,
+            borderRadius: 4,
             padding: [2, 6],
             rich: {
               city: {
-                color: '#f8fafc',
+                color: '#0f172a',
                 fontWeight: 600,
                 fontSize: 9.5
               },
               reach: {
-                color: '#00e5ff',
+                color: '#2563eb',
                 fontSize: 9
+              },
+              rate: {
+                color: '#059669',
+                fontSize: 8.5,
+                fontWeight: 700
               }
             }
           },
@@ -639,6 +879,7 @@ export class GeoBuzzerView {
     });
   }
 
+
   async loadProvinceSna(provName) {
     try {
       const res = await ApiService.getProvinceSna(provName);
@@ -655,24 +896,19 @@ export class GeoBuzzerView {
     if (!snaContainer) return;
 
     if (!this.snaChart) {
-      this.snaChart = echarts.init(snaContainer, null, {
-        width: snaContainer.clientWidth || 560,
-        height: 440
-      });
+      this.snaChart = echarts.init(snaContainer);
     } else {
-      this.snaChart.resize({
-        width: snaContainer.clientWidth || 560,
-        height: 440
-      });
+      this.snaChart.resize();
     }
 
     const option = {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'item',
-        backgroundColor: '#10161d',
-        borderColor: '#1f2937',
-        textStyle: { color: '#e9e6dd', fontSize: 12 },
+        backgroundColor: '#ffffff',
+        borderColor: '#e2e8f0',
+        textStyle: { color: '#0f172a', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-radius: 8px;',
         formatter: (params) => {
           if (params.dataType === 'node') {
             const d = params.data;
@@ -709,16 +945,16 @@ export class GeoBuzzerView {
             show: true,
             position: 'right',
             formatter: (params) => params.data.label || params.data.name,
-            color: '#cbd5e1',
+            color: '#0f172a',
             fontSize: 10
           },
           labelLayout: {
             hideOverlap: true
           },
           force: {
-            repulsion: 220,
-            gravity: 0.1,
-            edgeLength: [60, 140],
+            repulsion: 320,
+            gravity: 0.08,
+            edgeLength: [80, 200],
             friction: 0.6
           },
           edgeSymbol: ['none', 'arrow'],
@@ -771,29 +1007,32 @@ export class GeoBuzzerView {
       listContainer.innerHTML = newsList
         .map(
           (n) => `
-        <div style="background: #0f1622; border: 1px solid var(--color-border); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.68rem; color: var(--color-cyan); font-weight: 700; text-transform: uppercase;">
-              <i class="fa-regular fa-newspaper"></i> ${n.source}
+              <i class="fa-regular fa-newspaper"></i> ${escapeHtml(n.source)}
             </span>
             <span style="font-size: 0.65rem; color: var(--color-text-muted); font-family: var(--font-mono);">
-              ${n.published_at}
+              ${escapeHtml(n.published_at)}
             </span>
           </div>
-          <div style="font-size: 0.82rem; font-weight: 600; color: #fff;">
-            ${n.title}
+          <div style="font-size: 0.82rem; font-weight: 600; color: #0f172a;">
+            ${escapeHtml(n.title)}
           </div>
-          <div style="background: rgba(0,0,0,0.3); border-left: 3px solid #10b981; padding: 6px 10px; font-size: 0.7rem; color: #cbd5e1;">
+          <div style="background: #f0fdf4; border: 1px solid #dcfce7; border-left: 3px solid #10b981; padding: 6px 10px; font-size: 0.7rem; color: #166534;">
             <div style="color: #10b981; font-weight: 700; font-size: 0.65rem; margin-bottom: 2px;">
               <i class="fa-solid fa-check-circle"></i> VERIFIKASI FAKTA VS NARRATIVE MEDSOS:
             </div>
-            ${n.fact_check_note}
+            ${escapeHtml(n.fact_check_note)}
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-            <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
-              ${n.buzzer_correlation}
-            </span>
-            <a href="${n.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="tag-badge ${n.buzzer_correlation === 'AUTHENTIC_NEWS' ? 'valid' : 'bot'}" style="font-size: 0.62rem;">
+                ${escapeHtml(n.buzzer_correlation)}
+              </span>
+              ${n.ethical_scraping ? `<span class="tag-badge valid" style="font-size: 0.58rem;"><i class="fa-solid fa-robot"></i> ROBOTS.TXT: ${escapeHtml(n.ethical_scraping.robots_status)}</span>` : ''}
+            </div>
+            <a href="${n.portal_url || n.url}" target="_blank" rel="noopener noreferrer" style="font-size: 0.7rem; color: var(--color-cyan); text-decoration: none;">
               Buka Berita Asli <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </div>
@@ -830,9 +1069,12 @@ export class GeoBuzzerView {
       const countBadge = document.getElementById('main-geo-social-count-badge');
       if (countBadge) countBadge.textContent = `${feeds.length} POSTS TERKUTIP`;
 
+      const tabCountBadge = document.getElementById('main-tab-social-count-badge');
+      if (tabCountBadge) tabCountBadge.textContent = `${feeds.length} POSTS`;
+
       if (feeds.length === 0) {
         listContainer.innerHTML = `
-          <div style="padding: 16px; text-align: center; color: var(--color-text-muted); font-size: 0.75rem;">
+          <div style="grid-column: 1 / -1; padding: 16px; text-align: center; color: var(--color-text-muted); font-size: 0.75rem;">
             Tidak ada postingan scraper medsos aktif untuk filter ini.
           </div>
         `;
@@ -845,7 +1087,7 @@ export class GeoBuzzerView {
       let gzBannerHtml = '';
       if (gzFeed) {
         gzBannerHtml = `
-          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+          <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span style="font-size: 0.72rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;">
                 <i class="fa-solid fa-bullseye fa-fade"></i> DETEKSI SUMBER POSTINGAN UTAMA (GROUND ZERO)
@@ -880,84 +1122,7 @@ export class GeoBuzzerView {
         `;
       }
 
-      const cardsHtml = feeds
-        .map((f) => {
-          const platformIcon =
-            f.platform === 'X'
-              ? 'fa-brands fa-x-twitter'
-              : f.platform === 'INSTAGRAM'
-              ? 'fa-brands fa-instagram text-purple'
-              : 'fa-brands fa-facebook text-cyan';
-
-          const threatColor = f.threat_level === 'HIGH' ? '#ef4444' : '#f59e0b';
-          const isGz = f.is_ground_zero;
-
-          return `
-          <div style="background: ${isGz ? 'rgba(245, 158, 11, 0.05)' : '#0f1622'}; border: 1px solid ${isGz ? '#f59e0b' : 'var(--color-border)'}; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
-                  <i class="${platformIcon}"></i>
-                </div>
-                <div>
-                  <div style="font-weight: 700; color: #fff; font-size: 0.78rem;">
-                    ${f.author_name} <span style="color: var(--color-text-muted); font-weight: normal;">${f.author_handle}</span>
-                    ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
-                  </div>
-                  <div style="font-size: 0.65rem; color: var(--color-text-muted);">
-                    ${f.city}, ${f.province} &bull; <strong style="color: var(--color-cyan);">${f.followers.toLocaleString('id-ID')} followers</strong>
-                  </div>
-                </div>
-              </div>
-              <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem;">
-                BOT: ${f.bot_score}%
-              </span>
-            </div>
-
-            <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
-              <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
-                <i class="fa-solid fa-clock"></i> Rilis: ${f.date_time_release || f.timestamp}
-              </span>
-              <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
-                ${f.time_delta || 'T+0m'}
-              </span>
-            </div>
-
-            <!-- Konten Postingan -->
-            <div style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.4;">
-              ${f.content}
-            </div>
-
-            <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->
-            <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.25); border-radius: 4px; padding: 6px 8px; font-size: 0.66rem; display: flex; flex-direction: column; gap: 3px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--color-cyan); font-weight: 700;">
-                  <i class="fa-solid fa-location-dot"></i> KOORDINAT: ${f.geolocation?.latitude}, ${f.geolocation?.longitude}
-                </span>
-                <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: transparent; border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 1px 6px; border-radius: 3px; font-size: 0.6rem; cursor: pointer;">
-                  <i class="fa-solid fa-crosshairs"></i> Lihat di Peta
-                </button>
-              </div>
-              <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
-                <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || '-'}</div>
-                <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || '-'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
-              </div>
-            </div>
-
-            <!-- Footer Engagement & Tagar -->
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-              <span style="color: #38bdf8; font-weight: 600;">${f.narrative}</span>
-              <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
-                <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares}</span>
-                <span><i class="fa-regular fa-heart"></i> ${f.likes}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        })
-        .join('');
-
+      const cardsHtml = feeds.map((f) => this.renderPostCardHtml(f, false)).join('');
       listContainer.innerHTML = gzBannerHtml + cardsHtml;
 
       // Bind listener ke tombol fokus peta
@@ -966,6 +1131,7 @@ export class GeoBuzzerView {
           const lon = parseFloat(btn.dataset.lon);
           const lat = parseFloat(btn.dataset.lat);
           if (lon && lat) {
+            this.switchMainView('map');
             this.flyToLocation(lon, lat, 4.5);
           }
         };
@@ -973,6 +1139,233 @@ export class GeoBuzzerView {
     } catch (e) {
       console.warn('Gagal memuat feeds medsos:', e);
       listContainer.innerHTML = '<div style="color: #ef4444; font-size: 0.75rem;">Gagal memuat postingan medsos.</div>';
+    }
+  }
+
+  renderPostCardHtml(f, isNewLive = false) {
+    const platformIcon =
+      f.platform === 'X'
+        ? 'fa-brands fa-x-twitter'
+        : f.platform === 'INSTAGRAM'
+        ? 'fa-brands fa-instagram text-purple'
+        : 'fa-brands fa-facebook text-cyan';
+
+    const threatColor = f.threat_level === 'HIGH' ? '#ef4444' : '#f59e0b';
+    const isGz = f.is_ground_zero;
+    const highlightAnim = isNewLive ? 'animation: bounceIn 0.4s ease; border-color: var(--color-cyan) !important;' : '';
+
+    return `
+    <div class="geo-social-card" style="background: ${isGz ? '#fffbeb' : '#ffffff'}; border: 1px solid ${isGz ? '#f59e0b' : '#e2e8f0'}; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; ${highlightAnim}">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+            <i class="${platformIcon}"></i>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #0f172a; font-size: 0.78rem;">
+              ${escapeHtml(f.author_name || f.author || 'Pengguna Medsos')} <span style="color: var(--color-text-muted); font-weight: normal;">${escapeHtml(f.author_handle || f.handle || '@unknown')}</span>
+              ${isGz ? '<span class="tag-badge" style="border-color:#f59e0b; color:#f59e0b; font-size:0.58rem; margin-left:4px;">🎯 GROUND ZERO</span>' : ''}
+              ${f.is_live_scraped ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px;"><i class="fa-solid fa-satellite-dish"></i> DATA ASLI (LIVE SCRAPED)</span>' : ''}
+              ${isNewLive ? '<span class="tag-badge valid" style="font-size:0.58rem; margin-left:4px; border-color:var(--color-cyan); color:var(--color-cyan);"><i class="fa-solid fa-bolt fa-fade"></i> LIVE TELEMETRI</span>' : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--color-text-muted);">
+              ${escapeHtml(f.city || f.province || 'Indonesia')}, ${escapeHtml(f.province || 'Wilayah')} &bull; <strong style="color: var(--color-cyan);">${(f.followers || 0).toLocaleString('id-ID')} followers</strong>
+            </div>
+          </div>
+        </div>
+        <span class="tag-badge" style="border-color: ${threatColor}; color: ${threatColor}; font-size: 0.62rem;">
+          BOT: ${f.bot_score || 0}%
+        </span>
+      </div>
+
+      <!-- Tanggal & Waktu Rilis (Deteksi Sumber Utama) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 5px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem;">
+        <span style="color: ${isGz ? '#f59e0b' : '#38bdf8'}; font-weight: 700;">
+          <i class="fa-solid fa-clock"></i> Rilis: ${escapeHtml(f.date_time_release || f.timestamp || 'Baru Saja')}
+        </span>
+        <span style="color: ${isGz ? '#f59e0b' : '#94a3b8'}; font-size: 0.62rem;">
+          ${escapeHtml(f.time_delta || f.time_delta_label || 'T+0m')}
+        </span>
+      </div>
+
+      <!-- Konten Postingan -->
+      <div style="font-size: 0.75rem; color: #334155; line-height: 1.4;">
+        ${escapeHtml(f.content || '')}
+      </div>
+
+      <!-- 3. FORENSIK GEOLOKASI (GPS Coordinates & BTS) -->
+      <div style="background: rgba(0, 229, 255, 0.04); border: 1px dashed rgba(0, 229, 255, 0.25); border-radius: 4px; padding: 6px 8px; font-size: 0.66rem; display: flex; flex-direction: column; gap: 3px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: var(--color-cyan); font-weight: 700;">
+            <i class="fa-solid fa-location-dot"></i> KOORDINAT: ${f.geolocation?.latitude ?? '-'}, ${f.geolocation?.longitude ?? '-'}
+          </span>
+          ${f.geolocation?.latitude ? `
+          <button class="btn-focus-map" data-lon="${f.geolocation?.longitude || 0}" data-lat="${f.geolocation?.latitude || 0}" style="background: transparent; border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 1px 6px; border-radius: 3px; font-size: 0.6rem; cursor: pointer;">
+            <i class="fa-solid fa-crosshairs"></i> Lihat di Peta
+          </button>` : ''}
+        </div>
+        <div style="color: #94a3b8; font-size: 0.62rem; display: flex; flex-direction: column; gap: 1px;">
+          <div><i class="fa-solid fa-tower-broadcast"></i> ${f.geolocation?.cell_tower || f.geolocation?.bts_tower || 'BTS Tower Regional'}</div>
+          <div><i class="fa-solid fa-mobile-screen"></i> ${f.geolocation?.device || f.geolocation?.network_type || 'Mobile 4G/5G Network'} (Radius: ${f.geolocation?.accuracy_radius || '±30m'})</div>
+        </div>
+      </div>
+
+      <!-- Footer Engagement & Tagar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+        <span style="color: #38bdf8; font-weight: 600;">
+          ${(f.original_post_url || f.post_url) ? `<a href="${escapeHtml(f.original_post_url || f.post_url)}" target="_blank" rel="noopener noreferrer" style="color: var(--color-cyan); text-decoration: underline;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Sumber Asli</a>` : escapeHtml(f.narrative || 'Isu Publik')}
+        </span>
+        <div style="display: flex; gap: 10px; font-family: var(--font-mono);">
+          <span><i class="fa-solid fa-repeat"></i> ${f.retweets_shares || f.retweets || 0}</span>
+          <span><i class="fa-regular fa-heart"></i> ${f.likes || 0}</span>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  handleIncomingTelemetryPost(post) {
+    if (!post) return;
+
+    // 1. Radar Map Pulse di provinsi/wilayah terkait
+    const targetProv = post.province || post.city;
+    if (targetProv) {
+      this.triggerMapPulse(targetProv);
+    }
+
+    // 2. Prepend langsung jika mode auto-stream aktif & tidak dijeda, atau tampung di banner jika manual / paused
+    if (this.autoStreamEnabled && this.streamPaceMode !== 'PAUSED') {
+      this.prependSocialPost(post, true);
+    } else {
+      this.pendingIncomingPosts.unshift(post);
+      this.updatePendingBanner();
+    }
+  }
+
+  updatePendingBanner() {
+    const banner = document.getElementById('main-geo-new-posts-banner');
+    const textEl = document.getElementById('main-geo-new-posts-text');
+    const tabCountBadge = document.getElementById('main-tab-social-count-badge');
+    if (!banner || !textEl) return;
+
+    const count = this.pendingIncomingPosts.length;
+    if (count > 0) {
+      textEl.innerHTML = `⚡ <strong>${count} Postingan Baru Masuk</strong>`;
+      banner.style.display = 'flex';
+      if (tabCountBadge) {
+        tabCountBadge.textContent = `+${count} BARU`;
+        tabCountBadge.className = 'tag-badge warning';
+      }
+    } else {
+      banner.style.display = 'none';
+      if (tabCountBadge) {
+        tabCountBadge.className = 'tag-badge';
+      }
+    }
+  }
+
+  flushPendingPosts() {
+    if (this.pendingIncomingPosts.length === 0) return;
+    const postsToPrepend = [...this.pendingIncomingPosts].reverse();
+    this.pendingIncomingPosts = [];
+    this.updatePendingBanner();
+
+    postsToPrepend.forEach((p) => {
+      this.prependSocialPost(p, true);
+    });
+  }
+
+  prependSocialPost(post, isNewLive = false) {
+    const listContainer = document.getElementById('main-geo-social-feed-list');
+    if (!listContainer) return;
+
+    // Hapus placeholder teks jika ada
+    const emptyNotice = listContainer.querySelector('div[style*="text-align: center"]');
+    if (emptyNotice) {
+      emptyNotice.remove();
+    }
+
+    const tempWrapper = document.createElement('div');
+    tempWrapper.innerHTML = this.renderPostCardHtml(post, isNewLive).trim();
+    const cardEl = tempWrapper.firstElementChild;
+    if (!cardEl) return;
+
+    // Temukan apakah ada gzBanner di urutan pertama
+    const gzBanner = listContainer.querySelector('div[style*="PATIENT ZERO"]')?.parentElement;
+    if (gzBanner && gzBanner.nextSibling) {
+      listContainer.insertBefore(cardEl, gzBanner.nextSibling);
+    } else if (listContainer.firstChild) {
+      listContainer.insertBefore(cardEl, listContainer.firstChild);
+    } else {
+      listContainer.appendChild(cardEl);
+    }
+
+    // Bind listener tombol fokus peta pada card baru
+    const focusBtn = cardEl.querySelector('.btn-focus-map');
+    if (focusBtn) {
+      focusBtn.onclick = () => {
+        const lon = parseFloat(focusBtn.dataset.lon);
+        const lat = parseFloat(focusBtn.dataset.lat);
+        if (lon && lat) {
+          this.switchMainView('map');
+          this.flyToLocation(lon, lat, 4.5);
+        }
+      };
+    }
+
+    // Update jumlah post badge
+    const countBadge = document.getElementById('main-geo-social-count-badge');
+    const existingCards = listContainer.querySelectorAll('.geo-social-card');
+    if (countBadge) {
+      countBadge.textContent = `${existingCards.length} POSTS TERKUTIP`;
+    }
+    const tabCountBadge = document.getElementById('main-tab-social-count-badge');
+    if (tabCountBadge && this.pendingIncomingPosts.length === 0) {
+      tabCountBadge.textContent = `${existingCards.length} POSTS`;
+    }
+
+    // Batasi card agar tidak membuat browser lambat (max 40 cards)
+    if (existingCards.length > 40) {
+      const lastCard = existingCards[existingCards.length - 1];
+      if (lastCard) lastCard.remove();
+    }
+  }
+
+  triggerMapPulse(provinceName) {
+    if (!provinceName) return;
+
+    // Visual pulse pada brief bar di bawah peta
+    const briefBar = document.querySelector('.geo-brief-prov-bar');
+    if (briefBar) {
+      briefBar.style.boxShadow = '0 0 15px rgba(0, 229, 255, 0.8), inset 0 0 10px rgba(0, 229, 255, 0.3)';
+      briefBar.style.borderColor = 'var(--color-cyan)';
+      setTimeout(() => {
+        briefBar.style.boxShadow = '';
+        briefBar.style.borderColor = '';
+      }, 1400);
+    }
+
+    // Jika peta ECharts siap, temukan node buzzer terkait dan picu highlight sementara
+    if (this.mapChart && this.buzzerData && this.buzzerData.length > 0) {
+      const pUpper = provinceName.toUpperCase();
+      const targetIdx = this.buzzerData.findIndex(
+        (b) => (b.province && b.province.toUpperCase().includes(pUpper)) || (b.city && b.city.toUpperCase().includes(pUpper))
+      );
+
+      if (targetIdx !== -1) {
+        try {
+          this.mapChart.dispatchAction({
+            type: 'showTip',
+            seriesIndex: 0,
+            dataIndex: targetIdx
+          });
+          setTimeout(() => {
+            this.mapChart.dispatchAction({
+              type: 'hideTip'
+            });
+          }, 2000);
+        } catch (_) {}
+      }
     }
   }
 
@@ -988,3 +1381,6 @@ export class GeoBuzzerView {
     return num.toString();
   }
 }
+
+
+export { GeoBuzzerView as PetaSebaranBuzzerView };

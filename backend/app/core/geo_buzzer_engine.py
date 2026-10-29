@@ -349,8 +349,10 @@ PROVINCE_SUMMARIES = {}
 REGIONAL_NEWS = {}
 
 for idx, p in enumerate(PROVINCES_DATA):
-    b1_id = f"bz-{idx*2+1:03d}"
-    b2_id = f"bz-{idx*2+2:03d}"
+    b1_id = f"bz-{idx*4+1:03d}"
+    b2_id = f"bz-{idx*4+2:03d}"
+    b3_id = f"bz-{idx*4+3:03d}"
+    b4_id = f"bz-{idx*4+4:03d}"
     
     # Node Buzzer 1 (Utama)
     b1_data = p["b1"]
@@ -374,8 +376,8 @@ for idx, p in enumerate(PROVINCES_DATA):
     
     # Node Buzzer 2 (Amplifier / Counter)
     b2_data = p["b2"]
-    offset_lon = random.uniform(-0.07, 0.07)
-    offset_lat = random.uniform(-0.07, 0.07)
+    offset_lon = random.uniform(-0.06, 0.06)
+    offset_lat = random.uniform(-0.06, 0.06)
     b2 = {
         "id": b2_id,
         "handle": b2_data["handle"],
@@ -393,20 +395,63 @@ for idx, p in enumerate(PROVINCES_DATA):
         "verified": False,
         "amplifiers_count": random.randint(140, 560)
     }
+
+    # Node Buzzer 3 (TikTok FYP Sound / Video Amplifier)
+    offset_lon3 = random.uniform(-0.08, 0.08)
+    offset_lat3 = random.uniform(-0.08, 0.08)
+    city_slug = p["city"].lower().replace(" ", "_")
+    b3 = {
+        "id": b3_id,
+        "handle": f"@{city_slug}_tiktok_trend",
+        "name": f"{p['city']} FYP Trend",
+        "platform": "TIKTOK",
+        "province": p["name"],
+        "city": p["city"],
+        "coords": [round(p["coords"][0] + offset_lon3, 4), round(p["coords"][1] + offset_lat3, 4)],
+        "followers": int(b1_data["fol"] * 1.15),
+        "bot_score": round(random.uniform(76.0, 92.0), 1),
+        "threat_level": "HIGH" if b1_data["threat"] == "HIGH" else "MEDIUM",
+        "narrative": p["issue"],
+        "post_snippet": f"[VT VIRAL] Cuplikan video sound FYP isu {p['issue']} di {p['city']} tembus ratusan ribu tayangan!",
+        "engagement_rate": f"{round(random.uniform(7.2, 12.5), 1)}%",
+        "verified": False,
+        "amplifiers_count": random.randint(250, 750)
+    }
+
+    # Node Buzzer 4 (Threads Micro-Debate Hub)
+    offset_lon4 = random.uniform(-0.07, 0.07)
+    offset_lat4 = random.uniform(-0.07, 0.07)
+    b4 = {
+        "id": b4_id,
+        "handle": f"@{city_slug}_threads_radar",
+        "name": f"{p['city']} Threads Radar",
+        "platform": "THREADS",
+        "province": p["name"],
+        "city": p["city"],
+        "coords": [round(p["coords"][0] + offset_lon4, 4), round(p["coords"][1] + offset_lat4, 4)],
+        "followers": int(b2_data["fol"] * 0.8),
+        "bot_score": round(random.uniform(62.0, 84.0), 1),
+        "threat_level": "MEDIUM",
+        "narrative": p["issue"],
+        "post_snippet": f"[Thread Utas] Diskusi mendalam netizen perihal eskalasi {p['issue']} di wilayah {p['city']}.",
+        "engagement_rate": f"{round(random.uniform(4.0, 7.5), 1)}%",
+        "verified": False,
+        "amplifiers_count": random.randint(120, 480)
+    }
     
-    BUZZER_NODES.extend([b1, b2])
+    BUZZER_NODES.extend([b1, b2, b3, b4])
     
     # Ringkasan per Provinsi
-    total_fol = b1["followers"] + b2["followers"]
-    high_threat_c = sum(1 for b in [b1, b2] if b["threat_level"] == "HIGH")
-    bot_amplifiers_count = random.randint(18, 36)
-    total_cluster_count = 2 + bot_amplifiers_count
+    total_fol = b1["followers"] + b2["followers"] + b3["followers"] + b4["followers"]
+    high_threat_c = sum(1 for b in [b1, b2, b3, b4] if b["threat_level"] == "HIGH")
+    bot_amplifiers_count = random.randint(28, 54)
+    total_cluster_count = 4 + bot_amplifiers_count
 
     PROVINCE_SUMMARIES[p["name"]] = {
         "province": p["name"],
         "capital": p["city"],
         "coords": p["coords"],
-        "core_coordinators": 2,
+        "core_coordinators": 4,
         "bot_amplifiers_count": bot_amplifiers_count,
         "total_cluster_count": total_cluster_count,
         "total_buzzers": total_cluster_count,
@@ -414,7 +459,7 @@ for idx, p in enumerate(PROVINCES_DATA):
         "total_followers": total_fol,
         "total_reach": total_fol,
         "high_risk_count": high_threat_c,
-        "avg_bot_score": round((b1["bot_score"] + b2["bot_score"]) / 2, 1),
+        "avg_bot_score": round((b1["bot_score"] + b2["bot_score"] + b3["bot_score"] + b4["bot_score"]) / 4, 1),
         "dominant_narrative": p["issue"],
         "top_influencer": b1["handle"],
         "reach_potential": f"{round(total_fol / 1000000, 2)}M",
@@ -549,8 +594,14 @@ class GeoBuzzerEngine:
             return []
 
     def get_regional_news(self, province: str = "all", province_name: str = None, **kwargs) -> list:
-        prov = province_name or province or kwargs.get("province", "DKI JAKARTA")
+        prov = province_name or province or kwargs.get("province", "ALL")
         prov_key = str(prov).upper()
+
+        if prov_key in ["ALL", "SEMUA"]:
+            all_news = []
+            for n_list in self.news.values():
+                all_news.extend(n_list)
+            return all_news[:8]
 
         # 1. Cek Cache In-Memory
         now_ts = datetime.now().timestamp()
@@ -575,6 +626,8 @@ class GeoBuzzerEngine:
         Menghasilkan kurva garis aliran propagasi transmisi isu dari Ground Zero ke provinsi lain.
         """
         prov_key = str(province_name).upper()
+        if prov_key in ["ALL", "SEMUA"]:
+            prov_key = "DKI JAKARTA"
         source_prov = next((p for p in PROVINCES_DATA if p["name"] == prov_key), PROVINCES_DATA[10])
         source_coords = source_prov["coords"]
 
@@ -597,15 +650,28 @@ class GeoBuzzerEngine:
         return lines
 
     def get_social_media_feeds(self, platform: str = "all", province: str = "all", province_name: str = None, **kwargs) -> list:
-        prov = province_name or province or kwargs.get("province", "DKI JAKARTA")
+        prov = province_name or province or kwargs.get("province", "ALL")
         prov_key = str(prov).upper()
         
-        buzzers_in_prov = [b for b in self.buzzers if b["province"] == prov_key]
-        if not buzzers_in_prov or prov_key == "ALL":
-            buzzers_in_prov = self.buzzers[:6]
-
-        if platform and platform.lower() != "all":
-            buzzers_in_prov = [b for b in buzzers_in_prov if b["platform"].lower() == platform.lower()]
+        if prov_key in ["ALL", "SEMUA"]:
+            pool = list(self.buzzers)
+            if platform and platform.lower() != "all":
+                pool = [b for b in pool if b["platform"].lower() == platform.lower()]
+            # Urutkan berdasarkan engagement_rate & followers tertinggi di seluruh nusantara
+            buzzers_in_prov = sorted(
+                pool,
+                key=lambda b: (
+                    float(str(b.get("engagement_rate", "0%")).replace("%", "").strip() or 0),
+                    b.get("followers", 0)
+                ),
+                reverse=True
+            )[:12]
+        else:
+            buzzers_in_prov = [b for b in self.buzzers if b["province"] == prov_key]
+            if not buzzers_in_prov:
+                buzzers_in_prov = self.buzzers[:6]
+            if platform and platform.lower() != "all":
+                buzzers_in_prov = [b for b in buzzers_in_prov if b["platform"].lower() == platform.lower()]
 
         now = datetime.now()
         base_time = now - timedelta(minutes=45, seconds=15)
@@ -634,6 +700,7 @@ class GeoBuzzerEngine:
                 "province": b["province"],
                 "city": b["city"],
                 "followers": b["followers"],
+                "engagement_rate": b.get("engagement_rate", "7.5%"),
                 "content": b["post_snippet"],
                 "narrative": b["narrative"],
                 "bot_score": b["bot_score"],
@@ -666,6 +733,137 @@ class GeoBuzzerEngine:
 
     def get_province_sna_network(self, province_name: str) -> dict:
         prov_upper = province_name.upper()
+
+        if prov_upper in ["ALL", "SEMUA", "NASIONAL"]:
+            top_national_buzzers = sorted(
+                self.buzzers,
+                key=lambda b: (
+                    float(str(b.get("engagement_rate", "0%")).replace("%", "").strip() or 0),
+                    b.get("followers", 0)
+                ),
+                reverse=True
+            )[:8]
+            nodes = []
+            links = []
+
+            official_id = "@satgas_siber_nasional"
+            nodes.append({
+                "id": official_id,
+                "name": official_id,
+                "label": "Satgas Intel Siber RI (Pusat)",
+                "role": "OFFICIAL",
+                "category": 4,
+                "symbolSize": 42,
+                "itemStyle": {"color": "#10b981", "borderColor": "#34d399", "borderWidth": 2},
+                "followers": 5500000,
+                "bot_score": 2.0,
+                "influence": 99.0
+            })
+
+            gz = top_national_buzzers[0]
+            nodes.append({
+                "id": gz["handle"],
+                "name": gz["handle"],
+                "label": f"🎯 {gz['name']} ({gz['platform']} - {gz['city']})",
+                "role": "GROUND_ZERO_ORIGIN",
+                "category": 0,
+                "symbolSize": 48,
+                "itemStyle": {"color": "#f59e0b", "borderColor": "#fbbf24", "borderWidth": 3, "shadowBlur": 15, "shadowColor": "#f59e0b"},
+                "followers": gz["followers"],
+                "bot_score": gz["bot_score"],
+                "influence": 96.0,
+                "origin_release": "07:15:00 WIB (ORIGIN NASIONAL)",
+                "coords": gz["coords"]
+            })
+            links.append({
+                "source": gz["handle"],
+                "target": official_id,
+                "relation": "COUNTER_NARRATIVE_DEBUNK",
+                "value": 5,
+                "lineStyle": {"color": "#ef4444", "width": 2.5, "type": "dashed"}
+            })
+
+            for idx, b in enumerate(top_national_buzzers[1:], start=1):
+                nodes.append({
+                    "id": b["handle"],
+                    "name": b["handle"],
+                    "label": f"⚡ {b['name']} ({b['platform']} - {b['city']})",
+                    "role": "CROSS_PLATFORM_AMPLIFIER",
+                    "category": 1,
+                    "symbolSize": 38,
+                    "itemStyle": {"color": "#8b5cf6", "borderColor": "#c084fc", "borderWidth": 2},
+                    "followers": b["followers"],
+                    "bot_score": b["bot_score"],
+                    "influence": 88.0 - idx * 3,
+                    "origin_release": f"T+{idx*4}m",
+                    "coords": b["coords"]
+                })
+                links.append({
+                    "source": gz["handle"],
+                    "target": b["handle"],
+                    "relation": "PROPAGASI_NASIONAL",
+                    "value": 4,
+                    "lineStyle": {"color": "#a855f7", "width": 2.5, "curveness": 0.15 * (1 if idx % 2 == 0 else -1)}
+                })
+                bot_id = f"@botnet_nasional_{idx}"
+                nodes.append({
+                    "id": bot_id,
+                    "name": bot_id,
+                    "label": f"Botnet Cluster #{idx}",
+                    "role": "BOT_AMPLIFIER",
+                    "category": 2,
+                    "symbolSize": 14,
+                    "itemStyle": {"color": "#f97316"},
+                    "followers": random.randint(150, 900),
+                    "bot_score": random.randint(85, 99),
+                    "influence": 28.0
+                })
+                links.append({
+                    "source": bot_id,
+                    "target": b["handle"],
+                    "relation": "AMPLIFY_REPOST",
+                    "value": 3,
+                    "lineStyle": {"color": "#f97316", "width": 1.5}
+                })
+
+            for j in range(1, 4):
+                org_id = f"@netizen_ri_{j}"
+                nodes.append({
+                    "id": org_id,
+                    "name": org_id,
+                    "label": f"Warga Netizen #{j}",
+                    "role": "ORGANIC",
+                    "category": 3,
+                    "symbolSize": 18,
+                    "itemStyle": {"color": "#00e5ff"},
+                    "followers": random.randint(800, 3500),
+                    "bot_score": 10.0,
+                    "influence": 35.0
+                })
+                links.append({
+                    "source": org_id,
+                    "target": gz["handle"] if j == 1 else official_id,
+                    "relation": "ORGANIC_REACTION",
+                    "value": 1,
+                    "lineStyle": {"color": "#00e5ff", "width": 1}
+                })
+
+            return {
+                "province": "38 PROVINSI (NASIONAL)",
+                "total_nodes": len(nodes),
+                "total_links": len(links),
+                "ground_zero_node": gz["handle"],
+                "nodes": nodes,
+                "links": links,
+                "categories": [
+                    {"name": "🎯 Sumber Pertama (Ground Zero)"},
+                    {"name": "⚡ Hub Lintas Medsos (Amplifier)"},
+                    {"name": "🤖 Botnet Farm Amplifiers"},
+                    {"name": "👥 Netizen Organik"},
+                    {"name": "🏛️ Resmi Otoritas Wilayah"}
+                ]
+            }
+
         buzzers_in_prov = [b for b in self.buzzers if b["province"] == prov_upper]
         if not buzzers_in_prov:
             buzzers_in_prov = self.buzzers[:2]
@@ -763,6 +961,98 @@ class GeoBuzzerEngine:
                     "relation": "CROSS_REPOST",
                     "value": random.randint(2, 4),
                     "lineStyle": {"color": "#ec4899", "width": 1.5}
+                })
+
+        # Node 3: Hub Lintas Medsos TikTok (Video & Sound Amplifier)
+        if len(buzzers_in_prov) > 2:
+            b3 = buzzers_in_prov[2]
+            nodes.append({
+                "id": b3["handle"],
+                "name": b3["handle"],
+                "label": f"🎬 {b3['name']} (TIKTOK)",
+                "role": "TIKTOK_VIRAL_AMPLIFIER",
+                "category": 1,
+                "symbolSize": 36,
+                "itemStyle": {"color": "#ff0050", "borderColor": "#00f2fe", "borderWidth": 2, "shadowBlur": 10, "shadowColor": "#ff0050"},
+                "followers": b3["followers"],
+                "bot_score": b3["bot_score"],
+                "influence": 86.0,
+                "origin_release": "18:52:10 WIB (+10m)",
+                "coords": b3["coords"]
+            })
+            links.append({
+                "source": b1["handle"],
+                "target": b3["handle"],
+                "relation": "CROSS_PLATFORM_TIKTOK_REMIX",
+                "value": 4,
+                "lineStyle": {"color": "#ff0050", "width": 2.5, "curveness": -0.2}
+            })
+            for m in range(1, 3):
+                bot3_id = f"@bot_{b3['id']}_{m}"
+                nodes.append({
+                    "id": bot3_id,
+                    "name": bot3_id,
+                    "label": f"Bot TikTok #{m}",
+                    "role": "BOT_AMPLIFIER",
+                    "category": 2,
+                    "symbolSize": 14,
+                    "itemStyle": {"color": "#ff0050"},
+                    "followers": random.randint(30, 400),
+                    "bot_score": random.randint(85, 99),
+                    "influence": 24.0
+                })
+                links.append({
+                    "source": bot3_id,
+                    "target": b3["handle"],
+                    "relation": "TIKTOK_SOUND_SPAM",
+                    "value": 3,
+                    "lineStyle": {"color": "#ff0050", "width": 1.5}
+                })
+
+        # Node 4: Hub Percakapan Threads (Micro-Debate & Quote Hub)
+        if len(buzzers_in_prov) > 3:
+            b4 = buzzers_in_prov[3]
+            nodes.append({
+                "id": b4["handle"],
+                "name": b4["handle"],
+                "label": f"🧵 {b4['name']} (THREADS)",
+                "role": "THREADS_DEBATE_AMPLIFIER",
+                "category": 1,
+                "symbolSize": 34,
+                "itemStyle": {"color": "#38bdf8", "borderColor": "#e2e8f0", "borderWidth": 2, "shadowBlur": 10, "shadowColor": "#38bdf8"},
+                "followers": b4["followers"],
+                "bot_score": b4["bot_score"],
+                "influence": 78.0,
+                "origin_release": "18:55:40 WIB (+13m)",
+                "coords": b4["coords"]
+            })
+            links.append({
+                "source": b2["handle"] if b2 else b1["handle"],
+                "target": b4["handle"],
+                "relation": "CROSS_PLATFORM_THREAD_SYNC",
+                "value": 4,
+                "lineStyle": {"color": "#38bdf8", "width": 2.5, "curveness": 0.25}
+            })
+            for n in range(1, 3):
+                bot4_id = f"@bot_{b4['id']}_{n}"
+                nodes.append({
+                    "id": bot4_id,
+                    "name": bot4_id,
+                    "label": f"Bot Threads #{n}",
+                    "role": "BOT_AMPLIFIER",
+                    "category": 2,
+                    "symbolSize": 14,
+                    "itemStyle": {"color": "#38bdf8"},
+                    "followers": random.randint(20, 320),
+                    "bot_score": random.randint(80, 96),
+                    "influence": 20.0
+                })
+                links.append({
+                    "source": bot4_id,
+                    "target": b4["handle"],
+                    "relation": "THREAD_QUOTE_AMPLIFY",
+                    "value": 2,
+                    "lineStyle": {"color": "#38bdf8", "width": 1.5}
                 })
 
         # 4 Bot Farm Nodes yang mengamplifikasi Ground Zero b1

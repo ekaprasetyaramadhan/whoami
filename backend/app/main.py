@@ -101,9 +101,29 @@ from fastapi.responses import FileResponse
 # Cek apakah folder frontend/dist tersedia (misal saat running di Docker / Production)
 DIST_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
 ASSETS_DIR = os.path.join(DIST_DIR, "assets")
+DATA_DIR = os.path.join(DIST_DIR, "data")
+if not os.path.exists(DATA_DIR):
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "data"))
 
 if os.path.exists(ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="static-assets")
+
+if os.path.exists(DATA_DIR):
+    app.mount("/data", StaticFiles(directory=DATA_DIR), name="static-data")
+
+@app.get("/data/indonesia-provinces.json")
+def get_indonesia_provinces():
+    prov_file = os.path.join(DATA_DIR, "indonesia-provinces.json")
+    if not os.path.exists(prov_file):
+        prov_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "data", "indonesia-provinces.json"))
+    return FileResponse(prov_file, media_type="application/json")
+
+@app.get("/Komando.png")
+def get_komando_logo():
+    logo_file = os.path.join(DIST_DIR, "Komando.png")
+    if not os.path.exists(logo_file):
+        logo_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Komando.png"))
+    return FileResponse(logo_file)
 
 @app.get("/")
 def read_root():

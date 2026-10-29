@@ -70,6 +70,10 @@ export const ApiService = {
     return await res.json();
   },
 
+  async searchOsintFeed(query, platform = 'all', limit = 10, injectStream = true) {
+    return await this.searchOsintIngest(query, platform, limit, injectStream);
+  },
+
   async getGeoBuzzerDistribution(platform = 'all', province = 'all') {
     const res = await fetch(`${API_BASE}/geo/buzzer-distribution?platform=${encodeURIComponent(platform)}&province=${encodeURIComponent(province)}`);
     return await res.json();
@@ -107,6 +111,19 @@ export const ApiService = {
       body: JSON.stringify({ url_a: urlA, url_b: urlB })
     });
     return await res.json();
+  },
+
+  async setSimulatorSpeed(speed) {
+    try {
+      const res = await fetch(`${API_BASE}/sim/control`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ speed })
+      });
+      return await res.json();
+    } catch (e) {
+      console.warn('Gagal setSimulatorSpeed:', e);
+      return { status: 'mock' };
+    }
   }
 };
-

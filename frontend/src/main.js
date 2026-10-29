@@ -1,91 +1,121 @@
 /**
- * whoiam Frontend Bootstrap
- * Social Media Intelligence & Regional Buzzer Forensics Platform
+ * KOMANDO Application Bootstrap
+ * Komando Monitoring dan Analisis Narasi Digital Online
  */
 
-import { CognitiveStore } from './state/store.js';
 import { streamService } from './services/stream.js';
-import { ApiService } from './services/api.js';
-
-import { HeaderBar } from './components/HeaderBar.js';
+import { Sidebar } from './components/Sidebar.js';
+import { TopBar } from './components/TopBar.js';
 import { GuideModal } from './components/GuideModal.js';
+import { KomandoDashboardView } from './components/KomandoDashboardView.js';
 import { GeoBuzzerView } from './components/GeoBuzzerView.js';
-import { OsintInlineView } from './components/OsintInlineView.js';
+import { PelacakAkunMedsosView } from './components/PelacakAkunMedsosView.js';
+import { MyAgentView } from './components/MyAgentView.js';
+import { AppRouter } from './router.js';
+import { renderLucideIcons } from './utils/icons.js';
 
-console.log('🔍 Memulai whoiam Social Media Intelligence Platform...');
+console.log('🛡️ Memulai KOMANDO: Komando Monitoring dan Analisis Narasi Digital Online...');
 
-let geoBuzzerInstance = null;
+let sidebarInstance = null;
+let topbarInstance = null;
+let dashboardInstance = null;
+let petaSebaranInstance = null;
+let pelacakAkunInstance = null;
+let myAgentInstance = null;
 
-// Inisialisasi Seluruh Komponen War Room
-function initWarRoom() {
-  // 1. Header Bar
-  new HeaderBar('header-container');
-
-  // 2. Modals & Dialogs
+function initKomando() {
+  // 1. Inisialisasi Guide Modal
   const guideModal = new GuideModal();
-
-  // Pasang listener panduan di Header
   const guideBtn = document.getElementById('btn-open-guide');
   if (guideBtn) {
     guideBtn.onclick = () => guideModal.open();
   }
 
-  // 3. TAB 1: Mount GeoBuzzerView langsung ke tampilan utama
-  // (Peta Indonesia + Titik Follower Terbanyak + SNA Wilayah + Berita Daerah + Scraping Medsos)
-  const geoContainer = document.getElementById('tab-pane-geo');
-  if (geoContainer) {
-    geoBuzzerInstance = new GeoBuzzerView('tab-pane-geo');
-  }
+  // 2. Inisialisasi 4 Halaman Utama
+  dashboardInstance = new KomandoDashboardView('view-dashboard');
+  petaSebaranInstance = new GeoBuzzerView('view-peta-sebaran');
+  pelacakAkunInstance = new PelacakAkunMedsosView('view-pelacak-akun');
+  myAgentInstance = new MyAgentView('view-my-agent');
 
-  // 4. TAB 2: OSINT Scraper Inline (Investigasi URL Postingan / Profil & Tagar)
-  const osintContainer = document.getElementById('osint-inline-container');
-  if (osintContainer) {
-    new OsintInlineView('osint-inline-container');
-  }
-
-  // 5. Navigasi Tab Utama
-  initTabNavigation();
-
-  // 7. Mulai Stream WebSocket
-  streamService.connect();
-}
-
-/**
- * Setup Navigasi Antar Tab (Peta Buzzer & OSINT Live)
- */
-function initTabNavigation() {
-  const tabButtons = document.querySelectorAll('.main-tab-btn');
-  const tabPanes = document.querySelectorAll('.tab-pane');
-
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTabId = btn.getAttribute('data-tab');
-
-      // Update button active states
-      tabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Update pane visibility
-      tabPanes.forEach(pane => {
-        if (pane.id === targetTabId) {
-          pane.classList.add('active');
-        } else {
-          pane.classList.remove('active');
+  // 3. Konfigurasi Client-Side Router
+  const router = new AppRouter({
+    '/dashboard': () => {
+      const v = document.getElementById('view-dashboard');
+      if (v) v.style.display = 'block';
+      if (topbarInstance) {
+        topbarInstance.updateHeader('Dashboard', 'Ringkasan analitik percakapan, sentimen, dan metrik narasi digital.', 'layout-dashboard');
+      }
+      if (dashboardInstance) dashboardInstance.resize();
+    },
+    '/peta-sebaran-buzzer': (params) => {
+      const v = document.getElementById('view-peta-sebaran');
+      if (v) v.style.display = 'block';
+      if (topbarInstance) {
+        topbarInstance.updateHeader('Peta Sebaran Buzzer', 'Visualisasi persebaran akun dan aktivitas media sosial berdasarkan wilayah.', 'map-pinned');
+      }
+      if (petaSebaranInstance) {
+        setTimeout(() => {
+          petaSebaranInstance.resize();
+        }, 80);
+        if (params && params.province) {
+          petaSebaranInstance.changeProvince(params.province);
         }
-      });
-
-      // Berikan jeda sejenak lalu trigger resize agar kanvas ECharts menyesuaikan ukuran
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-        if (targetTabId === 'tab-pane-geo' && geoBuzzerInstance) {
-          geoBuzzerInstance.resize();
+      }
+    },
+    '/pelacak-akun-medsos': (params) => {
+      const v = document.getElementById('view-pelacak-akun');
+      if (v) v.style.display = 'block';
+      if (topbarInstance) {
+        topbarInstance.updateHeader('Pelacak Akun Medsos', 'Pemantauan akun dan aktivitas media sosial yang tersedia secara terbuka.', 'scan-search');
+      }
+      if (pelacakAkunInstance) {
+        pelacakAkunInstance.resize();
+        if (params && params.query) {
+          pelacakAkunInstance.setQuery(params.query);
         }
-      }, 50);
-    });
+      }
+    },
+    '/my-agent': () => {
+      const v = document.getElementById('view-my-agent');
+      if (v) v.style.display = 'block';
+      if (topbarInstance) {
+        topbarInstance.updateHeader('My Agent', 'Kelola dan jalankan agent untuk membantu analisis data.', 'bot');
+      }
+    }
   });
+
+  window.router = router;
+
+  // 4. Inisialisasi Sidebar
+  sidebarInstance = new Sidebar('sidebar-container', (route) => {
+    router.navigate(route);
+  });
+
+  // 5. Inisialisasi Topbar
+  topbarInstance = new TopBar('topbar-container', (range) => {
+    console.log('Filter rentang tanggal aktif:', range);
+  });
+
+  router.setComponents(sidebarInstance, topbarInstance);
+  router.init();
+
+  // 6. Hubungkan WebSocket Telemetry Stream
+  streamService.connect();
+
+  // 7. Render Seluruh Ikon Lucide
+  renderLucideIcons(document);
 }
 
-// Jalankan bootstrapping saat DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  initWarRoom();
-});
+function bootstrap() {
+  try {
+    initKomando();
+  } catch (err) {
+    console.error('Fatal initialization error in initKomando:', err);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrap);
+} else {
+  bootstrap();
+}

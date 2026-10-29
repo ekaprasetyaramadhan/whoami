@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "echarts": "^5.5.0"
+    "echarts": "^5.5.0",
+    "leaflet": "^1.9.4",
+    "lucide": "^1.63.0"
   },
   "devDependencies": {
     "vite": "^5.1.0"

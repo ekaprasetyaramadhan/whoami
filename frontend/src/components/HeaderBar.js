@@ -1,8 +1,10 @@
 /**
  * HeaderBar Component
- * whoiam - Social Media Intelligence & Account Forensics
- * Menampilkan Identitas Sistem, Jam Operasional Real-time, Status Alert Barometer, dan Tombol Kontrol.
+ * whoiam - Social Media Intelligence & Regional Buzzer Forensics
+ * Menampilkan Identitas Sistem, Logo Komando, Jam Operasional Real-time, dan Status DEFCON Live.
  */
+
+import { CognitiveStore } from '../state/store.js';
 
 export class HeaderBar {
   constructor(containerId) {
@@ -14,25 +16,57 @@ export class HeaderBar {
     if (!this.container) return;
 
     this.container.innerHTML = `
-      <div class="brand-wrapper">
-        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10161d, #1f2937); border: 1px solid var(--color-cyan); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 0 12px var(--color-cyan-glow);">
-          🔍
-        </div>
+      <div class="brand-wrapper" style="display: flex; align-items: center; gap: 14px;">
+        <img src="/Komando.png" alt="Logo Komando" style="height: 62px; width: 62px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.7)); flex-shrink: 0;">
         <div>
-          <div class="brand-title">
-            whoiam
-            <span style="font-size: 0.65rem; background: rgba(0, 229, 255, 0.15); color: var(--color-cyan); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--color-cyan);">FORENSICS</span>
+          <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; color: #f59e0b; text-transform: uppercase;">
+            KOMANDO PLATFORM
           </div>
-          <div class="brand-subtitle">Social Media Intelligence & Account Forensics</div>
+          <div class="brand-title" style="font-size: 1.45rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; line-height: 1.05; margin: 1px 0 3px 0;">
+            KOMANDO
+          </div>
+          <div class="brand-subtitle" style="font-size: 0.65rem; color: #38bdf8; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.3;">
+            MONITORING DAN ANALISIS<br>NARASI DIGITAL ONLINE
+          </div>
         </div>
       </div>
 
-      <!-- Right Guide Action -->
-      <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- Right Actions: Status Barometer & System Guide -->
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div id="header-defcon-status" style="display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.72rem; background: #0c1219; border: 1px solid var(--color-border); padding: 5px 12px; border-radius: 4px;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;" id="header-defcon-dot"></span>
+          <span style="color: var(--color-text-muted);">STATUS SISTEM:</span>
+          <strong id="header-defcon-text" style="color: #10b981;">DEFCON 5 (NORMAL)</strong>
+        </div>
+
         <button id="btn-open-guide" class="btn-tactical cyan" title="Buka Panduan & Cara Membaca Dashboard">
-          <span class="fa-solid fa-circle-question"></span> PANDUAN SISTEM
+          <i class="fa-solid fa-circle-question"></i> PANDUAN SISTEM
         </button>
       </div>
     `;
+
+    // Pasang subscriber store untuk update status defcon secara reaktif
+    CognitiveStore.subscribe((state) => {
+      const dot = document.getElementById('header-defcon-dot');
+      const text = document.getElementById('header-defcon-text');
+      if (dot && text) {
+        if (state.threatLevel === 'RED' || state.defcon <= 2) {
+          dot.style.background = '#ef4444';
+          dot.style.boxShadow = '0 0 10px #ef4444';
+          text.style.color = '#ef4444';
+          text.textContent = `DEFCON ${state.defcon} (ANCAMAN KRITIS)`;
+        } else if (state.threatLevel === 'YELLOW' || state.defcon <= 4) {
+          dot.style.background = '#f59e0b';
+          dot.style.boxShadow = '0 0 10px #f59e0b';
+          text.style.color = '#f59e0b';
+          text.textContent = `DEFCON ${state.defcon} (WASPADA)`;
+        } else {
+          dot.style.background = '#10b981';
+          dot.style.boxShadow = '0 0 10px #10b981';
+          text.style.color = '#10b981';
+          text.textContent = `DEFCON ${state.defcon} (NORMAL)`;
+        }
+      }
+    });
   }
 }

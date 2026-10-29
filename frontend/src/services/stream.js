@@ -51,6 +51,7 @@ class StreamService {
   handlePacket(packet) {
     if (packet.event_type === 'NEW_TELEMETRY_POST') {
       CognitiveStore.addPost(packet.payload);
+      window.dispatchEvent(new CustomEvent('whoiam:new_post', { detail: packet.payload }));
     } else if (packet.event_type === 'DEFCON_ALERT_UPDATE') {
       CognitiveStore.setThreatLevel(packet.payload.threat_level, packet.payload.defcon);
     } else if (packet.event_type === 'TELEMETRY_REFRESH') {

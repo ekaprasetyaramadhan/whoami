@@ -651,8 +651,8 @@ export class OsintInlineView {
     `;
 
     try {
-      const resp = await ApiService.searchOsintFeed(query, platform, 10, true);
-      const items = resp.data && resp.data.items ? resp.data.items : [];
+      const resp = await ApiService.searchOsintIngest(query, platform, 10, true);
+      const items = Array.isArray(resp.data) ? resp.data : [];
       
       if (items.length === 0) {
         resBox.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--color-text-muted);">Tidak ditemukan postingan dengan kata kunci tersebut.</div>`;
@@ -667,10 +667,11 @@ export class OsintInlineView {
               <strong style="color: #fff;">${item.author_handle || '@pengguna'}</strong>
               <span class="tag-badge valid">${item.platform || 'MEDSOS'}</span>
             </div>
-            <div style="color: #cbd5e1; margin-bottom: 6px; line-height: 1.4;">${item.text}</div>
-            <div style="display: flex; gap: 14px; font-size: 0.7rem; color: var(--color-text-muted);">
-              <span>❤️ ${item.likes_count || 0}</span>
-              <span>🔄 ${item.reposts_count || 0}</span>
+            <div style="color: #cbd5e1; margin-bottom: 6px; line-height: 1.4;">${item.content || ''}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.7rem; color: var(--color-text-muted);">
+              <span>👥 ${item.followers || 0} pengikut</span>
+              <span>Sentimen: <strong style="color: #cbd5e1;">${item.sentiment || '-'}</strong></span>
+              <span>Hoaks: <strong style="color: #cbd5e1;">${item.hoax_verdict || '-'}</strong></span>
               <span>Indeks Bot: <strong style="color: ${item.bot_score > 60 ? '#ef4444' : '#10b981'};">${item.bot_score || 20}%</strong></span>
             </div>
           </div>

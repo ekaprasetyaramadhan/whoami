@@ -15,7 +15,7 @@ router = APIRouter(prefix="/geo", tags=["Geo-Spatial Intelligence"])
 
 @router.get("/buzzer-distribution")
 def get_buzzer_distribution(
-    platform: Optional[str] = Query("all", description="Filter medsos: all, x, instagram, facebook"),
+    platform: Optional[str] = Query("all", description="Filter medsos: all, x, instagram, facebook, tiktok, threads"),
     province: Optional[str] = Query("all", description="Filter provinsi: all atau nama provinsi")
 ):
     data = geo_buzzer_engine.get_buzzer_distribution(platform=platform, province=province)
@@ -54,10 +54,10 @@ def get_regional_news(
 
 @router.get("/social-feeds")
 def get_social_feeds(
-    platform: Optional[str] = Query("all", description="Filter medsos: all, x, instagram, facebook"),
+    platform: Optional[str] = Query("all", description="Filter medsos: all, x, instagram, facebook, tiktok, threads"),
     province: Optional[str] = Query("all", description="Filter provinsi")
 ):
-    """Endpoint hasil scraping feeds medsos buzzer (Instagram, X, Facebook)."""
+    """Endpoint hasil scraping feeds medsos buzzer (Instagram, X, Facebook, TikTok, Threads)."""
     feeds = geo_buzzer_engine.get_social_media_feeds(platform=platform, province=province)
     return {
         "status": "success",

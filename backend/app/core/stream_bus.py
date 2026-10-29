@@ -38,6 +38,20 @@ class StreamBus:
         if self._worker_task is None or self._worker_task.done():
             self._worker_task = asyncio.create_task(self._generator_loop())
 
+    async def emit(self, post: dict):
+        """
+        Memancarkan satu postingan ke seluruh subscriber (EWS, WebSocket, DB cache).
+        Dipakai oleh generator loop maupun injeksi langsung dari ingestion OSINT.
+        """
+        for subscriber in self.subscribers:
+            try:
+                if asyncio.iscoroutinefunction(subscriber):
+                    await subscriber(post)
+                else:
+                    subscriber(post)
+            except Exception as e:
+                print(f"[STREAM BUS ERROR] Gagal mendistribusikan post: {e}")
+
     async def _generator_loop(self):
         while self.is_running:
             if self.speed_mode == "PAUSED":
@@ -54,14 +68,7 @@ class StreamBus:
             post = generate_telemetry_post(is_spike=is_spike)
 
             # Notifikasi ke seluruh subscriber (EWS, WebSocket, DB cache)
-            for subscriber in self.subscribers:
-                try:
-                    if asyncio.iscoroutinefunction(subscriber):
-                        await subscriber(post)
-                    else:
-                        subscriber(post)
-                except Exception as e:
-                    print(f"[STREAM BUS ERROR] Gagal mendistribusikan post: {e}")
+            await self.emit(post)
 
             # Jeda waktu interval berdasarkan mode kecepatan
             if is_spike:

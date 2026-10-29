@@ -386,14 +386,17 @@ class OsintEngine:
                 "id": f"osint_stream_{int(datetime.now().timestamp())}_{i}",
                 "author": author.replace("_", " ").title(),
                 "author_handle": handle,
+                "author_name": author.replace("_", " ").title(),
                 "platform": chosen_platform,
                 "followers": followers,
                 "content": content,
                 "timestamp": timestamp_now,
                 "bot_score": 88.5 if is_bot else 18.2,
+                "is_cib": is_bot,
                 "hoax_verdict": hoax_res["verdict"],
                 "sentiment": sentiment_res["polarity"],
-                "emotions": sentiment_res["emotions"],
+                "emotion": sentiment_res.get("dominant_emotion", "ANTICIPATION"),
+                "emotions": sentiment_res.get("scores", {"anger": 0, "fear": 0, "trust": 0, "anticipation": 0}),
                 "rationale": hoax_res["rationale"],
                 "source": f"OSINT Scraper ({chosen_platform.upper()})"
             }
