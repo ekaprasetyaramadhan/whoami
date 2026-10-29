@@ -125,7 +125,7 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                  TOTAL CONVERSATIONS
+                  TOTAL PERCAKAPAN
                 </div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   2,845,190
@@ -150,7 +150,7 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                  TOTAL ENGAGEMENT
+                  TOTAL INTERAKSI
                 </div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   18,420,500
@@ -175,7 +175,7 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                  TOTAL VIEW / POTENTIAL REACH
+                  TOTAL TAYANGAN / POTENSI JANGKAUAN
                 </div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   54,200,000
@@ -200,7 +200,7 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <div>
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                  TOTAL AUTHORS
+                  TOTAL PENULIS / AKUN
                 </div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   142,800
@@ -232,14 +232,14 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
               <div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 0.95rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                  <i class="fa-solid fa-chart-line text-cyan"></i> Trend Analysis (Volume & Dinamika Sentimen)
+                  <i class="fa-solid fa-chart-line text-cyan"></i> Analisis Tren (Volume & Dinamika Sentimen)
                 </div>
                 <div style="font-size: 0.68rem; color: #94a3b8;">
                   Fluktuasi intensitas percakapan harian dan pergeseran polarisasi narasi.
                 </div>
               </div>
               <div style="display: flex; gap: 6px;">
-                <span class="tag-badge valid" style="font-size: 0.62rem;">REAL-TIME SYNC</span>
+                <span class="tag-badge valid" style="font-size: 0.62rem;">SINKRONISASI REAL-TIME</span>
               </div>
             </div>
 
@@ -251,7 +251,7 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
               <div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 0.95rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                  <i class="fa-solid fa-chart-pie text-cyan"></i> Share of Voice
+                  <i class="fa-solid fa-chart-pie text-cyan"></i> Pangsa Suara (Share of Voice)
                 </div>
                 <div style="font-size: 0.68rem; color: #94a3b8;">
                   Distribusi pangsa platform media sosial.
@@ -273,32 +273,35 @@ export class KomandoDashboardView {
           <!-- CARD: TOP HASHTAGS (LEFT 32%) -->
           <div class="dash-lower-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 570px; height: 570px;">
             <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 8px;">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(147, 51, 234, 0.15); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
-                  <i class="fa-solid fa-hashtag"></i>
-                </div>
-                <div>
-                  <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.08rem; font-weight: 700; color: #0f172a;">
-                    Top Hashtags
+            <div style="display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 6px;">
+              <!-- Top Row: Icon, Title & Detail Button -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 34px; height: 34px; border-radius: 50%; background: rgba(147, 51, 234, 0.15); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                    <i class="fa-solid fa-hashtag"></i>
                   </div>
-                  <div style="font-size: 0.68rem; color: #64748b;">
-                    10 Tagar teratas berdasarkan sebaran aktivitas
+                  <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.12rem; font-weight: 700; color: #0f172a; white-space: nowrap;">
+                    Tagar Teratas
                   </div>
-                </div>
-              </div>
-
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <!-- Segmented Control: Post & Engagement -->
-                <div class="dash-segmented-control" id="ctrl-hashtag-metric">
-                  <button class="dash-seg-btn active" data-metric="post">Post</button>
-                  <button class="dash-seg-btn" data-metric="engagement">Engagement</button>
                 </div>
 
                 <!-- Blue Detail Button -->
-                <button id="btn-hashtag-detail" style="padding: 4px 12px; font-size: 0.7rem; border-radius: 9999px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                  <i class="fa-regular fa-eye"></i> Detail
+                <button id="btn-hashtag-detail" style="padding: 4px 12px; font-size: 0.7rem; border-radius: 9999px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;">
+                  <i class="fa-regular fa-eye"></i> Rincian
                 </button>
+              </div>
+
+              <!-- Bottom Row: Subtitle & Segmented Control -->
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="font-size: 0.68rem; color: #64748b; line-height: 1.3;">
+                  10 Tagar teratas berdasarkan sebaran aktivitas
+                </div>
+
+                <!-- Segmented Control: Post & Engagement -->
+                <div class="dash-segmented-control" id="ctrl-hashtag-metric" style="flex-shrink: 0;">
+                  <button class="dash-seg-btn active" data-metric="post">Postingan</button>
+                  <button class="dash-seg-btn" data-metric="engagement">Interaksi</button>
+                </div>
               </div>
             </div>
 
@@ -326,7 +329,7 @@ export class KomandoDashboardView {
                 </div>
                 <div>
                   <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.08rem; font-weight: 700; color: #0f172a;">
-                    Top Authors
+                    Akun / Penulis Teratas
                   </div>
                   <div style="font-size: 0.68rem; color: #64748b;">
                     10 Akun teratas berdasarkan performa interaksi
@@ -337,7 +340,7 @@ export class KomandoDashboardView {
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <!-- Channel Dropdown (Default: All Channel) -->
                 <select id="author-channel-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.72rem; padding: 5px 12px; border-radius: 9999px; font-weight: 500;">
-                  <option value="All Channel">All Channel</option>
+                  <option value="All Channel">Semua Saluran</option>
                   <option value="Threads">Threads</option>
                   <option value="TikTok">TikTok</option>
                   <option value="Instagram">Instagram</option>
@@ -348,8 +351,8 @@ export class KomandoDashboardView {
 
                 <!-- Segmented Control: Engagement (default) & Post -->
                 <div class="dash-segmented-control" id="ctrl-author-metric">
-                  <button class="dash-seg-btn active" data-metric="engagement">Engagement</button>
-                  <button class="dash-seg-btn" data-metric="post">Post</button>
+                  <button class="dash-seg-btn active" data-metric="engagement">Interaksi</button>
+                  <button class="dash-seg-btn" data-metric="post">Postingan</button>
                 </div>
               </div>
             </div>
@@ -359,13 +362,13 @@ export class KomandoDashboardView {
               <table style="width: 100%; border-collapse: collapse; font-size: 0.74rem; text-align: left;">
                 <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 5;">
                   <tr style="border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 0.68rem; text-transform: uppercase;">
-                    <th style="padding: 8px 6px; width: 34px; cursor: pointer; text-align: center;" class="sortable-author-col" data-col="rank" title="Urutkan Rank">Rank</th>
+                    <th style="padding: 8px 6px; width: 34px; cursor: pointer; text-align: center;" class="sortable-author-col" data-col="rank" title="Urutkan Peringkat">Peringkat</th>
                     <th style="padding: 8px 6px; width: 44px; text-align: center;">Avatar</th>
-                    <th style="padding: 8px 10px; cursor: pointer;" class="sortable-author-col" data-col="author" title="Urutkan Nama">Author</th>
-                    <th style="padding: 8px 10px;">Channel</th>
-                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="followers" title="Urutkan Followers">Followers</th>
-                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="engagement" title="Urutkan Engagement">Engagement</th>
-                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="post" title="Urutkan Post">Post</th>
+                    <th style="padding: 8px 10px; cursor: pointer;" class="sortable-author-col" data-col="author" title="Urutkan Nama">Akun / Penulis</th>
+                    <th style="padding: 8px 10px;">Saluran</th>
+                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="followers" title="Urutkan Pengikut">Pengikut</th>
+                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="engagement" title="Urutkan Interaksi">Interaksi</th>
+                    <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="post" title="Urutkan Postingan">Postingan</th>
                     <th style="padding: 8px 10px; text-align: right; cursor: pointer;" class="sortable-author-col" data-col="er" title="Urutkan Engagement Rate">ER%</th>
                   </tr>
                 </thead>
@@ -379,7 +382,7 @@ export class KomandoDashboardView {
             <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 0.7rem; color: #94a3b8;">
               <div style="display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-circle-check" style="color: #2563eb;"></i>
-                <span>Official Account &bull; Avatar / Nama = klik untuk profil detail</span>
+                <span>Akun Resmi &bull; Avatar / Nama = klik untuk profil detail</span>
               </div>
               <div id="author-table-count" style="font-family: var(--font-mono); color: #cbd5e1; font-weight: 600;">
                 10 akun ditampilkan
@@ -405,14 +408,14 @@ export class KomandoDashboardView {
                 <div>
                   <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.05rem; font-weight: 700; color: #0f172a;">
-                      Gender Distribution
+                      Distribusi Jenis Kelamin
                     </span>
                     <span style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); color: #fbbf24; font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.05em;">
-                      ESTIMATED
+                      ESTIMASI
                     </span>
                   </div>
                   <div style="font-size: 0.7rem; color: #64748b; margin-top: 3px;">
-                    258 of 2.695 authors classified
+                    258 dari 2.695 akun terklasifikasi
                   </div>
                 </div>
               </div>
@@ -428,10 +431,10 @@ export class KomandoDashboardView {
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem;">
                   <div style="display: flex; align-items: center; gap: 6px; color: #1e293b; font-weight: 600;">
                     <i class="fa-solid fa-mars" style="color: #3b82f6; font-size: 0.85rem;"></i>
-                    <span>Male</span>
+                    <span>Laki-laki</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 0.68rem; color: #64748b;">166 authors</span>
+                    <span style="font-size: 0.68rem; color: #64748b;">166 akun</span>
                     <strong style="font-size: 0.82rem; color: #3b82f6; min-width: 32px; text-align: right;">64%</strong>
                   </div>
                 </div>
@@ -445,10 +448,10 @@ export class KomandoDashboardView {
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem;">
                   <div style="display: flex; align-items: center; gap: 6px; color: #1e293b; font-weight: 600;">
                     <i class="fa-solid fa-venus" style="color: #ec4899; font-size: 0.85rem;"></i>
-                    <span>Female</span>
+                    <span>Perempuan</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 0.68rem; color: #64748b;">92 authors</span>
+                    <span style="font-size: 0.68rem; color: #64748b;">92 akun</span>
                     <strong style="font-size: 0.82rem; color: #ec4899; min-width: 32px; text-align: right;">36%</strong>
                   </div>
                 </div>
@@ -461,7 +464,7 @@ export class KomandoDashboardView {
             <!-- Footer: Thin divider & Disclaimer -->
             <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: auto;">
               <div style="font-size: 0.68rem; color: #94a3b8; font-style: italic; text-align: center;">
-                Includes only authors classified with ≥70% confidence
+                Hanya mencakup akun yang terklasifikasi dengan keyakinan ≥70%
               </div>
             </div>
           </div>
@@ -472,22 +475,22 @@ export class KomandoDashboardView {
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.15rem; font-weight: 700; color: #0f172a;">
-                  Top Words
+                  Kata Kunci Teratas
                 </div>
               </div>
 
               <!-- Segmented Controls: Mention (default) & Engagement -->
               <div class="dash-segmented-control" id="ctrl-word-metric">
-                <button class="dash-seg-btn active" data-metric="Mention">Mention</button>
-                <button class="dash-seg-btn" data-metric="Engagement">Engagement</button>
+                <button class="dash-seg-btn active" data-metric="Mention">Sebutan</button>
+                <button class="dash-seg-btn" data-metric="Engagement">Interaksi</button>
               </div>
             </div>
 
             <!-- Horizontally Arranged Platform Filter Bar -->
             <div class="dash-platform-pill-bar" id="ctrl-word-platforms">
-              <button class="dash-plat-pill active" data-platform="All">All</button>
+              <button class="dash-plat-pill active" data-platform="All">Semua</button>
               <button class="dash-plat-pill" data-platform="YouTube">YouTube</button>
-              <button class="dash-plat-pill" data-platform="Online Media">Online Media</button>
+              <button class="dash-plat-pill" data-platform="Online Media">Media Online</button>
               <button class="dash-plat-pill" data-platform="Facebook">Facebook</button>
               <button class="dash-plat-pill" data-platform="Threads">Threads</button>
             </div>
@@ -498,20 +501,20 @@ export class KomandoDashboardView {
             </div>
 
             <!-- Footer: #tag = hashtag & Sentiment Legend -->
-            <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: #64748b; flex-wrap: wrap; gap: 8px;">
-              <div><span style="text-decoration: underline; font-weight: 600; color: #475569;">#tag</span> &nbsp;=&nbsp; hashtag</div>
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; padding-bottom: 2px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: #64748b; flex-wrap: wrap; gap: 8px;">
+              <div><span style="text-decoration: underline; font-weight: 600; color: #475569;">#tag</span> &nbsp;=&nbsp; tagar</div>
               <div style="display: flex; align-items: center; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 6px;">
                   <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
-                  <span style="color: #475569; font-weight: 500;">Positive</span>
+                  <span style="color: #475569; font-weight: 500;">Positif</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px;">
                   <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #334155;"></span>
-                  <span style="color: #475569; font-weight: 500;">Neutral</span>
+                  <span style="color: #475569; font-weight: 500;">Netral</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px;">
                   <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
-                  <span style="color: #475569; font-weight: 500;">Negative</span>
+                  <span style="color: #475569; font-weight: 500;">Negatif</span>
                 </div>
               </div>
             </div>
@@ -534,7 +537,7 @@ export class KomandoDashboardView {
                 </div>
                 <div>
                   <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.08rem; font-weight: 700; color: #0f172a;">
-                    Account Type Distribution
+                    Distribusi Tipe Akun
                   </div>
                   <div style="font-size: 0.68rem; color: #94a3b8;">
                     Sebaran narasi berdasarkan kategori dan tipe akun media sosial
@@ -544,17 +547,17 @@ export class KomandoDashboardView {
 
               <!-- Top-right Total Categorized Posts -->
               <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 9999px; padding: 4px 12px; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: #38bdf8;" id="acct-total-categorized-badge" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; border-radius: 9999px; padding: 4px 12px; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;">
-                2 categorized posts
+                2 postingan terkategori
               </div>
             </div>
 
             <!-- Table Header beneath title -->
             <div style="display: grid; grid-template-columns: 63% calc(37% - 10px); gap: 10px; align-items: center; padding: 4px 12px; font-size: 0.68rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">
-              <div>ACCOUNT TYPE</div>
+              <div>TIPE AKUN</div>
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;">
                 <div>INSTAGRAM</div>
                 <div>TIKTOK</div>
-                <div style="color: #38bdf8;">TOTAL POSTS</div>
+                <div style="color: #38bdf8;">TOTAL POSTINGAN</div>
               </div>
             </div>
 
@@ -566,7 +569,7 @@ export class KomandoDashboardView {
             <!-- Footer: Divider and Note -->
             <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: 4px; display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: #64748b;">
               <i class="fa-solid fa-circle-info text-cyan"></i>
-              <span>Based on KOMANDO-registered accounts only</span>
+              <span>Hanya berdasarkan akun yang terdaftar di KOMANDO</span>
             </div>
           </div>
 
@@ -580,7 +583,7 @@ export class KomandoDashboardView {
                 </div>
                 <div>
                   <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.08rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
-                    Virality Tracker
+                    Pelacak Viralitas
                     <span style="font-size: 0.62rem; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 2px 7px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.05em;">TOP 10</span>
                   </div>
                   <div style="font-size: 0.68rem; color: #94a3b8;">
@@ -592,7 +595,7 @@ export class KomandoDashboardView {
               <!-- Controls (Platform Select & Category Pills) -->
               <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <select id="virality-platform-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.7rem; padding: 3px 8px; border-radius: 9999px; font-weight: 500;">
-                  <option value="All">Platform</option>
+                  <option value="All">Semua Saluran</option>
                   <option value="TikTok">TikTok</option>
                   <option value="X">X</option>
                   <option value="Threads">Threads</option>
@@ -626,7 +629,7 @@ export class KomandoDashboardView {
             <div style="border-top: 1px solid #e2e8f0; padding-top: 8px; margin-top: 4px; display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; color: #94a3b8;">
               <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 360px;">
                 <i class="fa-solid fa-calculator text-cyan"></i>
-                <span>Skor = (shares ÷ followers × 60%) + (eng ÷ followers × 40%)</span>
+                <span>Skor = (bagikan ÷ pengikut × 60%) + (interaksi ÷ pengikut × 40%)</span>
               </div>
               <div id="virality-count-indicator" style="font-family: var(--font-mono); font-size: 0.68rem; color: #cbd5e1; flex-shrink: 0;">
                 10 konten
@@ -648,7 +651,7 @@ export class KomandoDashboardView {
               </div>
               <div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.15rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                  Top Performance Content
+                  Konten Performa Teratas
                   <span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 2px 8px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.05em;">TOP 12</span>
                 </div>
                 <div style="font-size: 0.7rem; color: #94a3b8;">
@@ -661,7 +664,7 @@ export class KomandoDashboardView {
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <!-- Dropdown: All Campaign -->
               <select id="perf-campaign-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.72rem; padding: 5px 10px; border-radius: 8px; font-weight: 500;">
-                <option value="All Campaign">All Campaign</option>
+                <option value="All Campaign">Semua Kampanye</option>
                 <option value="Aksi Mahasiswa">Aksi Mahasiswa</option>
                 <option value="Hari Sumpah Pemuda">Hari Sumpah Pemuda</option>
                 <option value="Isu Nasional">Isu Nasional</option>
@@ -669,7 +672,7 @@ export class KomandoDashboardView {
 
               <!-- Dropdown: All Channel -->
               <select id="perf-channel-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.72rem; padding: 5px 10px; border-radius: 8px; font-weight: 500;">
-                <option value="All Channel">All Channel</option>
+                <option value="All Channel">Semua Saluran</option>
                 <option value="Threads">Threads</option>
                 <option value="TikTok">TikTok</option>
                 <option value="Instagram">Instagram</option>
@@ -681,9 +684,9 @@ export class KomandoDashboardView {
 
               <!-- Segmented Metric Switcher: Engagement, Views, ER% -->
               <div class="dash-segmented-control" id="ctrl-perf-metric">
-                <button class="dash-seg-btn active" data-metric="Engagement">Engagement</button>
-                <button class="dash-seg-btn" data-metric="Views">Views</button>
-                <button class="dash-seg-btn" data-metric="ER%">ER%</button>
+                <button class="dash-seg-btn active" data-metric="Engagement">Interaksi</button>
+                <button class="dash-seg-btn" data-metric="Views">Tayangan</button>
+                <button class="dash-seg-btn" data-metric="ER%">Rasio ER%</button>
               </div>
             </div>
           </div>
@@ -696,20 +699,20 @@ export class KomandoDashboardView {
           <!-- Footer -->
           <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: #94a3b8; flex-wrap: wrap; gap: 8px;">
             <div id="perf-count-label">
-              Showing top 12 content
+              Menampilkan 12 konten teratas
             </div>
             <div style="display: flex; align-items: center; gap: 14px; font-size: 0.68rem;">
               <span style="display: flex; align-items: center; gap: 5px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-                <span style="color: #cbd5e1;">#1 Gold</span>
+                <span style="color: #cbd5e1;">#1 Emas</span>
               </span>
               <span style="display: flex; align-items: center; gap: 5px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; display: inline-block;"></span>
-                <span style="color: #cbd5e1;">#2 Silver</span>
+                <span style="color: #cbd5e1;">#2 Perak</span>
               </span>
               <span style="display: flex; align-items: center; gap: 5px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #ea580c; display: inline-block;"></span>
-                <span style="color: #cbd5e1;">#3 Bronze</span>
+                <span style="color: #cbd5e1;">#3 Perunggu</span>
               </span>
               <span style="color: #64748b;">&bull;</span>
               <span style="color: #38bdf8; font-weight: 500;">
@@ -731,8 +734,8 @@ export class KomandoDashboardView {
               </div>
               <div>
                 <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.05rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                  Sistem Peringatan Dini Pertahanan Kognitif (Early Warning Barometer)
-                  <span id="ews-status-pill" style="font-size: 0.65rem; background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 2px 8px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.04em;">NORMAL MONITORING</span>
+                  Sistem Peringatan Dini Pertahanan Kognitif (Barometer Peringatan Dini)
+                  <span id="ews-status-pill" style="font-size: 0.65rem; background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 2px 8px; border-radius: 9999px; font-weight: 700; letter-spacing: 0.04em;">PEMANTAUAN NORMAL</span>
                 </div>
                 <div style="font-size: 0.72rem; color: #64748b;">
                   Deteksi dini lonjakan anomali volume percakapan, eskalasi narasi polarisasi, dan pemetaan dinamika emosi publik
@@ -743,7 +746,7 @@ export class KomandoDashboardView {
             <!-- Action Controls -->
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <button id="btn-komando-inject-spike" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 0.72rem; font-weight: 700; font-family: var(--font-mono); border-radius: 10px; border: 1px solid #f59e0b; background: #fffbeb; color: #b45309; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(245, 158, 11, 0.1);" title="Uji ketahanan deteksi dini dengan simulasi lonjakan pesan">
-                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> UJI LONJAKAN SPIKE
+                <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> UJI LONJAKAN (SIMULASI)
               </button>
             </div>
           </div>
@@ -856,11 +859,11 @@ export class KomandoDashboardView {
             <table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; text-align: left;">
               <thead>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.7rem; text-transform: uppercase;">
-                  <th style="padding: 8px;">Rank</th>
-                  <th style="padding: 8px;">Hashtag</th>
-                  <th style="padding: 8px; text-align: right;">Post Count</th>
-                  <th style="padding: 8px; text-align: right;">Engagement</th>
-                  <th style="padding: 8px; text-align: right;">Est. Reach</th>
+                  <th style="padding: 8px;">Peringkat</th>
+                  <th style="padding: 8px;">Tagar</th>
+                  <th style="padding: 8px; text-align: right;">Jumlah Postingan</th>
+                  <th style="padding: 8px; text-align: right;">Interaksi</th>
+                  <th style="padding: 8px; text-align: right;">Estimasi Jangkauan</th>
                   <th style="padding: 8px;">Sentimen</th>
                   <th style="padding: 8px; text-align: right;">Aksi</th>
                 </tr>
@@ -1210,7 +1213,7 @@ export class KomandoDashboardView {
     });
 
     if (countLabel) {
-      countLabel.textContent = `Showing top ${list.length} content`;
+      countLabel.textContent = `Menampilkan ${list.length} konten teratas`;
     }
 
     if (list.length === 0) {
@@ -1409,7 +1412,7 @@ export class KomandoDashboardView {
     const { categories, totalCategorizedPosts } = getAccountTypeComputed(this.accountTypeData);
 
     if (badgeEl) {
-      badgeEl.textContent = `${totalCategorizedPosts} categorized posts`;
+      badgeEl.textContent = `${totalCategorizedPosts} postingan terkategori`;
     }
 
     container.innerHTML = categories.map((cat) => {
@@ -1890,7 +1893,7 @@ export class KomandoDashboardView {
               ${author.verified ? '<i class="fa-solid fa-circle-check" style="color:#38bdf8; font-size: 0.9rem;"></i>' : ''}
             </div>
             <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
-              Channel: <strong style="color: #cbd5e1;">${author.channel}</strong> &bull; Wilayah: <strong style="color: #cbd5e1;">${author.location || 'Nasional'}</strong>
+              Saluran: <strong style="color: #cbd5e1;">${author.channel}</strong> &bull; Wilayah: <strong style="color: #cbd5e1;">${author.location || 'Nasional'}</strong>
             </div>
           </div>
         </div>
@@ -1901,19 +1904,19 @@ export class KomandoDashboardView {
 
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;">
           <div style="background: #f8fafc; padding: 10px 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div style="font-size: 0.65rem; color: #94a3b8;">FOLLOWERS</div>
+            <div style="font-size: 0.65rem; color: #94a3b8;">PENGIKUT</div>
             <div style="font-size: 1rem; font-weight: 700; color: #38bdf8; margin-top: 2px;">${author.followersStr}</div>
           </div>
           <div style="background: #f8fafc; padding: 10px 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div style="font-size: 0.65rem; color: #94a3b8;">ENGAGEMENT</div>
+            <div style="font-size: 0.65rem; color: #94a3b8;">INTERAKSI</div>
             <div style="font-size: 1rem; font-weight: 700; color: #10b981; margin-top: 2px;">${author.engagementStr}</div>
           </div>
           <div style="background: #f8fafc; padding: 10px 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div style="font-size: 0.65rem; color: #94a3b8;">POSTS</div>
+            <div style="font-size: 0.65rem; color: #94a3b8;">POSTINGAN</div>
             <div style="font-size: 1rem; font-weight: 700; color: #0f172a; margin-top: 2px;">${author.post}</div>
           </div>
           <div style="background: #f8fafc; padding: 10px 6px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div style="font-size: 0.65rem; color: #94a3b8;">ER% RATE</div>
+            <div style="font-size: 0.65rem; color: #94a3b8;">RASIO ER%</div>
             <div style="font-size: 1rem; font-weight: 700; color: #a855f7; margin-top: 2px;">${author.er}</div>
           </div>
         </div>
@@ -2010,7 +2013,7 @@ export class KomandoDashboardView {
               data-freq="${w.freq}" 
               data-sent="${w.sentiment}" 
               style="font-size: ${fontSize}px; font-weight: ${weight}; color: ${color};" 
-              title="${w.text} (${w.freq} ${this.selectedWordMetric.toLowerCase()})">
+              title="${w.text} (${w.freq} ${this.selectedWordMetric === 'Mention' ? 'sebutan' : 'interaksi'})">
           ${w.text}
         </span>
       `;
@@ -2315,7 +2318,7 @@ export class KomandoDashboardView {
           label: {
             show: true,
             position: 'center',
-            formatter: '{val|258}\n{lbl|AUTHORS}',
+            formatter: '{val|258}\n{lbl|AKUN}',
             rich: {
               val: {
                 fontSize: 22,
@@ -2343,12 +2346,12 @@ export class KomandoDashboardView {
           data: [
             {
               value: 166,
-              name: 'Male',
+              name: 'Laki-laki',
               itemStyle: { color: '#3b82f6' }
             },
             {
               value: 92,
-              name: 'Female',
+              name: 'Perempuan',
               itemStyle: { color: '#ec4899' }
             }
           ]
