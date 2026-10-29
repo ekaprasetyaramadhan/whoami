@@ -20,6 +20,17 @@
 import * as echarts from 'echarts';
 import { ApiService } from '../services/api.js';
 import { escapeHtml } from '../utils/sanitize.js';
+import {
+  PROVINCES_LIST_38,
+  PROVINCE_COORDINATES_38,
+  PROVINCE_SUMMARIES_38,
+  BUZZER_NODES_38,
+  PROPAGATION_LINES_DEFAULT,
+  PROPAGATION_LINES_BY_PROVINCE,
+  REGIONAL_NEWS_38,
+  PROVINCE_SNA_38,
+  SOCIAL_FEEDS_BY_PROVINCE
+} from '../data/geoBuzzerData.js';
 
 export class GeoBuzzerView {
   constructor(containerId) {
@@ -31,9 +42,9 @@ export class GeoBuzzerView {
     this.selectedTimeframe = '24h';
     this.activeMainView = 'map'; // 'map' | 'sna' | 'social' | 'news'
     this.streamPaceMode = 'NORMAL'; // 'NORMAL' | 'SLOW' | 'PAUSED'
-    this.buzzerData = [];
-    this.summaryData = {};
-    this.flightLinesData = [];
+    this.buzzerData = [...BUZZER_NODES_38];
+    this.summaryData = { ...PROVINCE_SUMMARIES_38 };
+    this.flightLinesData = [...PROPAGATION_LINES_DEFAULT];
     this.showFlightLines = true;
     this.isMapRegistered = false;
     this.pendingIncomingPosts = [];
@@ -120,19 +131,58 @@ export class GeoBuzzerView {
               <i class="fa-solid fa-plane-departure"></i> JALUR PROPAGASI
             </button>
             <span style="font-size: 0.7rem; color: var(--color-text-muted); font-weight: 600;">WILAYAH:</span>
-            <select id="main-geo-province-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.74rem; padding: 5px 10px; border-radius: 6px; font-family: var(--font-mono);">
+            <select id="main-geo-province-select" class="form-select" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; font-size: 0.74rem; padding: 5px 10px; border-radius: 6px; font-family: var(--font-mono); min-width: 250px;">
               <option value="ALL">SEMUA (38 PROVINSI)</option>
-              <option value="DKI JAKARTA">DKI JAKARTA</option>
-              <option value="JAWA BARAT">JAWA BARAT</option>
-              <option value="JAWA TENGAH">JAWA TENGAH</option>
-              <option value="JAWA TIMUR">JAWA TIMUR</option>
-              <option value="DAERAH ISTIMEWA YOGYAKARTA">D.I. YOGYAKARTA</option>
-              <option value="BANTEN">BANTEN</option>
-              <option value="SUMATERA UTARA">SUMATERA UTARA</option>
-              <option value="SULAWESI SELATAN">SULAWESI SELATAN</option>
-              <option value="KALIMANTAN TIMUR">KALIMANTAN TIMUR (IKN)</option>
-              <option value="BALI">BALI</option>
-              <option value="PAPUA">PAPUA</option>
+              <optgroup label="SUMATERA (10 PROVINSI)">
+                <option value="ACEH">ACEH</option>
+                <option value="SUMATERA UTARA">SUMATERA UTARA</option>
+                <option value="SUMATERA BARAT">SUMATERA BARAT</option>
+                <option value="RIAU">RIAU</option>
+                <option value="KEPULAUAN RIAU">KEPULAUAN RIAU</option>
+                <option value="JAMBI">JAMBI</option>
+                <option value="SUMATERA SELATAN">SUMATERA SELATAN</option>
+                <option value="KEPULAUAN BANGKA BELITUNG">KEPULAUAN BANGKA BELITUNG</option>
+                <option value="BENGKULU">BENGKULU</option>
+                <option value="LAMPUNG">LAMPUNG</option>
+              </optgroup>
+              <optgroup label="JAWA (6 PROVINSI)">
+                <option value="DKI JAKARTA">DKI JAKARTA</option>
+                <option value="BANTEN">BANTEN</option>
+                <option value="JAWA BARAT">JAWA BARAT</option>
+                <option value="JAWA TENGAH">JAWA TENGAH</option>
+                <option value="DAERAH ISTIMEWA YOGYAKARTA">D.I. YOGYAKARTA</option>
+                <option value="JAWA TIMUR">JAWA TIMUR</option>
+              </optgroup>
+              <optgroup label="BALI & NUSA TENGGARA (3 PROVINSI)">
+                <option value="BALI">BALI</option>
+                <option value="NUSA TENGGARA BARAT">NUSA TENGGARA BARAT</option>
+                <option value="NUSA TENGGARA TIMUR">NUSA TENGGARA TIMUR</option>
+              </optgroup>
+              <optgroup label="KALIMANTAN (5 PROVINSI)">
+                <option value="KALIMANTAN BARAT">KALIMANTAN BARAT</option>
+                <option value="KALIMANTAN TENGAH">KALIMANTAN TENGAH</option>
+                <option value="KALIMANTAN SELATAN">KALIMANTAN SELATAN</option>
+                <option value="KALIMANTAN TIMUR">KALIMANTAN TIMUR (IKN)</option>
+                <option value="KALIMANTAN UTARA">KALIMANTAN UTARA</option>
+              </optgroup>
+              <optgroup label="SULAWESI (6 PROVINSI)">
+                <option value="SULAWESI UTARA">SULAWESI UTARA</option>
+                <option value="GORONTALO">GORONTALO</option>
+                <option value="SULAWESI TENGAH">SULAWESI TENGAH</option>
+                <option value="SULAWESI BARAT">SULAWESI BARAT</option>
+                <option value="SULAWESI SELATAN">SULAWESI SELATAN</option>
+                <option value="SULAWESI TENGGARA">SULAWESI TENGGARA</option>
+              </optgroup>
+              <optgroup label="MALUKU & PAPUA (8 PROVINSI)">
+                <option value="MALUKU">MALUKU</option>
+                <option value="MALUKU UTARA">MALUKU UTARA</option>
+                <option value="PAPUA">PAPUA</option>
+                <option value="PAPUA BARAT">PAPUA BARAT</option>
+                <option value="PAPUA SELATAN">PAPUA SELATAN</option>
+                <option value="PAPUA TENGAH">PAPUA TENGAH</option>
+                <option value="PAPUA PEGUNUNGAN">PAPUA PEGUNUNGAN</option>
+                <option value="PAPUA BARAT DAYA">PAPUA BARAT DAYA</option>
+              </optgroup>
             </select>
             <button id="main-btn-refresh-geo" class="btn-tactical" style="padding: 4px 9px; font-size: 0.7rem;">
               <i class="fa-solid fa-arrows-rotate"></i> REFRESH
@@ -471,17 +521,19 @@ export class GeoBuzzerView {
   }
 
   async loadPropagationLines() {
+    const provParam = (this.selectedProvince === 'ALL' || this.selectedProvince === 'SEMUA') ? 'DKI JAKARTA' : this.selectedProvince;
     try {
-      const provParam = (this.selectedProvince === 'ALL' || this.selectedProvince === 'SEMUA') ? 'DKI JAKARTA' : this.selectedProvince;
       const res = await ApiService.getPropagationLines(provParam, this.selectedTimeframe);
-      if (res && res.data && res.data.lines) {
+      if (res && res.data && res.data.lines && res.data.lines.length > 0) {
         this.flightLinesData = res.data.lines;
       } else {
-        this.flightLinesData = [];
+        this.flightLinesData = PROPAGATION_LINES_BY_PROVINCE[provParam] || PROPAGATION_LINES_DEFAULT;
       }
-      this.renderMap();
     } catch (e) {
-      console.warn('Gagal memuat flight lines propagasi:', e);
+      console.warn('Gagal memuat flight lines propagasi dari API, fallback ke master dataset:', e);
+      this.flightLinesData = PROPAGATION_LINES_BY_PROVINCE[provParam] || PROPAGATION_LINES_DEFAULT;
+    } finally {
+      this.renderMap();
     }
   }
 
@@ -505,47 +557,101 @@ export class GeoBuzzerView {
     try {
       const res = await ApiService.getGeoBuzzerDistribution(this.selectedPlatform, 'all');
       if (res && res.data) {
-        if (Array.isArray(res.data)) {
+        if (Array.isArray(res.data) && res.data.length > 0) {
           this.buzzerData = res.data;
-        } else if (res.data && Array.isArray(res.data.data)) {
+        } else if (res.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
           this.buzzerData = res.data.data;
-        } else {
-          this.buzzerData = [];
         }
-        this.renderMap();
       }
     } catch (e) {
-      console.warn('Gagal memuat persebaran buzzer:', e);
+      console.warn('Gagal memuat persebaran buzzer dari API, fallback ke 152 node 38 provinsi:', e);
+    } finally {
+      if (!this.buzzerData || this.buzzerData.length === 0) {
+        this.buzzerData = [...BUZZER_NODES_38];
+      }
+      this.renderMap();
     }
   }
 
   async loadProvincesSummary() {
     try {
       const res = await ApiService.getGeoProvincesSummary();
-      if (res && res.data) {
-        this.summaryData = res.data.provinces || {};
-        this.populateProvinceSelect();
-        this.updateProvinceBrief(this.selectedProvince);
+      if (res && res.data && res.data.provinces && Object.keys(res.data.provinces).length > 0) {
+        this.summaryData = res.data.provinces;
       }
     } catch (e) {
-      console.warn('Gagal memuat ringkasan provinsi:', e);
+      console.warn('Gagal memuat ringkasan provinsi dari API, fallback ke master 38 provinsi:', e);
+    } finally {
+      if (!this.summaryData || Object.keys(this.summaryData).length === 0) {
+        this.summaryData = { ...PROVINCE_SUMMARIES_38 };
+      }
+      this.populateProvinceSelect();
+      this.updateProvinceBrief(this.selectedProvince);
     }
   }
 
   populateProvinceSelect() {
     const sel = document.getElementById('main-geo-province-select');
-    if (!sel || !this.summaryData) return;
-    const provNames = Object.keys(this.summaryData).sort();
-    if (provNames.length === 0) return;
-    
+    if (!sel) return;
     const cur = sel.value || this.selectedProvince;
-    const allOpt = '<option value="ALL">SEMUA (38 PROVINSI)</option>';
-    sel.innerHTML = allOpt + provNames.map(p => `<option value="${p}">${p}</option>`).join('');
-    if (cur === 'ALL' || provNames.includes(cur)) {
-      sel.value = cur;
-    } else {
-      sel.value = 'ALL';
+    
+    // Pastikan seluruh 38 provinsi selalu tersedia di select dropdown
+    if (sel.options.length < 39) {
+      sel.innerHTML = `
+        <option value="ALL">SEMUA (38 PROVINSI)</option>
+        <optgroup label="SUMATERA (10 PROVINSI)">
+          <option value="ACEH">ACEH</option>
+          <option value="SUMATERA UTARA">SUMATERA UTARA</option>
+          <option value="SUMATERA BARAT">SUMATERA BARAT</option>
+          <option value="RIAU">RIAU</option>
+          <option value="KEPULAUAN RIAU">KEPULAUAN RIAU</option>
+          <option value="JAMBI">JAMBI</option>
+          <option value="SUMATERA SELATAN">SUMATERA SELATAN</option>
+          <option value="KEPULAUAN BANGKA BELITUNG">KEPULAUAN BANGKA BELITUNG</option>
+          <option value="BENGKULU">BENGKULU</option>
+          <option value="LAMPUNG">LAMPUNG</option>
+        </optgroup>
+        <optgroup label="JAWA (6 PROVINSI)">
+          <option value="DKI JAKARTA">DKI JAKARTA</option>
+          <option value="BANTEN">BANTEN</option>
+          <option value="JAWA BARAT">JAWA BARAT</option>
+          <option value="JAWA TENGAH">JAWA TENGAH</option>
+          <option value="DAERAH ISTIMEWA YOGYAKARTA">D.I. YOGYAKARTA</option>
+          <option value="JAWA TIMUR">JAWA TIMUR</option>
+        </optgroup>
+        <optgroup label="BALI & NUSA TENGGARA (3 PROVINSI)">
+          <option value="BALI">BALI</option>
+          <option value="NUSA TENGGARA BARAT">NUSA TENGGARA BARAT</option>
+          <option value="NUSA TENGGARA TIMUR">NUSA TENGGARA TIMUR</option>
+        </optgroup>
+        <optgroup label="KALIMANTAN (5 PROVINSI)">
+          <option value="KALIMANTAN BARAT">KALIMANTAN BARAT</option>
+          <option value="KALIMANTAN TENGAH">KALIMANTAN TENGAH</option>
+          <option value="KALIMANTAN SELATAN">KALIMANTAN SELATAN</option>
+          <option value="KALIMANTAN TIMUR">KALIMANTAN TIMUR (IKN)</option>
+          <option value="KALIMANTAN UTARA">KALIMANTAN UTARA</option>
+        </optgroup>
+        <optgroup label="SULAWESI (6 PROVINSI)">
+          <option value="SULAWESI UTARA">SULAWESI UTARA</option>
+          <option value="GORONTALO">GORONTALO</option>
+          <option value="SULAWESI TENGAH">SULAWESI TENGAH</option>
+          <option value="SULAWESI BARAT">SULAWESI BARAT</option>
+          <option value="SULAWESI SELATAN">SULAWESI SELATAN</option>
+          <option value="SULAWESI TENGGARA">SULAWESI TENGGARA</option>
+        </optgroup>
+        <optgroup label="MALUKU & PAPUA (8 PROVINSI)">
+          <option value="MALUKU">MALUKU</option>
+          <option value="MALUKU UTARA">MALUKU UTARA</option>
+          <option value="PAPUA">PAPUA</option>
+          <option value="PAPUA BARAT">PAPUA BARAT</option>
+          <option value="PAPUA SELATAN">PAPUA SELATAN</option>
+          <option value="PAPUA TENGAH">PAPUA TENGAH</option>
+          <option value="PAPUA PEGUNUNGAN">PAPUA PEGUNUNGAN</option>
+          <option value="PAPUA BARAT DAYA">PAPUA BARAT DAYA</option>
+        </optgroup>
+      `;
     }
+    sel.value = cur || 'ALL';
   }
 
   changeProvince(provName) {
@@ -569,6 +675,15 @@ export class GeoBuzzerView {
 
     this.updateProvinceBrief(provName);
     this.renderMap();
+
+    // Kamera otomatis mengarah ke koordinat centroid provinsi terpilih
+    if (!isAll && PROVINCE_COORDINATES_38[provName]) {
+      const coords = PROVINCE_COORDINATES_38[provName];
+      this.flyToLocation(coords[0], coords[1], 4.2);
+    } else if (isAll) {
+      this.flyToLocation(118.0, -2.5, 1.25);
+    }
+
     this.loadPropagationLines();
     this.loadProvinceSna(provName);
     this.loadRegionalNews(provName);
@@ -647,17 +762,6 @@ export class GeoBuzzerView {
 
     if (!isAll) {
       targetBuzzers = targetBuzzers.filter(b => b.province === this.selectedProvince);
-    } else {
-      // Jika wilayah SEMUA dipilih: Ambil sebaran buzzer dengan rate tertinggi (Top Rate) per provinsi
-      const topPerProv = {};
-      targetBuzzers.forEach(b => {
-        const rateNum = parseFloat(b.engagement_rate) || 0;
-        const score = (rateNum * 100000) + (b.followers || 0);
-        if (!topPerProv[b.province] || score > topPerProv[b.province].score) {
-          topPerProv[b.province] = { buzzer: b, score };
-        }
-      });
-      targetBuzzers = Object.values(topPerProv).map(item => item.buzzer);
     }
 
     // Urutkan dari rate dan follower tertinggi
@@ -744,8 +848,10 @@ export class GeoBuzzerView {
       geo: {
         map: 'indonesia',
         roam: true,
-        zoom: 1.25,
-        center: [118.0, -2.5],
+        zoom: isAll ? 1.25 : 4.0,
+        center: (!isAll && PROVINCE_COORDINATES_38[this.selectedProvince])
+          ? PROVINCE_COORDINATES_38[this.selectedProvince]
+          : [118.0, -2.5],
         label: {
           show: false
         },
@@ -883,11 +989,16 @@ export class GeoBuzzerView {
   async loadProvinceSna(provName) {
     try {
       const res = await ApiService.getProvinceSna(provName);
-      if (res && res.data) {
+      if (res && res.data && res.data.nodes && res.data.nodes.length > 0) {
         this.renderSnaGraph(res.data);
+        return;
       }
     } catch (e) {
-      console.warn('Gagal memuat SNA wilayah:', e);
+      console.warn('Gagal memuat SNA wilayah dari API, fallback ke master dataset:', e);
+    }
+    const fallbackSna = PROVINCE_SNA_38[provName] || PROVINCE_SNA_38['ALL'];
+    if (fallbackSna) {
+      this.renderSnaGraph(fallbackSna);
     }
   }
 
@@ -987,8 +1098,19 @@ export class GeoBuzzerView {
     listContainer.innerHTML = '<div style="font-size: 0.75rem; color: var(--color-text-muted);">Memuat crawling berita lokal...</div>';
 
     try {
-      const res = await ApiService.getRegionalNews(provName);
-      const newsList = res && res.data ? res.data : [];
+      let newsList = [];
+      try {
+        const res = await ApiService.getRegionalNews(provName);
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          newsList = res.data;
+        }
+      } catch (e) {
+        console.warn('Gagal memuat berita regional dari API, fallback ke master dataset:', e);
+      }
+
+      if (!newsList || newsList.length === 0) {
+        newsList = REGIONAL_NEWS_38[provName] || REGIONAL_NEWS_38['DKI JAKARTA'] || [];
+      }
 
       const tabNewsBtn = document.getElementById('main-btn-tab-news');
       if (tabNewsBtn) {
@@ -1063,8 +1185,24 @@ export class GeoBuzzerView {
     listContainer.innerHTML = '<div style="font-size: 0.75rem; color: var(--color-text-muted);">Menarik data postingan buzzer...</div>';
 
     try {
-      const res = await ApiService.getGeoSocialFeeds(this.selectedPlatform, this.selectedProvince);
-      const feeds = res && res.data ? res.data : [];
+      let feeds = [];
+      try {
+        const res = await ApiService.getGeoSocialFeeds(this.selectedPlatform, this.selectedProvince);
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          feeds = res.data;
+        }
+      } catch (e) {
+        console.warn('Gagal memuat feeds medsos dari API, fallback ke master dataset:', e);
+      }
+
+      if (!feeds || feeds.length === 0) {
+        const provFeeds = SOCIAL_FEEDS_BY_PROVINCE[this.selectedProvince] || SOCIAL_FEEDS_BY_PROVINCE['ALL'] || [];
+        if (this.selectedPlatform !== 'all') {
+          feeds = provFeeds.filter(f => f.platform && f.platform.toUpperCase() === this.selectedPlatform.toUpperCase());
+        } else {
+          feeds = provFeeds;
+        }
+      }
 
       const countBadge = document.getElementById('main-geo-social-count-badge');
       if (countBadge) countBadge.textContent = `${feeds.length} POSTS TERKUTIP`;
