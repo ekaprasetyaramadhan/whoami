@@ -9,28 +9,28 @@
 
 export const hashtagData = {
   post: [
-    { rank: 1, tag: '#indonesiasadar', count: 517, displayVal: '517', sentiment: 'Negatif', reach: '8.4M' },
-    { rank: 2, tag: '#demo', count: 392, displayVal: '392', sentiment: 'Negatif', reach: '6.2M' },
-    { rank: 3, tag: '#demomahasiswa', count: 213, displayVal: '213', sentiment: 'Negatif', reach: '4.8M' },
-    { rank: 4, tag: '#bemui', count: 209, displayVal: '209', sentiment: 'Netral', reach: '3.9M' },
-    { rank: 5, tag: '#bundaranhi', count: 194, displayVal: '194', sentiment: 'Netral', reach: '3.1M' },
-    { rank: 6, tag: '#mahasiswa', count: 162, displayVal: '162', sentiment: 'Netral', reach: '2.5M' },
-    { rank: 7, tag: '#sumpahpemuda', count: 114, displayVal: '114', sentiment: 'Positif', reach: '1.9M' },
-    { rank: 8, tag: '#tolakruu', count: 98, displayVal: '98', sentiment: 'Negatif', reach: '1.5M' },
-    { rank: 9, tag: '#suaramahasiswa', count: 86, displayVal: '86', sentiment: 'Netral', reach: '1.2M' },
-    { rank: 10, tag: '#aksidamai', count: 74, displayVal: '74', sentiment: 'Positif', reach: '980K' }
+    { rank: 1, tag: '#justiceforjihad', count: 642, displayVal: '642', sentiment: 'Negatif', reach: '9.8M' },
+    { rank: 2, tag: '#kopassus', count: 588, displayVal: '588', sentiment: 'Netral', reach: '8.4M' },
+    { rank: 3, tag: '#beritanasional', count: 475, displayVal: '475', sentiment: 'Netral', reach: '7.1M' },
+    { rank: 4, tag: '#hukummiliter', count: 412, displayVal: '412', sentiment: 'Netral', reach: '6.2M' },
+    { rank: 5, tag: '#tni', count: 389, displayVal: '389', sentiment: 'Negatif', reach: '5.9M' },
+    { rank: 6, tag: '#pengadilanmiliter', count: 345, displayVal: '345', sentiment: 'Negatif', reach: '5.2M' },
+    { rank: 7, tag: '#tniad', count: 310, displayVal: '310', sentiment: 'Netral', reach: '4.8M' },
+    { rank: 8, tag: '#militerindonesia', count: 278, displayVal: '278', sentiment: 'Netral', reach: '4.1M' },
+    { rank: 9, tag: '#infoserang', count: 242, displayVal: '242', sentiment: 'Negatif', reach: '3.6M' },
+    { rank: 10, tag: '#matalokal', count: 215, displayVal: '215', sentiment: 'Netral', reach: '3.2M' }
   ],
   engagement: [
-    { rank: 1, tag: '#indonesiasadar', count: 48200, displayVal: '48.200', sentiment: 'Negatif', reach: '8.4M' },
-    { rank: 2, tag: '#demo', count: 35800, displayVal: '35.800', sentiment: 'Negatif', reach: '6.2M' },
-    { rank: 3, tag: '#demomahasiswa', count: 22400, displayVal: '22.400', sentiment: 'Negatif', reach: '4.8M' },
-    { rank: 4, tag: '#bemui', count: 21100, displayVal: '21.100', sentiment: 'Netral', reach: '3.9M' },
-    { rank: 5, tag: '#bundaranhi', count: 19800, displayVal: '19.800', sentiment: 'Netral', reach: '3.1M' },
-    { rank: 6, tag: '#mahasiswa', count: 16500, displayVal: '16.500', sentiment: 'Netral', reach: '2.5M' },
-    { rank: 7, tag: '#sumpahpemuda', count: 12000, displayVal: '12.000', sentiment: 'Positif', reach: '1.9M' },
-    { rank: 8, tag: '#tolakruu', count: 9850, displayVal: '9.850', sentiment: 'Negatif', reach: '1.5M' },
-    { rank: 9, tag: '#suaramahasiswa', count: 8420, displayVal: '8.420', sentiment: 'Netral', reach: '1.2M' },
-    { rank: 10, tag: '#aksidamai', count: 7150, displayVal: '7.150', sentiment: 'Positif', reach: '980K' }
+    { rank: 1, tag: '#justiceforjihad', count: 78500, displayVal: '78.500', sentiment: 'Negatif', reach: '9.8M' },
+    { rank: 2, tag: '#kopassus', count: 65400, displayVal: '65.400', sentiment: 'Netral', reach: '8.4M' },
+    { rank: 3, tag: '#beritanasional', count: 52100, displayVal: '52.100', sentiment: 'Netral', reach: '7.1M' },
+    { rank: 4, tag: '#hukummiliter', count: 48900, displayVal: '48.900', sentiment: 'Netral', reach: '6.2M' },
+    { rank: 5, tag: '#tni', count: 43200, displayVal: '43.200', sentiment: 'Negatif', reach: '5.9M' },
+    { rank: 6, tag: '#pengadilanmiliter', count: 39800, displayVal: '39.800', sentiment: 'Negatif', reach: '5.2M' },
+    { rank: 7, tag: '#tniad', count: 36500, displayVal: '36.500', sentiment: 'Netral', reach: '4.8M' },
+    { rank: 8, tag: '#militerindonesia', count: 31200, displayVal: '31.200', sentiment: 'Netral', reach: '4.1M' },
+    { rank: 9, tag: '#infoserang', count: 28400, displayVal: '28.400', sentiment: 'Negatif', reach: '3.6M' },
+    { rank: 10, tag: '#matalokal', count: 24100, displayVal: '24.100', sentiment: 'Netral', reach: '3.2M' }
   ]
 };
 
@@ -263,127 +263,300 @@ export const genderDistributionData = {
 
 export const wordCloudData = {
   All: {
+    topKeyword: 'kopassus',
+    topCount: '894 sebutan',
+    summaryText: 'Akumulasi percakapan narasi teratas dari seluruh kanal media massa & medsos.',
     Mention: [
-      { text: 'demo', weight: 48, freq: 482, sentiment: 'negative' },
-      { text: 'mahasiswa', weight: 42, freq: 390, sentiment: 'neutral' },
-      { text: 'hari', weight: 36, freq: 312, sentiment: 'neutral' },
-      { text: 'rakyat', weight: 32, freq: 285, sentiment: 'neutral' },
-      { text: 'bundaran', weight: 28, freq: 240, sentiment: 'neutral' },
-      { text: 'aksi', weight: 26, freq: 220, sentiment: 'negative' },
-      { text: 'gedung', weight: 22, freq: 195, sentiment: 'neutral' },
-      { text: 'jakarta', weight: 20, freq: 180, sentiment: 'neutral' },
-      { text: 'aspirasi', weight: 18, freq: 165, sentiment: 'positive' },
-      { text: 'damai', weight: 16, freq: 142, sentiment: 'positive' },
-      { text: 'aparat', weight: 14, freq: 130, sentiment: 'neutral' },
-      { text: 'polisi', weight: 12, freq: 115, sentiment: 'neutral' },
-      { text: 'keadilan', weight: 12, freq: 108, sentiment: 'positive' },
-      { text: 'tuntutan', weight: 10, freq: 94, sentiment: 'neutral' }
+      // Top Major Core Entities & Focal Topic
+      { text: 'kopassus', weight: 48, freq: 894, sentiment: 'neutral', isTop: true },
+      { text: 'letda', weight: 44, freq: 812, sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 40, freq: 746, sentiment: 'negative', isTop: true },
+      { text: 'senjata', weight: 34, freq: 620, sentiment: 'neutral' },
+      { text: 'kematian', weight: 32, freq: 580, sentiment: 'neutral' },
+      { text: 'ahmad', weight: 30, freq: 540, sentiment: 'neutral' },
+      { text: 'kelalaian', weight: 28, freq: 485, sentiment: 'neutral' },
+      { text: 'inf', weight: 28, freq: 450, sentiment: 'neutral' },
+      { text: 'sebagai', weight: 26, freq: 410, sentiment: 'neutral' },
+      { text: 'gudang', weight: 24, freq: 395, sentiment: 'neutral' },
+      { text: 'pertanggungjawaban', weight: 22, freq: 380, sentiment: 'neutral' },
+      { text: 'perwira', weight: 24, freq: 365, sentiment: 'negative' },
+      { text: 'keadilan', weight: 22, freq: 340, sentiment: 'negative' },
+      { text: 'tersangka', weight: 20, freq: 325, sentiment: 'neutral' },
+      { text: 'keluarga', weight: 20, freq: 310, sentiment: 'neutral' },
+      { text: 'jenderal', weight: 20, freq: 295, sentiment: 'negative' },
+      { text: 'ibunda', weight: 20, freq: 290, sentiment: 'negative' },
+      { text: 'ditetapkan', weight: 19, freq: 275, sentiment: 'neutral' },
+      { text: 'prajurit', weight: 19, freq: 270, sentiment: 'neutral' },
+      { text: 'langkah', weight: 19, freq: 260, sentiment: 'neutral' },
+      { text: 'tegas', weight: 18, freq: 250, sentiment: 'neutral' },
+      { text: 'terjadi', weight: 18, freq: 245, sentiment: 'neutral' },
+      { text: 'rekan', weight: 18, freq: 235, sentiment: 'neutral' },
+      { text: 'bentuk', weight: 18, freq: 230, sentiment: 'neutral' },
+      { text: 'denpom', weight: 18, freq: 225, sentiment: 'neutral' },
+      { text: 'hukum', weight: 18, freq: 220, sentiment: 'neutral' },
+      { text: 'pistol', weight: 17, freq: 210, sentiment: 'neutral' },
+      { text: 'tewas', weight: 17, freq: 205, sentiment: 'neutral' },
+      { text: 'fatal', weight: 17, freq: 200, sentiment: 'neutral' },
+      { text: 'tiba', weight: 16, freq: 190, sentiment: 'neutral' },
+      { text: 'luka', weight: 17, freq: 185, sentiment: 'negative' },
+      { text: 'awal', weight: 17, freq: 180, sentiment: 'negative' },
+      { text: 'korban', weight: 17, freq: 175, sentiment: 'negative' },
+      { text: 'diduga', weight: 16, freq: 160, sentiment: 'neutral' },
+      { text: 'insiden', weight: 16, freq: 155, sentiment: 'neutral' },
+      { text: 'rasyid', weight: 16, freq: 150, sentiment: 'neutral' },
+      { text: 'atas', weight: 15, freq: 145, sentiment: 'neutral' },
+      { text: 'brevet', weight: 15, freq: 140, sentiment: 'neutral' },
+      { text: 'terus', weight: 16, freq: 165, sentiment: 'negative' },
+
+      // Hashtags (Hastag Media Online & Netizen)
+      { text: '#justiceforjihad', weight: 14, freq: 210, sentiment: 'negative' },
+      { text: '#pengadilanmiliter', weight: 13, freq: 178, sentiment: 'negative' },
+      { text: '#hukummiliter', weight: 13, freq: 162, sentiment: 'neutral' },
+      { text: '#militerindonesia', weight: 13, freq: 154, sentiment: 'neutral' },
+      { text: '#beritanasional', weight: 13, freq: 146, sentiment: 'neutral' },
+      { text: '#tni', weight: 13, freq: 140, sentiment: 'negative' },
+      { text: '#tniad', weight: 12, freq: 135, sentiment: 'neutral' },
+      { text: '#tentara', weight: 12, freq: 128, sentiment: 'negative' },
+      { text: '#kopassus', weight: 12, freq: 125, sentiment: 'neutral' },
+      { text: '#infoserang', weight: 12, freq: 118, sentiment: 'negative' },
+      { text: '#matalokal', weight: 12, freq: 112, sentiment: 'neutral' },
+      { text: '#shorts', weight: 12, freq: 105, sentiment: 'negative' },
+
+      // Secondary context words
+      { text: 'desak', weight: 12, freq: 98, sentiment: 'negative' },
+      { text: 'berita', weight: 12, freq: 95, sentiment: 'negative' },
+      { text: 'anak', weight: 12, freq: 92, sentiment: 'negative' },
+      { text: 'asal', weight: 11, freq: 88, sentiment: 'negative' },
+      { text: 'alm', weight: 11, freq: 85, sentiment: 'negative' },
+      { text: 'bintang', weight: 11, freq: 82, sentiment: 'negative' },
+      { text: 'buntut', weight: 11, freq: 80, sentiment: 'neutral' },
+      { text: 'bagaimana', weight: 11, freq: 78, sentiment: 'neutral' },
+      { text: 'dahulu', weight: 11, freq: 75, sentiment: 'neutral' },
+      { text: 'berdasarkan', weight: 11, freq: 74, sentiment: 'neutral' },
+      { text: 'diambil', weight: 11, freq: 72, sentiment: 'neutral' },
+      { text: 'adil', weight: 11, freq: 70, sentiment: 'positive' },
+      { text: 'begitu', weight: 11, freq: 68, sentiment: 'neutral' },
+      { text: 'ayat', weight: 11, freq: 66, sentiment: 'neutral' },
+      { text: 'berkomitmen', weight: 11, freq: 65, sentiment: 'positive' },
+      { text: 'dijerat', weight: 11, freq: 64, sentiment: 'neutral' },
+      { text: 'cctv', weight: 11, freq: 62, sentiment: 'neutral' },
+      { text: 'dicabut', weight: 11, freq: 60, sentiment: 'neutral' },
+      { text: 'area', weight: 10, freq: 58, sentiment: 'neutral' },
+      { text: 'dalam', weight: 10, freq: 56, sentiment: 'neutral' },
+      { text: 'anda', weight: 10, freq: 54, sentiment: 'neutral' },
+      { text: 'activisit', weight: 10, freq: 52, sentiment: 'neutral' },
+      { text: 'baret', weight: 10, freq: 50, sentiment: 'neutral' },
+      { text: 'bukti', weight: 10, freq: 48, sentiment: 'positive' },
+      { text: 'anggota', weight: 10, freq: 46, sentiment: 'neutral' },
+      { text: 'antiterornya', weight: 10, freq: 45, sentiment: 'neutral' },
+      { text: 'bagi', weight: 10, freq: 44, sentiment: 'neutral' },
+      { text: 'ancaman', weight: 10, freq: 42, sentiment: 'neutral' },
+      { text: 'akibat', weight: 10, freq: 40, sentiment: 'neutral' }
     ],
     Engagement: [
-      { text: 'demo', weight: 48, freq: '58.4K', sentiment: 'negative' },
-      { text: 'mahasiswa', weight: 42, freq: '49.1K', sentiment: 'neutral' },
-      { text: 'rakyat', weight: 36, freq: '38.2K', sentiment: 'neutral' },
-      { text: 'hari', weight: 32, freq: '31.5K', sentiment: 'neutral' },
-      { text: 'aksi', weight: 26, freq: '27.4K', sentiment: 'negative' },
-      { text: 'bundaran', weight: 24, freq: '22.8K', sentiment: 'neutral' },
-      { text: 'gedung', weight: 20, freq: '19.0K', sentiment: 'neutral' },
-      { text: 'aspirasi', weight: 18, freq: '17.3K', sentiment: 'positive' },
-      { text: 'damai', weight: 16, freq: '14.8K', sentiment: 'positive' },
-      { text: 'jakarta', weight: 14, freq: '12.9K', sentiment: 'neutral' }
+      { text: 'kopassus', weight: 48, freq: '108.4K', sentiment: 'neutral', isTop: true },
+      { text: 'letda', weight: 44, freq: '98.2K', sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 40, freq: '89.5K', sentiment: 'negative', isTop: true },
+      { text: 'senjata', weight: 34, freq: '74.2K', sentiment: 'neutral' },
+      { text: 'kematian', weight: 32, freq: '69.8K', sentiment: 'neutral' },
+      { text: 'ahmad', weight: 30, freq: '64.1K', sentiment: 'neutral' },
+      { text: 'kelalaian', weight: 28, freq: '58.3K', sentiment: 'neutral' },
+      { text: '#justiceforjihad', weight: 26, freq: '54.0K', sentiment: 'negative' },
+      { text: 'perwira', weight: 24, freq: '49.6K', sentiment: 'negative' },
+      { text: 'keadilan', weight: 22, freq: '45.1K', sentiment: 'negative' },
+      { text: 'keluarga', weight: 20, freq: '41.2K', sentiment: 'neutral' },
+      { text: 'tersangka', weight: 20, freq: '38.5K', sentiment: 'neutral' },
+      { text: '#beritanasional', weight: 19, freq: '35.4K', sentiment: 'neutral' },
+      { text: 'jenderal', weight: 19, freq: '33.8K', sentiment: 'negative' },
+      { text: 'ibunda', weight: 19, freq: '32.1K', sentiment: 'negative' },
+      { text: 'prajurit', weight: 18, freq: '29.7K', sentiment: 'neutral' },
+      { text: 'denpom', weight: 18, freq: '28.4K', sentiment: 'neutral' },
+      { text: 'hukum', weight: 18, freq: '26.8K', sentiment: 'neutral' },
+      { text: '#tni', weight: 17, freq: '25.0K', sentiment: 'negative' },
+      { text: '#pengadilanmiliter', weight: 17, freq: '23.6K', sentiment: 'negative' },
+      { text: 'gudang', weight: 16, freq: '21.5K', sentiment: 'neutral' },
+      { text: 'pertanggungjawaban', weight: 16, freq: '20.2K', sentiment: 'neutral' },
+      { text: 'langkah', weight: 15, freq: '18.9K', sentiment: 'neutral' },
+      { text: 'tegas', weight: 15, freq: '17.4K', sentiment: 'neutral' },
+      { text: 'tewas', weight: 15, freq: '16.8K', sentiment: 'neutral' },
+      { text: 'luka', weight: 14, freq: '15.2K', sentiment: 'negative' },
+      { text: 'korban', weight: 14, freq: '14.5K', sentiment: 'negative' },
+      { text: 'cctv', weight: 13, freq: '13.1K', sentiment: 'neutral' },
+      { text: 'bukti', weight: 13, freq: '12.4K', sentiment: 'positive' },
+      { text: 'berkomitmen', weight: 12, freq: '11.0K', sentiment: 'positive' }
     ]
   },
-  Twitter: {
+  'Online Media': {
+    topKeyword: 'letda',
+    topCount: '610 sebutan',
+    summaryText: 'Fokus isu pemberitaan portal media massa online nasional.',
     Mention: [
-      { text: 'mahasiswa', weight: 48, freq: 390, sentiment: 'neutral' },
-      { text: 'demo', weight: 44, freq: 350, sentiment: 'negative' },
-      { text: 'bemui', weight: 38, freq: 210, sentiment: 'neutral' },
-      { text: 'tuntutan', weight: 32, freq: 160, sentiment: 'neutral' },
-      { text: 'aspirasi', weight: 28, freq: 135, sentiment: 'positive' },
-      { text: 'politik', weight: 24, freq: 115, sentiment: 'negative' }
+      { text: 'letda', weight: 44, freq: 610, sentiment: 'neutral', isTop: true },
+      { text: 'kopassus', weight: 42, freq: 590, sentiment: 'neutral', isTop: true },
+      { text: 'kematian', weight: 38, freq: 540, sentiment: 'neutral' },
+      { text: 'senjata', weight: 34, freq: 490, sentiment: 'neutral' },
+      { text: 'denpom', weight: 30, freq: 420, sentiment: 'neutral' },
+      { text: 'pertanggungjawaban', weight: 28, freq: 380, sentiment: 'neutral' },
+      { text: 'perwira', weight: 28, freq: 365, sentiment: 'negative' },
+      { text: 'kelalaian', weight: 28, freq: 360, sentiment: 'neutral' },
+      { text: 'tersangka', weight: 26, freq: 340, sentiment: 'neutral' },
+      { text: '#beritanasional', weight: 22, freq: 290, sentiment: 'neutral' },
+      { text: 'hukum', weight: 24, freq: 310, sentiment: 'neutral' },
+      { text: 'ditetapkan', weight: 22, freq: 280, sentiment: 'neutral' },
+      { text: 'prajurit', weight: 22, freq: 275, sentiment: 'neutral' },
+      { text: 'insiden', weight: 20, freq: 250, sentiment: 'neutral' },
+      { text: 'diduga', weight: 20, freq: 240, sentiment: 'neutral' },
+      { text: '#hukummiliter', weight: 18, freq: 225, sentiment: 'neutral' },
+      { text: 'langkah', weight: 18, freq: 220, sentiment: 'neutral' },
+      { text: 'tegas', weight: 18, freq: 210, sentiment: 'neutral' },
+      { text: 'fatal', weight: 16, freq: 195, sentiment: 'neutral' },
+      { text: 'keadilan', weight: 18, freq: 215, sentiment: 'negative' },
+      { text: 'jenderal', weight: 16, freq: 190, sentiment: 'negative' },
+      { text: 'terjadi', weight: 16, freq: 185, sentiment: 'neutral' },
+      { text: 'ahmad', weight: 20, freq: 240, sentiment: 'neutral' },
+      { text: 'jihad', weight: 22, freq: 260, sentiment: 'negative' },
+      { text: '#matalokal', weight: 14, freq: 160, sentiment: 'neutral' },
+      { text: 'cctv', weight: 14, freq: 150, sentiment: 'neutral' },
+      { text: 'bukti', weight: 14, freq: 145, sentiment: 'positive' },
+      { text: 'berkomitmen', weight: 12, freq: 120, sentiment: 'positive' },
+      { text: 'putusan', weight: 12, freq: 110, sentiment: 'neutral' },
+      { text: 'pengawasan', weight: 12, freq: 105, sentiment: 'positive' }
     ],
     Engagement: [
-      { text: 'mahasiswa', weight: 48, freq: '42.0K', sentiment: 'neutral' },
-      { text: 'demo', weight: 44, freq: '38.2K', sentiment: 'negative' },
-      { text: 'bemui', weight: 38, freq: '25.6K', sentiment: 'neutral' }
-    ]
-  },
-  Instagram: {
-    Mention: [
-      { text: 'gedung', weight: 46, freq: 210, sentiment: 'neutral' },
-      { text: 'bundaran', weight: 42, freq: 195, sentiment: 'neutral' },
-      { text: 'jakarta', weight: 38, freq: 175, sentiment: 'neutral' },
-      { text: 'damai', weight: 34, freq: 140, sentiment: 'positive' },
-      { text: 'rakyat', weight: 30, freq: 120, sentiment: 'neutral' }
-    ],
-    Engagement: [
-      { text: 'gedung', weight: 46, freq: '29.5K', sentiment: 'neutral' },
-      { text: 'bundaran', weight: 42, freq: '27.1K', sentiment: 'neutral' },
-      { text: 'damai', weight: 34, freq: '19.4K', sentiment: 'positive' }
-    ]
-  },
-  Facebook: {
-    Mention: [
-      { text: 'masyarakat', weight: 46, freq: 180, sentiment: 'neutral' },
-      { text: 'polisi', weight: 42, freq: 155, sentiment: 'neutral' },
-      { text: 'tertib', weight: 36, freq: 130, sentiment: 'positive' },
-      { text: 'aspirasi', weight: 32, freq: 110, sentiment: 'positive' }
-    ],
-    Engagement: [
-      { text: 'masyarakat', weight: 46, freq: '21.0K', sentiment: 'neutral' },
-      { text: 'polisi', weight: 42, freq: '18.5K', sentiment: 'neutral' }
-    ]
-  },
-  Threads: {
-    Mention: [
-      { text: 'opini', weight: 46, freq: 160, sentiment: 'neutral' },
-      { text: 'aspirasi', weight: 42, freq: 140, sentiment: 'positive' },
-      { text: 'demokrasi', weight: 38, freq: 125, sentiment: 'positive' },
-      { text: 'suara', weight: 32, freq: 105, sentiment: 'positive' }
-    ],
-    Engagement: [
-      { text: 'opini', weight: 46, freq: '18.4K', sentiment: 'neutral' },
-      { text: 'aspirasi', weight: 42, freq: '16.0K', sentiment: 'positive' }
+      { text: 'letda', weight: 44, freq: '82.4K', sentiment: 'neutral', isTop: true },
+      { text: 'kopassus', weight: 42, freq: '79.1K', sentiment: 'neutral', isTop: true },
+      { text: 'kematian', weight: 38, freq: '64.5K', sentiment: 'neutral' },
+      { text: 'senjata', weight: 34, freq: '58.0K', sentiment: 'neutral' },
+      { text: 'denpom', weight: 30, freq: '49.2K', sentiment: 'neutral' },
+      { text: 'perwira', weight: 28, freq: '42.8K', sentiment: 'negative' },
+      { text: '#beritanasional', weight: 24, freq: '36.5K', sentiment: 'neutral' },
+      { text: 'tersangka', weight: 22, freq: '31.0K', sentiment: 'neutral' },
+      { text: 'bukti', weight: 16, freq: '18.4K', sentiment: 'positive' }
     ]
   },
   YouTube: {
+    topKeyword: 'kopassus',
+    topCount: '520 sebutan',
+    summaryText: 'Topik video berita, liputan investigasi & shorts YouTube.',
     Mention: [
-      { text: 'aksi', weight: 44, freq: 165, sentiment: 'negative' },
-      { text: 'demo', weight: 42, freq: 152, sentiment: 'negative' },
-      { text: 'massa', weight: 36, freq: 125, sentiment: 'negative' },
-      { text: 'aparat', weight: 32, freq: 110, sentiment: 'neutral' },
-      { text: 'bundaran', weight: 28, freq: 95, sentiment: 'neutral' }
+      { text: 'kopassus', weight: 44, freq: 520, sentiment: 'neutral', isTop: true },
+      { text: 'letda', weight: 42, freq: 480, sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 38, freq: 430, sentiment: 'negative', isTop: true },
+      { text: '#shorts', weight: 26, freq: 310, sentiment: 'negative' },
+      { text: 'tewas', weight: 24, freq: 290, sentiment: 'neutral' },
+      { text: 'viral', weight: 22, freq: 275, sentiment: 'negative' },
+      { text: 'keluarga', weight: 22, freq: 260, sentiment: 'neutral' },
+      { text: 'ibunda', weight: 22, freq: 255, sentiment: 'negative' },
+      { text: 'jenderal', weight: 20, freq: 240, sentiment: 'negative' },
+      { text: 'keadilan', weight: 20, freq: 230, sentiment: 'negative' },
+      { text: '#justiceforjihad', weight: 20, freq: 220, sentiment: 'negative' },
+      { text: 'cctv', weight: 18, freq: 195, sentiment: 'neutral' },
+      { text: 'gudang', weight: 18, freq: 180, sentiment: 'neutral' },
+      { text: 'senjata', weight: 20, freq: 210, sentiment: 'neutral' },
+      { text: '#tni', weight: 18, freq: 175, sentiment: 'negative' },
+      { text: 'perwira', weight: 18, freq: 170, sentiment: 'negative' },
+      { text: 'kronologi', weight: 16, freq: 150, sentiment: 'neutral' },
+      { text: 'terbaru', weight: 16, freq: 140, sentiment: 'neutral' },
+      { text: 'baret', weight: 14, freq: 120, sentiment: 'neutral' },
+      { text: 'prajurit', weight: 16, freq: 135, sentiment: 'neutral' },
+      { text: '#infoserang', weight: 14, freq: 115, sentiment: 'negative' },
+      { text: 'komentar', weight: 14, freq: 105, sentiment: 'neutral' },
+      { text: 'desak', weight: 14, freq: 98, sentiment: 'negative' },
+      { text: 'fatal', weight: 14, freq: 95, sentiment: 'neutral' },
+      { text: 'bukti', weight: 12, freq: 75, sentiment: 'positive' }
     ],
     Engagement: [
-      { text: 'aksi', weight: 44, freq: '25.0K', sentiment: 'negative' },
-      { text: 'demo', weight: 42, freq: '23.4K', sentiment: 'negative' },
-      { text: 'massa', weight: 36, freq: '17.2K', sentiment: 'negative' }
+      { text: 'kopassus', weight: 44, freq: '68.5K', sentiment: 'neutral', isTop: true },
+      { text: 'letda', weight: 42, freq: '61.2K', sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 38, freq: '55.4K', sentiment: 'negative', isTop: true },
+      { text: '#shorts', weight: 28, freq: '44.0K', sentiment: 'negative' },
+      { text: 'viral', weight: 24, freq: '38.2K', sentiment: 'negative' },
+      { text: 'keadilan', weight: 22, freq: '32.1K', sentiment: 'negative' }
     ]
   },
-  TikTok: {
+  Facebook: {
+    topKeyword: 'tni',
+    topCount: '380 sebutan',
+    summaryText: 'Perbincangan grup komunitas militer & simpati publik Facebook.',
     Mention: [
-      { text: 'mahasiswa', weight: 48, freq: 290, sentiment: 'neutral' },
-      { text: 'demo', weight: 44, freq: 260, sentiment: 'negative' },
-      { text: 'hari', weight: 38, freq: 215, sentiment: 'neutral' },
-      { text: 'bundaran', weight: 34, freq: 185, sentiment: 'neutral' },
-      { text: 'jakarta', weight: 32, freq: 170, sentiment: 'neutral' },
-      { text: 'aksi', weight: 30, freq: 155, sentiment: 'negative' }
+      { text: 'tni', weight: 42, freq: 380, sentiment: 'negative', isTop: true },
+      { text: 'prajurit', weight: 38, freq: 350, sentiment: 'neutral', isTop: true },
+      { text: 'keluarga', weight: 34, freq: 310, sentiment: 'neutral' },
+      { text: 'keadilan', weight: 32, freq: 290, sentiment: 'negative' },
+      { text: 'kopassus', weight: 36, freq: 320, sentiment: 'neutral' },
+      { text: 'letda', weight: 32, freq: 285, sentiment: 'neutral' },
+      { text: 'jihad', weight: 30, freq: 270, sentiment: 'negative' },
+      { text: 'doa', weight: 26, freq: 240, sentiment: 'positive' },
+      { text: 'rekan', weight: 24, freq: 220, sentiment: 'neutral' },
+      { text: 'baret', weight: 22, freq: 200, sentiment: 'neutral' },
+      { text: 'alm', weight: 22, freq: 195, sentiment: 'negative' },
+      { text: '#militerindonesia', weight: 20, freq: 180, sentiment: 'neutral' },
+      { text: '#justiceforjihad', weight: 20, freq: 175, sentiment: 'negative' },
+      { text: 'duka', weight: 18, freq: 160, sentiment: 'negative' },
+      { text: 'ibunda', weight: 18, freq: 155, sentiment: 'negative' },
+      { text: 'terbaik', weight: 16, freq: 140, sentiment: 'positive' },
+      { text: 'gugur', weight: 16, freq: 135, sentiment: 'negative' },
+      { text: 'tugas', weight: 14, freq: 120, sentiment: 'neutral' },
+      { text: 'sahabat', weight: 14, freq: 115, sentiment: 'positive' },
+      { text: 'panglima', weight: 14, freq: 110, sentiment: 'neutral' },
+      { text: 'pengusutan', weight: 14, freq: 105, sentiment: 'neutral' },
+      { text: 'hukum', weight: 12, freq: 95, sentiment: 'neutral' }
     ],
     Engagement: [
-      { text: 'mahasiswa', weight: 48, freq: '38.5K', sentiment: 'neutral' },
-      { text: 'demo', weight: 44, freq: '32.1K', sentiment: 'negative' },
-      { text: 'hari', weight: 38, freq: '24.8K', sentiment: 'neutral' }
+      { text: 'tni', weight: 42, freq: '48.0K', sentiment: 'negative', isTop: true },
+      { text: 'prajurit', weight: 38, freq: '42.5K', sentiment: 'neutral', isTop: true },
+      { text: 'keadilan', weight: 32, freq: '36.8K', sentiment: 'negative' },
+      { text: 'doa', weight: 26, freq: '29.2K', sentiment: 'positive' },
+      { text: '#justiceforjihad', weight: 22, freq: '24.1K', sentiment: 'negative' }
+    ]
+  },
+  Threads: {
+    topKeyword: 'kopassus',
+    topCount: '320 sebutan',
+    summaryText: 'Diskusi viral, tuntutan transparansi hukum & opini di Threads.',
+    Mention: [
+      { text: 'kopassus', weight: 42, freq: 320, sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 38, freq: 290, sentiment: 'negative', isTop: true },
+      { text: 'keadilan', weight: 36, freq: 280, sentiment: 'negative', isTop: true },
+      { text: 'usut', weight: 32, freq: 240, sentiment: 'negative' },
+      { text: 'tuntas', weight: 30, freq: 225, sentiment: 'negative' },
+      { text: 'denpom', weight: 28, freq: 210, sentiment: 'neutral' },
+      { text: 'transparansi', weight: 26, freq: 195, sentiment: 'positive' },
+      { text: 'hukum', weight: 26, freq: 190, sentiment: 'neutral' },
+      { text: 'kelalaian', weight: 24, freq: 180, sentiment: 'neutral' },
+      { text: '#justiceforjihad', weight: 24, freq: 185, sentiment: 'negative' },
+      { text: '#pengadilanmiliter', weight: 22, freq: 170, sentiment: 'negative' },
+      { text: 'perwira', weight: 22, freq: 165, sentiment: 'negative' },
+      { text: 'kronologi', weight: 20, freq: 150, sentiment: 'neutral' },
+      { text: 'opini', weight: 18, freq: 140, sentiment: 'neutral' },
+      { text: 'fakta', weight: 18, freq: 135, sentiment: 'positive' },
+      { text: 'tanggungjawab', weight: 16, freq: 125, sentiment: 'neutral' },
+      { text: 'publik', weight: 16, freq: 120, sentiment: 'neutral' },
+      { text: 'netizen', weight: 14, freq: 110, sentiment: 'neutral' },
+      { text: 'investigasi', weight: 14, freq: 105, sentiment: 'neutral' }
+    ],
+    Engagement: [
+      { text: 'kopassus', weight: 42, freq: '38.4K', sentiment: 'neutral', isTop: true },
+      { text: 'jihad', weight: 38, freq: '34.0K', sentiment: 'negative', isTop: true },
+      { text: 'keadilan', weight: 36, freq: '31.5K', sentiment: 'negative', isTop: true },
+      { text: 'transparansi', weight: 26, freq: '22.8K', sentiment: 'positive' },
+      { text: '#justiceforjihad', weight: 24, freq: '21.0K', sentiment: 'negative' }
     ]
   }
 };
 
+// Also export aliases for backward compatibility
+wordCloudData.Twitter = wordCloudData.Threads;
+wordCloudData.Instagram = wordCloudData['Online Media'];
+wordCloudData.TikTok = wordCloudData.YouTube;
+
+
 export const platformTopWordComparison = [
-  { platform: 'All', label: 'Semua', icon: 'fa-solid fa-layer-group', word: 'demo', count: '482 mention', sentiment: 'negative' },
-  { platform: 'X', label: 'X (Twitter)', icon: 'fa-brands fa-x-twitter', word: 'mahasiswa', count: '390 mention', sentiment: 'neutral' },
-  { platform: 'TikTok', label: 'TikTok', icon: 'fa-brands fa-tiktok', word: 'rakyat', count: '290 mention', sentiment: 'neutral' },
-  { platform: 'Instagram', label: 'Instagram', icon: 'fa-brands fa-instagram', word: 'gedung dpr', count: '210 mention', sentiment: 'negative' },
-  { platform: 'Facebook', label: 'Facebook', icon: 'fa-brands fa-facebook', word: 'masyarakat', count: '155 mention', sentiment: 'neutral' },
-  { platform: 'Threads', label: 'Threads', icon: 'fa-brands fa-threads', word: 'aspirasi', count: '140 mention', sentiment: 'positive' },
-  { platform: 'YouTube', label: 'YouTube', icon: 'fa-brands fa-youtube', word: 'aksi', count: '165 mention', sentiment: 'negative' }
+  { platform: 'All', label: 'Semua', icon: 'fa-solid fa-layer-group', word: 'kopassus', count: '894 mention', sentiment: 'neutral' },
+  { platform: 'YouTube', label: 'YouTube', icon: 'fa-brands fa-youtube', word: 'kopassus', count: '520 mention', sentiment: 'neutral' },
+  { platform: 'Online Media', label: 'Online Media', icon: 'fa-regular fa-newspaper', word: 'letda', count: '610 mention', sentiment: 'neutral' },
+  { platform: 'Facebook', label: 'Facebook', icon: 'fa-brands fa-facebook', word: 'tni', count: '380 mention', sentiment: 'negative' },
+  { platform: 'Threads', label: 'Threads', icon: 'fa-brands fa-threads', word: 'kopassus', count: '320 mention', sentiment: 'neutral' }
 ];
 
 export { performanceContentData, filterAndSortPerformanceContent, getPerformanceCampaigns } from './performanceContentData.js';

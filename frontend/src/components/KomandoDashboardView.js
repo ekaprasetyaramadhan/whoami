@@ -486,18 +486,10 @@ export class KomandoDashboardView {
             <!-- Horizontally Arranged Platform Filter Bar -->
             <div class="dash-platform-pill-bar" id="ctrl-word-platforms">
               <button class="dash-plat-pill active" data-platform="All">All</button>
-              <button class="dash-plat-pill" data-platform="Twitter">Twitter</button>
-              <button class="dash-plat-pill" data-platform="Threads">Threads</button>
+              <button class="dash-plat-pill" data-platform="YouTube">YouTube</button>
               <button class="dash-plat-pill" data-platform="Online Media">Online Media</button>
               <button class="dash-plat-pill" data-platform="Facebook">Facebook</button>
-              <button class="dash-plat-pill" data-platform="Instagram">Instagram</button>
-              <button class="dash-plat-pill" data-platform="YouTube">YouTube</button>
-              <button class="dash-plat-pill" data-platform="TikTok">TikTok</button>
-            </div>
-
-            <!-- Top Words Dynamic Summary & Comparison Bar -->
-            <div id="topwords-summary-bar">
-              <!-- Injected dynamically based on platform -->
+              <button class="dash-plat-pill" data-platform="Threads">Threads</button>
             </div>
 
             <!-- Word Cloud Visualization Container -->
@@ -507,14 +499,14 @@ export class KomandoDashboardView {
 
             <!-- Footer: #tag = hashtag & Sentiment Legend -->
             <div style="border-top: 1px solid #e2e8f0; padding-top: 10px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; color: #64748b; flex-wrap: wrap; gap: 8px;">
-              <div><span style="text-decoration: underline; font-weight: 600; color: #475569;">#tag</span> = hashtag</div>
+              <div><span style="text-decoration: underline; font-weight: 600; color: #475569;">#tag</span> &nbsp;=&nbsp; hashtag</div>
               <div style="display: flex; align-items: center; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 6px;">
                   <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
                   <span style="color: #475569; font-weight: 500;">Positive</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px;">
-                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;"></span>
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #334155;"></span>
                   <span style="color: #475569; font-weight: 500;">Neutral</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -1955,84 +1947,11 @@ export class KomandoDashboardView {
 
   renderWordCloud() {
     const container = this.container.querySelector('#word-cloud-content');
-    const summaryBar = this.container.querySelector('#topwords-summary-bar');
     if (!container) return;
 
     const platData = wordCloudData[this.selectedWordPlatform] || wordCloudData.All;
     const words = platData[this.selectedWordMetric] || platData.Mention || [];
-    const isAll = this.selectedWordPlatform === 'All';
 
-    // 1. Dynamic Summary & Platform Comparison Bar
-    if (summaryBar) {
-      const topKw = platData.topKeyword || (words[0] ? words[0].text : 'mahasiswa');
-      const topCount = platData.topCount || `${words[0] ? words[0].freq : '512'} sebutan`;
-      const summaryText = platData.summaryText || 'Akumulasi percakapan narasi teratas dari seluruh kanal.';
-
-      if (isAll) {
-        summaryBar.innerHTML = `
-          <div class="dash-topwords-summary-bar">
-            <div class="topwords-hero-stat">
-              <div class="topwords-stat-badge">
-                <i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 0.95rem;"></i>
-                <span>AKUMULASI NASIONAL &bull; TOP #1 KATA:</span>
-              </div>
-              <div class="topwords-stat-main">
-                <span class="topwords-stat-keyword">"${topKw}"</span>
-                <span class="topwords-stat-count">${topCount}</span>
-              </div>
-            </div>
-
-            <div class="topwords-platform-comparison">
-              <div class="topwords-comp-chips">
-                ${platformTopWordComparison.map((item) => `
-                  <button class="topwords-chip" data-platform="${item.platform}" title="Klik untuk filter khusus ${item.label}">
-                    <i class="${item.icon}"></i> ${item.label}: <strong style="color: ${item.sentiment === 'negative' ? '#dc2626' : '#0f172a'};">${item.word}</strong> <span style="color: #64748b; font-size: 0.65rem;">(${item.count.split(' ')[0]})</span>
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-        `;
-
-        const chips = summaryBar.querySelectorAll('.topwords-chip');
-        chips.forEach((chip) => {
-          chip.onclick = () => {
-            this.selectWordPlatform(chip.dataset.platform);
-          };
-        });
-      } else {
-        summaryBar.innerHTML = `
-          <div class="dash-topwords-summary-bar">
-            <div class="topwords-hero-stat">
-              <div class="topwords-stat-badge platform-badge">
-                <i class="fa-solid fa-fire text-amber" style="font-size: 0.95rem;"></i>
-                <span>TOP 1 KATA PALING SERING KELUAR DI ${this.selectedWordPlatform.toUpperCase()}:</span>
-              </div>
-              <div class="topwords-stat-main">
-                <span class="topwords-stat-keyword">"${topKw}"</span>
-                <span class="topwords-stat-count">${topCount}</span>
-              </div>
-            </div>
-
-            <div class="topwords-platform-info">
-              <span>${summaryText}</span>
-              <button class="btn-back-to-all" id="btn-back-to-all-words">
-                <i class="fa-solid fa-globe"></i> Lihat Semua Platform
-              </button>
-            </div>
-          </div>
-        `;
-
-        const backBtn = summaryBar.querySelector('#btn-back-to-all-words');
-        if (backBtn) {
-          backBtn.onclick = () => {
-            this.selectWordPlatform('All');
-          };
-        }
-      }
-    }
-
-    // 2. Word Cloud Items Rendering
     if (words.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; color: #64748b; font-style: italic; padding: 30px;">
@@ -2043,20 +1962,20 @@ export class KomandoDashboardView {
     }
 
     container.innerHTML = words.map((w, idx) => {
-      const isTop = w.isTop || (idx === 0);
+      const isHashtag = w.text.startsWith('#');
       let color = '#334155';
       let weight = '600';
-      let extraClass = isTop ? 'top-hero-word' : '';
+      let extraClass = '';
 
       if (w.sentiment === 'negative') {
-        color = '#ef4444'; // Clean executive red
-        weight = isTop ? '800' : '700';
+        color = '#ef4444'; // Red
+        weight = (w.isTop || w.weight >= 30) ? '800' : '600';
       } else if (w.sentiment === 'positive') {
-        color = '#10b981'; // Clean executive emerald
-        weight = '700';
+        color = '#10b981'; // Green
+        weight = '600';
       } else {
-        if (isTop) {
-          color = '#0f172a';
+        if (w.isTop || w.weight >= 40) {
+          color = '#0f172a'; // Bold prominent slate
           weight = '800';
         } else if (w.weight >= 28) {
           color = '#1e293b';
@@ -2070,12 +1989,28 @@ export class KomandoDashboardView {
         }
       }
 
-      const maxFont = isAll ? 32 : 40;
-      const minFont = isAll ? 13 : 15;
-      const fontSize = Math.min(maxFont, Math.max(minFont, Math.round(w.weight * (isAll ? 0.68 : 0.86))));
+      let fontSize;
+      if (isHashtag) {
+        fontSize = Math.min(13, Math.max(10, Math.round(w.weight * 0.82)));
+        extraClass = 'is-hashtag';
+      } else if (w.isTop || w.weight >= 40) {
+        fontSize = Math.min(44, Math.max(34, Math.round(w.weight * 0.92)));
+        extraClass = 'top-hero-word';
+      } else if (w.weight >= 28) {
+        fontSize = Math.min(30, Math.max(22, Math.round(w.weight * 0.88)));
+      } else if (w.weight >= 18) {
+        fontSize = Math.min(20, Math.max(15, Math.round(w.weight * 0.85)));
+      } else {
+        fontSize = Math.min(13, Math.max(10, Math.round(w.weight * 0.85)));
+      }
 
       return `
-        <span class="word-cloud-item ${extraClass}" data-word="${w.text}" data-freq="${w.freq}" data-sent="${w.sentiment}" style="font-size: ${fontSize}px; font-weight: ${weight}; color: ${color};" title="${w.text} (${w.freq} ${this.selectedWordMetric.toLowerCase()})">
+        <span class="word-cloud-item ${extraClass}" 
+              data-word="${w.text}" 
+              data-freq="${w.freq}" 
+              data-sent="${w.sentiment}" 
+              style="font-size: ${fontSize}px; font-weight: ${weight}; color: ${color};" 
+              title="${w.text} (${w.freq} ${this.selectedWordMetric.toLowerCase()})">
           ${w.text}
         </span>
       `;
