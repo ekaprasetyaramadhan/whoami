@@ -15,6 +15,7 @@ export class Sidebar {
     this.container = document.getElementById(containerId);
     this.onNavigate = onNavigate;
     this.currentRoute = '/dashboard';
+    this.isCollapsed = localStorage.getItem('komando_sidebar_collapsed') === 'true';
     this.init();
   }
 
@@ -22,63 +23,85 @@ export class Sidebar {
     if (!this.container) return;
 
     const user = authService.getUser() || { full_name: 'Operator Komando 1', role: 'user' };
+    const appLayout = document.getElementById('app-layout');
+    if (appLayout) {
+      if (this.isCollapsed) {
+        appLayout.classList.add('sidebar-collapsed');
+      } else {
+        appLayout.classList.remove('sidebar-collapsed');
+      }
+    }
 
     this.container.innerHTML = `
-      <aside class="komando-sidebar">
+      <aside class="komando-sidebar ${this.isCollapsed ? 'collapsed' : ''}" id="komando-sidebar">
         <!-- Logo & Branding -->
         <div class="sidebar-brand-box">
           <img src="/Komando.png" alt="Komando Logo" class="sidebar-logo-img" onerror="this.src='./Komando.png'" />
           <div class="sidebar-brand-text">
             <div class="sidebar-brand-title">KOMANDO</div>
             <div class="sidebar-brand-sub">
-              KOMANDO MONITORING DAN<br>ANALISIS NARASI DIGITAL ONLINE
+              <div class="brand-sub-line">
+                <span>KOMANDO</span>
+                <span>MONITORING</span>
+                <span>DAN</span>
+              </div>
+              <div class="brand-sub-line">
+                <span>ANALISIS</span>
+                <span>NARASI</span>
+                <span>DIGITAL</span>
+                <span>ONLINE</span>
+              </div>
             </div>
           </div>
+          <!-- Collapse Toggle Button (Collapsible Sidebar) -->
+          <button class="sidebar-collapse-btn" id="btn-sidebar-collapse" title="${this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar'}" aria-label="Toggle Sidebar Collapse">
+            <i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>
+          </button>
         </div>
 
         <!-- 4 Primary Navigation Items (Exact Required Order) -->
         <nav class="sidebar-nav-list" id="sidebar-nav-list">
           <!-- 1. Dashboard -->
-          <a class="sidebar-nav-item active" data-route="/dashboard" id="nav-item-dashboard">
+          <a class="sidebar-nav-item ${this.currentRoute === '/dashboard' ? 'active' : ''}" data-route="/dashboard" id="nav-item-dashboard" data-tooltip="Dashboard" title="Dashboard">
             <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
-            <span>Dashboard</span>
+            <span class="nav-text">Dashboard</span>
           </a>
 
           <!-- 2. Peta Sebaran Buzzer -->
-          <a class="sidebar-nav-item" data-route="/peta-sebaran-buzzer" id="nav-item-peta-sebaran">
+          <a class="sidebar-nav-item ${this.currentRoute === '/peta-sebaran-buzzer' ? 'active' : ''}" data-route="/peta-sebaran-buzzer" id="nav-item-peta-sebaran" data-tooltip="Peta Sebaran Buzzer" title="Peta Sebaran Buzzer">
             <span class="nav-icon"><i data-lucide="map-pinned"></i></span>
-            <span>Peta Sebaran Buzzer</span>
+            <span class="nav-text">Peta Sebaran Buzzer</span>
           </a>
 
           <!-- 3. Pelacak Akun Medsos -->
-          <a class="sidebar-nav-item" data-route="/pelacak-akun-medsos" id="nav-item-pelacak-akun">
+          <a class="sidebar-nav-item ${this.currentRoute === '/pelacak-akun-medsos' ? 'active' : ''}" data-route="/pelacak-akun-medsos" id="nav-item-pelacak-akun" data-tooltip="Pelacak Akun Medsos" title="Pelacak Akun Medsos">
             <span class="nav-icon"><i data-lucide="scan-search"></i></span>
-            <span>Pelacak Akun Medsos</span>
+            <span class="nav-text">Pelacak Akun Medsos</span>
           </a>
 
           <!-- 4. My Agent -->
-          <a class="sidebar-nav-item" data-route="/my-agent" id="nav-item-my-agent">
+          <a class="sidebar-nav-item ${this.currentRoute === '/my-agent' ? 'active' : ''}" data-route="/my-agent" id="nav-item-my-agent" data-tooltip="My Agent" title="My Agent">
             <span class="nav-icon"><i data-lucide="bot"></i></span>
-            <span>My Agent</span>
+            <span class="nav-text">My Agent</span>
           </a>
         </nav>
 
         <!-- User Profile Section & Log Out -->
         <div class="sidebar-footer-box">
-          <div class="sidebar-user-card">
+          <div class="sidebar-user-card" data-tooltip="${user.full_name || 'Operator Komando 1'}" title="${user.full_name || 'Operator Komando 1'}">
             <div class="sidebar-user-avatar">
               <i class="fa-solid fa-user-shield"></i>
               <div class="sidebar-user-online-dot" title="Online Terverifikasi"></div>
             </div>
-            <div style="flex: 1; overflow: hidden;">
+            <div class="sidebar-user-info" style="flex: 1; overflow: hidden;">
               <div class="sidebar-user-name" id="sidebar-display-name">${user.full_name || 'Operator Komando 1'}</div>
               <div class="sidebar-user-role" id="sidebar-display-role">ROLE: ${(user.role || 'user').toUpperCase()}</div>
             </div>
           </div>
 
-          <button class="sidebar-logout-btn" id="btn-sidebar-logout" title="Keluar dari sesi War Room">
+          <button class="sidebar-logout-btn" id="btn-sidebar-logout" data-tooltip="Log Out" title="Keluar dari sesi War Room">
             <span class="nav-icon"><i data-lucide="log-out"></i></span>
-            <span>Log Out</span>
+            <span class="logout-text">Log Out</span>
           </button>
         </div>
       </aside>
@@ -87,6 +110,42 @@ export class Sidebar {
     this.ensureBackdrop();
     this.bindEvents();
     renderLucideIcons(this.container);
+  }
+
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+    localStorage.setItem('komando_sidebar_collapsed', this.isCollapsed ? 'true' : 'false');
+
+    const aside = this.container.querySelector('.komando-sidebar');
+    const collapseBtn = this.container.querySelector('#btn-sidebar-collapse');
+    const appLayout = document.getElementById('app-layout');
+
+    if (aside) {
+      if (this.isCollapsed) {
+        aside.classList.add('collapsed');
+      } else {
+        aside.classList.remove('collapsed');
+      }
+    }
+
+    if (appLayout) {
+      if (this.isCollapsed) {
+        appLayout.classList.add('sidebar-collapsed');
+      } else {
+        appLayout.classList.remove('sidebar-collapsed');
+      }
+    }
+
+    if (collapseBtn) {
+      collapseBtn.setAttribute('title', this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar');
+      collapseBtn.innerHTML = `<i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>`;
+      renderLucideIcons(collapseBtn);
+    }
+
+    // Trigger visual resize on charts (ECharts & containers)
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 280);
   }
 
   ensureBackdrop() {
@@ -114,11 +173,15 @@ export class Sidebar {
   }
 
   toggle() {
-    const aside = this.container.querySelector('.komando-sidebar');
-    if (aside && aside.classList.contains('open')) {
-      this.close();
+    if (window.innerWidth <= 1024) {
+      const aside = this.container.querySelector('.komando-sidebar');
+      if (aside && aside.classList.contains('open')) {
+        this.close();
+      } else {
+        this.open();
+      }
     } else {
-      this.open();
+      this.toggleCollapse();
     }
   }
 
@@ -135,6 +198,15 @@ export class Sidebar {
     document.addEventListener('komando:toggle-sidebar', () => {
       this.toggle();
     });
+
+    const collapseBtn = this.container.querySelector('#btn-sidebar-collapse');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.toggleCollapse();
+      });
+    }
 
     const items = this.container.querySelectorAll('.sidebar-nav-item');
     items.forEach((item) => {
