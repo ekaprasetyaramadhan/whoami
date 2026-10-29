@@ -1,6 +1,6 @@
 /**
  * Reactive State Management untuk War Room Dashboard
- * KARTIKA COG-SHIELD
+ * KOMANDO INTELLIGENCE
  */
 
 export const CognitiveStore = {

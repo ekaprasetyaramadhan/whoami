@@ -127,7 +127,7 @@ export class KomandoDashboardView {
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                   TOTAL PERCAKAPAN
                 </div>
-                <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
+                <div id="kpi-val-conversations" style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   2,845,190
                 </div>
               </div>
@@ -137,8 +137,8 @@ export class KomandoDashboardView {
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: #10b981; margin-top: 6px;">
               <i class="fa-solid fa-arrow-trend-up"></i>
-              <span style="font-weight: 700;">+14.2%</span>
-              <span style="color: #94a3b8;">vs 7 hari sebelumnya</span>
+              <span id="kpi-growth-conversations" style="font-weight: 700;">+14.2%</span>
+              <span class="kpi-period-label" style="color: #94a3b8;">vs 7 hari sebelumnya</span>
             </div>
             <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px;">
               Total postingan & komentar dianalisis
@@ -152,7 +152,7 @@ export class KomandoDashboardView {
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                   TOTAL INTERAKSI
                 </div>
-                <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
+                <div id="kpi-val-engagement" style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   18,420,500
                 </div>
               </div>
@@ -162,8 +162,8 @@ export class KomandoDashboardView {
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: #10b981; margin-top: 6px;">
               <i class="fa-solid fa-arrow-trend-up"></i>
-              <span style="font-weight: 700;">+8.7%</span>
-              <span style="color: #94a3b8;">vs 7 hari sebelumnya</span>
+              <span id="kpi-growth-engagement" style="font-weight: 700;">+8.7%</span>
+              <span class="kpi-period-label" style="color: #94a3b8;">vs 7 hari sebelumnya</span>
             </div>
             <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px;">
               Akumulasi likes, retweets, replies & shares
@@ -177,7 +177,7 @@ export class KomandoDashboardView {
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                   TOTAL TAYANGAN / POTENSI JANGKAUAN
                 </div>
-                <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
+                <div id="kpi-val-reach" style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   54,200,000
                 </div>
               </div>
@@ -187,8 +187,8 @@ export class KomandoDashboardView {
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: #38bdf8; margin-top: 6px;">
               <i class="fa-solid fa-arrow-trend-up"></i>
-              <span style="font-weight: 700;">+21.5%</span>
-              <span style="color: #94a3b8;">ekspansi jangkauan audiens</span>
+              <span id="kpi-growth-reach" style="font-weight: 700;">+21.5%</span>
+              <span class="kpi-period-label" style="color: #94a3b8;">ekspansi jangkauan audiens</span>
             </div>
             <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px;">
               Estimasi impresi publik di 38 provinsi
@@ -202,7 +202,7 @@ export class KomandoDashboardView {
                 <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                   TOTAL PENULIS / AKUN
                 </div>
-                <div style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
+                <div id="kpi-val-authors" style="font-family: var(--font-display, 'Space Grotesk'); font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 4px 0;">
                   142,800
                 </div>
               </div>
@@ -212,7 +212,7 @@ export class KomandoDashboardView {
             </div>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: #f59e0b; margin-top: 6px;">
               <i class="fa-solid fa-triangle-exclamation"></i>
-              <span style="font-weight: 700;">152 KOORDINATOR</span>
+              <span id="kpi-authors-coord" style="font-weight: 700;">152 KOORDINATOR</span>
               <span style="color: #94a3b8;">1.400+ Bot Farm</span>
             </div>
             <div style="font-size: 0.65rem; color: #64748b; margin-top: 2px;">
@@ -2600,6 +2600,71 @@ export class KomandoDashboardView {
         ]
       });
     }
+  }
+
+  setTimeframe(range) {
+    this.selectedTimeframe = range || '7d';
+
+    const kpiData = {
+      '24h': {
+        conversations: '412,850',
+        conversationsGrowth: '+5.4%',
+        engagement: '2,610,200',
+        engagementGrowth: '+3.1%',
+        reach: '8,450,000',
+        reachGrowth: '+12.0%',
+        authors: '32,400',
+        authorsCoord: '45 KOORDINATOR',
+        periodLabel: 'vs 24 jam sebelumnya'
+      },
+      '7d': {
+        conversations: '2,845,190',
+        conversationsGrowth: '+14.2%',
+        engagement: '18,420,500',
+        engagementGrowth: '+8.7%',
+        reach: '54,200,000',
+        reachGrowth: '+21.5%',
+        authors: '142,800',
+        authorsCoord: '152 KOORDINATOR',
+        periodLabel: 'vs 7 hari sebelumnya'
+      },
+      '30d': {
+        conversations: '11,890,400',
+        conversationsGrowth: '+28.6%',
+        engagement: '74,350,000',
+        engagementGrowth: '+19.4%',
+        reach: '218,000,000',
+        reachGrowth: '+34.2%',
+        authors: '580,200',
+        authorsCoord: '420 KOORDINATOR',
+        periodLabel: 'vs 30 hari sebelumnya'
+      }
+    };
+
+    const data = kpiData[range] || kpiData['7d'];
+
+    const elConv = this.container.querySelector('#kpi-val-conversations');
+    const elEng = this.container.querySelector('#kpi-val-engagement');
+    const elReach = this.container.querySelector('#kpi-val-reach');
+    const elAuth = this.container.querySelector('#kpi-val-authors');
+    const elConvGr = this.container.querySelector('#kpi-growth-conversations');
+    const elEngGr = this.container.querySelector('#kpi-growth-engagement');
+    const elReachGr = this.container.querySelector('#kpi-growth-reach');
+    const elAuthCoord = this.container.querySelector('#kpi-authors-coord');
+
+    if (elConv) elConv.textContent = data.conversations;
+    if (elEng) elEng.textContent = data.engagement;
+    if (elReach) elReach.textContent = data.reach;
+    if (elAuth) elAuth.textContent = data.authors;
+    if (elConvGr) elConvGr.textContent = data.conversationsGrowth;
+    if (elEngGr) elEngGr.textContent = data.engagementGrowth;
+    if (elReachGr) elReachGr.textContent = data.reachGrowth;
+    if (elAuthCoord) elAuthCoord.textContent = data.authorsCoord;
+
+    const periodLabels = this.container.querySelectorAll('.kpi-period-label');
+    periodLabels.forEach(el => {
+      el.textContent = data.periodLabel;
+    });
   }
 
   resize() {

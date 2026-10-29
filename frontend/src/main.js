@@ -113,7 +113,9 @@ function initKomando() {
 
   // 5. Inisialisasi Topbar
   topbarInstance = new TopBar('topbar-container', (range) => {
-    console.log('Filter rentang tanggal aktif:', range);
+    if (dashboardInstance && typeof dashboardInstance.setTimeframe === 'function') {
+      dashboardInstance.setTimeframe(range);
+    }
   });
 
   router.setComponents(sidebarInstance, topbarInstance);

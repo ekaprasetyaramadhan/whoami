@@ -11,58 +11,84 @@
 
 import { renderLucideIcons } from '../utils/icons.js';
 
+const AGENTS_STORAGE_KEY = 'komando_custom_agents';
+
+const DEFAULT_AGENTS = [
+  {
+    id: 'agent-1',
+    name: 'Buzzer Sentiment Sentinel',
+    icon: 'shield-alert',
+    description: 'Memantau lonjakan sentimen negatif, provokasi kebencian, dan anomali polarisasi opini publik pada tagar viral secara kontinu.',
+    status: 'IDLE',
+    lastRun: '15 menit lalu',
+    source: 'Multi-Platform Social Stream (X, TikTok, IG)',
+    schedule: 'Setiap 15 Menit',
+    instructions: 'Pindai postingan dengan Z-Score > 2.5 sigma, tandai tagar dengan rasio kemarahan publik > 60%.'
+  },
+  {
+    id: 'agent-2',
+    name: 'CIB Botnet Farm Detector',
+    icon: 'network',
+    description: 'Menganalisis pola koordinasi Coordinated Inauthentic Behavior (interval posting < 5 detik, kesamaan semantik teks > 90%).',
+    status: 'COMPLETED',
+    lastRun: '45 menit lalu',
+    source: 'Botnet Graph Database & Feed Medsos',
+    schedule: 'Setiap 1 Jam',
+    instructions: 'Kelompokkan akun dengan kesamaan teks > 85% dan jeda waktu rilis serempak di bawah 8 detik.'
+  },
+  {
+    id: 'agent-3',
+    name: 'Regional Hotspot Forecaster',
+    icon: 'map-pin',
+    description: 'Mengorelasikan isu kontroversial media lokal di 38 provinsi dengan tren perbincangan medsos untuk memprediksi potensi eskalasi.',
+    status: 'IDLE',
+    lastRun: 'Kemarin, 06:00 WIB',
+    source: 'Portal Berita Daerah & Geotag Medsos',
+    schedule: 'Setiap Hari (06:00 WIB)',
+    instructions: 'Ekstraksi entitas lokasi dari berita kriminal/politik lokal, cocokkan dengan volume percakapan wilayah.'
+  },
+  {
+    id: 'agent-4',
+    name: 'Multi-Platform Cross-Spreader',
+    icon: 'share-2',
+    description: 'Melacak akun yang menyebarkan aset video/gambar narasi yang sama secara serentak antara X, TikTok, dan Threads.',
+    status: 'IDLE',
+    lastRun: '2 jam lalu',
+    source: 'Media Content Hash Archive',
+    schedule: 'Pemicu Manual',
+    instructions: 'Hitung perceptual hash (pHash) konten video pendek, identifikasi akun penyebar pertama (Ground Zero).'
+  }
+];
+
 export class MyAgentView {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.agents = [
-      {
-        id: 'agent-1',
-        name: 'Buzzer Sentiment Sentinel',
-        icon: 'shield-alert',
-        description: 'Memantau lonjakan sentimen negatif, provokasi kebencian, dan anomali polarisasi opini publik pada tagar viral secara kontinu.',
-        status: 'IDLE',
-        lastRun: '15 menit lalu',
-        source: 'Multi-Platform Social Stream (X, TikTok, IG)',
-        schedule: 'Setiap 15 Menit',
-        instructions: 'Pindai postingan dengan Z-Score > 2.5 sigma, tandai tagar dengan rasio kemarahan publik > 60%.'
-      },
-      {
-        id: 'agent-2',
-        name: 'CIB Botnet Farm Detector',
-        icon: 'network',
-        description: 'Menganalisis pola koordinasi Coordinated Inauthentic Behavior (interval posting < 5 detik, kesamaan semantik teks > 90%).',
-        status: 'COMPLETED',
-        lastRun: '45 menit lalu',
-        source: 'Botnet Graph Database & Feed Medsos',
-        schedule: 'Setiap 1 Jam',
-        instructions: 'Kelompokkan akun dengan kesamaan teks > 85% dan jeda waktu rilis serempak di bawah 8 detik.'
-      },
-      {
-        id: 'agent-3',
-        name: 'Regional Hotspot Forecaster',
-        icon: 'map-pin',
-        description: 'Mengorelasikan isu kontroversial media lokal di 38 provinsi dengan tren perbincangan medsos untuk memprediksi potensi eskalasi.',
-        status: 'IDLE',
-        lastRun: 'Kemarin, 06:00 WIB',
-        source: 'Portal Berita Daerah & Geotag Medsos',
-        schedule: 'Setiap Hari (06:00 WIB)',
-        instructions: 'Ekstraksi entitas lokasi dari berita kriminal/politik lokal, cocokkan dengan volume percakapan wilayah.'
-      },
-      {
-        id: 'agent-4',
-        name: 'Multi-Platform Cross-Spreader',
-        icon: 'share-2',
-        description: 'Melacak akun yang menyebarkan aset video/gambar narasi yang sama secara serentak antara X, TikTok, dan Threads.',
-        status: 'IDLE',
-        lastRun: '2 jam lalu',
-        source: 'Media Content Hash Archive',
-        schedule: 'Pemicu Manual',
-        instructions: 'Hitung perceptual hash (pHash) konten video pendek, identifikasi akun penyebar pertama (Ground Zero).'
-      }
-    ];
-
+    this.agents = this.loadAgents();
     this.activeRunningAgent = null;
     this.init();
+  }
+
+  loadAgents() {
+    try {
+      const stored = localStorage.getItem(AGENTS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Gagal memuat agen dari localStorage, fallback ke bawaan:', e);
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_AGENTS));
+  }
+
+  saveAgentsToStorage() {
+    try {
+      localStorage.setItem(AGENTS_STORAGE_KEY, JSON.stringify(this.agents));
+    } catch (e) {
+      console.warn('Gagal menyimpan agen ke localStorage:', e);
+    }
   }
 
   init() {
@@ -375,6 +401,7 @@ export class MyAgentView {
           if (banner) banner.style.display = 'none';
           agent.status = 'COMPLETED';
           agent.lastRun = 'Baru saja';
+          this.saveAgentsToStorage();
           this.renderAgentCards();
           this.openResultModal(agentId);
         }, 500);
@@ -558,6 +585,7 @@ export class MyAgentView {
       this.agents.unshift(newAgent);
     }
 
+    this.saveAgentsToStorage();
     this.closeFormModal();
     this.renderAgentCards();
   }

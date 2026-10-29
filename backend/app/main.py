@@ -1,6 +1,6 @@
 """
 Main Entry Point FastAPI & Lifespan Event Pipeline
-whoiam: Sistem Intelijen Media Sosial & Forensik Akun Terpadu
+KOMANDO: Komando Monitoring dan Analisis Narasi Digital Online
 """
 
 import asyncio
@@ -57,13 +57,13 @@ async def on_new_telemetry_post(post: dict):
 async def lifespan(app: FastAPI):
     # Startup: Daftarkan callback subscriber ke stream_bus dan mulai background loop
     print("=" * 70)
-    print("[whoiam] MEMULAI SERVICE TELEMETRI MEDIA SOSIAL...")
+    print("[KOMANDO] MEMULAI SERVICE TELEMETRI MEDIA SOSIAL...")
     print("=" * 70)
     stream_bus.add_subscriber(on_new_telemetry_post)
     await stream_bus.start()
     yield
     # Shutdown
-    print("[whoiam] SERVICE TELEMETRI DIMATIKAN.")
+    print("[KOMANDO] SERVICE TELEMETRI DIMATIKAN.")
     stream_bus.is_running = False
 
 app = FastAPI(
@@ -172,7 +172,7 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
             "payload": {
                 "ews_status": ews_engine.get_current_status(),
                 "sentiment_overview": sentiment_engine.get_overview(),
-                "message": "Terhubung ke Platform Analisis Akun whoiam"
+                "message": "Terhubung ke Platform Analisis Akun KOMANDO"
             }
         })
         while True:

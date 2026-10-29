@@ -1,13 +1,13 @@
 """
-Konfigurasi Aplikasi whoiam
-Platform Intelijen Akun & Forensik Media Sosial (Social Media Intelligence & Account Forensics)
+Konfigurasi Aplikasi KOMANDO
+Komando Monitoring dan Analisis Narasi Digital Online (Platform Intelijen Media Sosial & Forensik Akun)
 """
 
 import os
 
-APP_NAME = "whoiam"
+APP_NAME = "KOMANDO"
 APP_VERSION = "1.0.0"
-APP_DESCRIPTION = "Platform Intelijen Akun & Forensik Media Sosial (Instagram, X, Facebook, Threads)"
+APP_DESCRIPTION = "Komando Monitoring dan Analisis Narasi Digital Online (Platform Intelijen Media Sosial & Forensik Akun)"
 API_PREFIX = "/api/v1"
 
 # Alert Levels Definition (Normal, Waspada, Krisis)
