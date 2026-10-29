@@ -357,14 +357,15 @@ export class DashboardView {
       },
       radar: {
         indicator: [
-          { name: 'Kemarahan (Anger)', max: 100 },
-          { name: 'Ketakutan (Fear)', max: 100 },
-          { name: 'Kepercayaan (Trust)', max: 100 },
-          { name: 'Antisipasi (Anticipation)', max: 100 }
+          { name: 'Kemarahan (Anger)', min: 0, max: 100 },
+          { name: 'Ketakutan (Fear)', min: 0, max: 100 },
+          { name: 'Kepercayaan (Trust)', min: 0, max: 100 },
+          { name: 'Antisipasi (Anticipation)', min: 0, max: 100 }
         ],
         center: ['50%', '50%'],
         radius: '68%',
-        splitNumber: 3,
+        splitNumber: 4,
+        axisTick: { show: false },
         axisName: {
           color: '#94a3b8',
           fontSize: 10

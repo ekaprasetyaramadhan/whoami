@@ -2176,7 +2176,7 @@ export class KomandoDashboardView {
 
   initTrendChart() {
     const el = document.getElementById('komando-trend-chart-container');
-    if (!el) return;
+    if (!el || el.clientWidth === 0) return;
 
     if (this.trendChart) this.trendChart.dispose();
     this.trendChart = echarts.init(el);
@@ -2264,7 +2264,7 @@ export class KomandoDashboardView {
 
   initSovChart() {
     const el = document.getElementById('komando-sov-chart-container');
-    if (!el) return;
+    if (!el || el.clientWidth === 0) return;
 
     if (this.sovChart) this.sovChart.dispose();
     this.sovChart = echarts.init(el);
@@ -2349,7 +2349,7 @@ export class KomandoDashboardView {
 
   initGenderChart() {
     const el = document.getElementById('komando-gender-chart-container');
-    if (!el) return;
+    if (!el || el.clientWidth === 0) return;
 
     if (this.genderChart) this.genderChart.dispose();
     this.genderChart = echarts.init(el);
@@ -2426,7 +2426,7 @@ export class KomandoDashboardView {
 
   initRadarChart() {
     const el = document.getElementById('komando-radar-chart-container');
-    if (!el) return;
+    if (!el || el.clientWidth === 0) return;
 
     if (this.radarChart) this.radarChart.dispose();
     this.radarChart = echarts.init(el);
@@ -2443,14 +2443,15 @@ export class KomandoDashboardView {
       },
       radar: {
         indicator: [
-          { name: 'Kemarahan', max: 100 },
-          { name: 'Ketakutan', max: 100 },
-          { name: 'Kepercayaan', max: 100 },
-          { name: 'Antisipasi', max: 100 }
+          { name: 'Kemarahan', min: 0, max: 100 },
+          { name: 'Ketakutan', min: 0, max: 100 },
+          { name: 'Kepercayaan', min: 0, max: 100 },
+          { name: 'Antisipasi', min: 0, max: 100 }
         ],
         center: ['50%', '50%'],
         radius: '52%',
-        splitNumber: 3,
+        splitNumber: 4,
+        axisTick: { show: false },
         axisName: {
           color: '#334155',
           fontSize: 10,
@@ -2664,9 +2665,21 @@ export class KomandoDashboardView {
   }
 
   resize() {
-    if (this.trendChart) this.trendChart.resize();
-    if (this.sovChart) this.sovChart.resize();
-    if (this.genderChart) this.genderChart.resize();
-    if (this.radarChart) this.radarChart.resize();
+    const trendEl = document.getElementById('komando-trend-chart-container');
+    if (trendEl && trendEl.clientWidth > 0) {
+      if (!this.trendChart) this.initTrendChart(); else this.trendChart.resize();
+    }
+    const sovEl = document.getElementById('komando-sov-chart-container');
+    if (sovEl && sovEl.clientWidth > 0) {
+      if (!this.sovChart) this.initSovChart(); else this.sovChart.resize();
+    }
+    const genderEl = document.getElementById('komando-gender-chart-container');
+    if (genderEl && genderEl.clientWidth > 0) {
+      if (!this.genderChart) this.initGenderChart(); else this.genderChart.resize();
+    }
+    const radarEl = document.getElementById('komando-radar-chart-container');
+    if (radarEl && radarEl.clientWidth > 0) {
+      if (!this.radarChart) this.initRadarChart(); else this.radarChart.resize();
+    }
   }
 }

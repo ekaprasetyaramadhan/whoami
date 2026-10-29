@@ -385,7 +385,7 @@ export class PelacakAkunMedsosView {
 
   initActivityChart() {
     const el = document.getElementById('osint-activity-chart-container');
-    if (!el) return;
+    if (!el || el.clientWidth === 0) return;
 
     if (this.activityChart) this.activityChart.dispose();
     this.activityChart = echarts.init(el);
@@ -439,7 +439,13 @@ export class PelacakAkunMedsosView {
   }
 
   resize() {
-    if (this.activityChart) this.activityChart.resize();
+    const el = document.getElementById('osint-activity-chart-container');
+    if (!el || el.clientWidth === 0) return;
+    if (!this.activityChart) {
+      this.initActivityChart();
+    } else {
+      this.activityChart.resize();
+    }
   }
 }
 

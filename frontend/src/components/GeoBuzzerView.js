@@ -329,10 +329,10 @@ export class GeoBuzzerView {
 
     this.bindEvents();
 
-    // Inisialisasi ECharts setelah kontainer terpasang di DOM
+    // Inisialisasi ECharts setelah kontainer terpasang di DOM dan memiliki dimensi
     setTimeout(() => {
       const mapContainer = document.getElementById('main-indonesia-map-chart');
-      if (mapContainer && !this.mapChart) {
+      if (mapContainer && mapContainer.clientWidth > 0 && !this.mapChart) {
         this.mapChart = echarts.init(mapContainer);
       }
       this.loadAllData();
@@ -750,7 +750,12 @@ export class GeoBuzzerView {
   }
 
   renderMap() {
+    const mapContainer = document.getElementById('main-indonesia-map-chart');
+    if (!this.mapChart && mapContainer && mapContainer.clientWidth > 0) {
+      this.mapChart = echarts.init(mapContainer);
+    }
     if (!this.mapChart || !this.isMapRegistered) return;
+    if (mapContainer && mapContainer.clientWidth === 0) return;
 
     const isAll = (this.selectedProvince === 'ALL' || this.selectedProvince === 'SEMUA');
     let targetBuzzers = [...this.buzzerData];
@@ -895,12 +900,23 @@ export class GeoBuzzerView {
             opacity: 0.5,
             curveness: 0.25
           },
-          data: this.flightLinesData.map(l => ({
-            fromName: l.from_name,
-            toName: l.to_name,
-            coords: [l.from_coords, l.to_coords],
-            itemData: l
-          }))
+          data: this.flightLinesData
+            .map(l => {
+              const coords = l.coords || (l.from_coords && l.to_coords ? [l.from_coords, l.to_coords] : null);
+              if (!coords || !Array.isArray(coords) || coords.length !== 2) return null;
+              const [c1, c2] = coords;
+              if (!Array.isArray(c1) || !Array.isArray(c2) || c1.length < 2 || c2.length < 2) return null;
+              const lon1 = Number(c1[0]), lat1 = Number(c1[1]);
+              const lon2 = Number(c2[0]), lat2 = Number(c2[1]);
+              if (isNaN(lon1) || isNaN(lat1) || isNaN(lon2) || isNaN(lat2)) return null;
+              return {
+                fromName: l.from_name || '',
+                toName: l.to_name || '',
+                coords: [[lon1, lat1], [lon2, lat2]],
+                itemData: l
+              };
+            })
+            .filter(Boolean)
         }] : []),
         {
           name: 'Top Buzzer',
@@ -1003,8 +1019,9 @@ export class GeoBuzzerView {
   }
 
   renderSnaGraph(snaData) {
+    this.lastSnaData = snaData;
     const snaContainer = document.getElementById('main-geo-sna-chart-container');
-    if (!snaContainer) return;
+    if (!snaContainer || snaContainer.clientWidth === 0) return;
 
     if (!this.snaChart) {
       this.snaChart = echarts.init(snaContainer);
@@ -1508,8 +1525,24 @@ export class GeoBuzzerView {
   }
 
   resize() {
-    if (this.mapChart) this.mapChart.resize();
-    if (this.snaChart) this.snaChart.resize();
+    const mapContainer = document.getElementById('main-indonesia-map-chart');
+    if (mapContainer && mapContainer.clientWidth > 0) {
+      if (!this.mapChart) {
+        this.mapChart = echarts.init(mapContainer);
+        this.renderMap();
+      } else {
+        this.mapChart.resize();
+      }
+    }
+
+    const snaContainer = document.getElementById('main-geo-sna-chart-container');
+    if (snaContainer && snaContainer.clientWidth > 0) {
+      if (!this.snaChart && this.lastSnaData) {
+        this.renderSnaGraph(this.lastSnaData);
+      } else if (this.snaChart) {
+        this.snaChart.resize();
+      }
+    }
   }
 
   formatNumber(num) {
