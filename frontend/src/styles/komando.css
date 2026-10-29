@@ -633,20 +633,22 @@
 }
 
 .word-cloud-container {
-  height: 190px;
-  min-height: 190px;
-  max-height: 190px;
+  flex: 1;
+  height: 310px;
+  min-height: 310px;
+  max-height: 310px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   align-content: center;
-  gap: 8px 16px;
-  padding: 8px 14px;
+  gap: 5px 12px;
+  padding: 10px 14px;
   background: #ffffff;
   border-radius: 12px;
   user-select: none;
   overflow: hidden;
+  line-height: 1.25;
 }
 
 .word-cloud-item {
@@ -654,11 +656,17 @@
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 .word-cloud-item:hover {
-  transform: scale(1.14);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transform: scale(1.16);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.12));
+}
+
+.word-cloud-item.is-hashtag {
+  font-family: var(--font-mono, monospace);
+  letter-spacing: -0.01em;
 }
 
 /* ==========================================================================
