@@ -78,6 +78,22 @@ export class LoginView {
                 <span>MASUK KE SISTEM</span>
               </span>
             </button>
+
+            <!-- Kredensial Default Helper Card -->
+            <div style="margin-top: 18px; padding: 12px 14px; background: rgba(37, 99, 235, 0.06); border: 1px dashed rgba(59, 130, 246, 0.4); border-radius: 8px; font-size: 0.72rem; color: #94a3b8; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #38bdf8; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-shield-halved"></i> KREDENSIAL BAWAAN:
+                </span>
+                <button type="button" id="btn-quick-fill" style="background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #60a5fa; font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+                  Isi Otomatis
+                </button>
+              </div>
+              <div style="font-family: var(--font-mono, monospace); color: #e2e8f0; font-size: 0.7rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+                <span>Username: <strong style="color: #60a5fa;">komando1</strong></span>
+                <span>Password: <strong style="color: #60a5fa;">Komando2026!</strong></span>
+              </div>
+            </div>
           </form>
 
         </div>
@@ -107,6 +123,15 @@ export class LoginView {
           passwordInput.type = 'password';
           togglePwText.textContent = 'Lihat';
         }
+      };
+    }
+
+    // Quick Fill Kredensial Default
+    if (quickFillBtn && usernameInput && passwordInput) {
+      quickFillBtn.onclick = () => {
+        usernameInput.value = 'komando1';
+        passwordInput.value = 'Komando2026!';
+        this.hideError();
       };
     }
 
