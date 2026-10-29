@@ -37,9 +37,7 @@ export class PelacakAkunMedsosView {
               <i data-lucide="scan-search" style="color: var(--color-cyan, #00e5ff); width: 24px; height: 24px;"></i>
               Pelacak Akun Medsos
             </div>
-            <div style="font-size: 0.78rem; color: #64748b; margin-top: 3px;">
-              Pemantauan akun dan aktivitas media sosial yang tersedia secara terbuka.
-            </div>
+
           </div>
 
           <!-- Legal / Privacy Notice -->

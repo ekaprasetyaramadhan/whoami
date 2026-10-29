@@ -63,7 +63,7 @@ function initKomando() {
       const v = document.getElementById('view-dashboard');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
-        topbarInstance.updateHeader('Dashboard', 'Ringkasan analitik percakapan, sentimen, dan metrik narasi digital.', 'layout-dashboard');
+        topbarInstance.updateHeader('Dashboard', '', 'layout-dashboard');
       }
       if (dashboardInstance) dashboardInstance.resize();
     },
@@ -71,7 +71,7 @@ function initKomando() {
       const v = document.getElementById('view-peta-sebaran');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
-        topbarInstance.updateHeader('Peta Sebaran Buzzer', 'Visualisasi persebaran akun dan aktivitas media sosial berdasarkan wilayah.', 'map-pinned');
+        topbarInstance.updateHeader('Peta Sebaran Buzzer', '', 'map-pinned');
       }
       if (petaSebaranInstance) {
         setTimeout(() => {
@@ -86,7 +86,7 @@ function initKomando() {
       const v = document.getElementById('view-pelacak-akun');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
-        topbarInstance.updateHeader('Pelacak Akun Medsos', 'Pemantauan akun dan aktivitas media sosial yang tersedia secara terbuka.', 'scan-search');
+        topbarInstance.updateHeader('Pelacak Akun Medsos', '', 'scan-search');
       }
       if (pelacakAkunInstance) {
         pelacakAkunInstance.resize();
@@ -99,7 +99,7 @@ function initKomando() {
       const v = document.getElementById('view-my-agent');
       if (v) v.style.display = 'block';
       if (topbarInstance) {
-        topbarInstance.updateHeader('My Agent', 'Kelola dan jalankan agent untuk membantu analisis data.', 'bot');
+        topbarInstance.updateHeader('My Agent', '', 'bot');
       }
     }
   });

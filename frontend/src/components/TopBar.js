@@ -34,7 +34,7 @@ export class TopBar {
             <span class="nav-icon" id="topbar-icon"><i data-lucide="layout-dashboard"></i></span>
             <span id="topbar-heading">Dashboard</span>
           </div>
-          <span class="topbar-page-sub" id="topbar-sub">Ringkasan analitik percakapan, sentimen, dan metrik narasi digital.</span>
+
         </div>
 
         <div class="topbar-right">
@@ -104,11 +104,9 @@ export class TopBar {
 
   updateHeader(title, subtitle, iconName) {
     const heading = this.container.querySelector('#topbar-heading');
-    const sub = this.container.querySelector('#topbar-sub');
     const iconContainer = this.container.querySelector('#topbar-icon');
 
     if (heading) heading.textContent = title;
-    if (sub) sub.textContent = subtitle;
     if (iconContainer && iconName) {
       iconContainer.innerHTML = `<i data-lucide="${iconName}"></i>`;
       renderLucideIcons(iconContainer);

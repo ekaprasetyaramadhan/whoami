@@ -34,11 +34,6 @@ export class Sidebar {
 
     this.container.innerHTML = `
       <aside class="komando-sidebar ${this.isCollapsed ? 'collapsed' : ''}" id="komando-sidebar">
-        <!-- Sidebar Edge Toggle Handle on Border (Image 1 side arrow style) -->
-        <button class="sidebar-edge-toggle" id="btn-sidebar-edge-toggle" title="${this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar'}" aria-label="Toggle Sidebar">
-          <i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>
-        </button>
-
         <!-- Logo & Branding -->
         <div class="sidebar-brand-box">
           <img src="/Komando.png" alt="Komando Logo" class="sidebar-logo-img" onerror="this.src='./Komando.png'" />
@@ -118,7 +113,6 @@ export class Sidebar {
     localStorage.setItem('komando_sidebar_collapsed', this.isCollapsed ? 'true' : 'false');
 
     const aside = this.container.querySelector('.komando-sidebar');
-    const edgeToggleBtn = this.container.querySelector('#btn-sidebar-edge-toggle');
     const appLayout = document.getElementById('app-layout');
 
     if (aside) {
@@ -137,11 +131,7 @@ export class Sidebar {
       }
     }
 
-    if (edgeToggleBtn) {
-      edgeToggleBtn.setAttribute('title', this.isCollapsed ? 'Lebarkan Sidebar' : 'Ciutkan Sidebar');
-      edgeToggleBtn.innerHTML = `<i data-lucide="${this.isCollapsed ? 'chevron-right' : 'chevron-left'}"></i>`;
-      renderLucideIcons(edgeToggleBtn);
-    }
+
 
     // Trigger visual resize on charts (ECharts & containers)
     setTimeout(() => {
@@ -199,15 +189,6 @@ export class Sidebar {
     document.addEventListener('komando:toggle-sidebar', () => {
       this.toggle();
     });
-
-    const edgeToggleBtn = this.container.querySelector('#btn-sidebar-edge-toggle');
-    if (edgeToggleBtn) {
-      edgeToggleBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.toggleCollapse();
-      });
-    }
 
     const items = this.container.querySelectorAll('.sidebar-nav-item');
     items.forEach((item) => {

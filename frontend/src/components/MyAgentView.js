@@ -78,9 +78,7 @@ export class MyAgentView {
               <i data-lucide="bot" style="color: var(--color-cyan, #00e5ff); width: 24px; height: 24px;"></i>
               My Agent
             </div>
-            <div style="font-size: 0.78rem; color: #64748b; margin-top: 3px;">
-              Kelola dan jalankan agent untuk membantu analisis data.
-            </div>
+
           </div>
 
           <div class="my-agent-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
