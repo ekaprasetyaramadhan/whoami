@@ -423,57 +423,57 @@ export class MyAgentView {
 
     if (bodyEl) {
       bodyEl.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.75rem;">
+        <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.75rem; color: #334155;">
           
           <!-- Report Header Info -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: rgba(0,0,0,0.35); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); font-family: var(--font-mono);">
-            <div>Waktu: <strong style="color: #fff;">28 Okt 2026, 21:55 WIB</strong></div>
-            <div>Sampel Diproses: <strong style="color: var(--color-cyan);">10,000 Postingan</strong></div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: #f8fafc; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: var(--font-mono);">
+            <div>Waktu: <strong style="color: #0f172a;">28 Okt 2026, 21:55 WIB</strong></div>
+            <div>Sampel Diproses: <strong style="color: #2563eb;">10,000 Postingan</strong></div>
             <div>Tingkat Keyakinan: <strong style="color: #10b981;">96.4% (Tinggi)</strong></div>
           </div>
 
           <!-- Executive Summary -->
           <div>
-            <div style="font-weight: 700; color: var(--color-cyan); margin-bottom: 4px; text-transform: uppercase;">
+            <div style="font-weight: 700; color: #2563eb; margin-bottom: 4px; text-transform: uppercase;">
               1. Ringkasan Temuan Forensik
             </div>
-            <div style="color: #cbd5e1; line-height: 1.4; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);">
-              Agent berhasil mendeteksi operasi amplifikasi terkoordinasi (Coordinated Inauthentic Behavior) yang berpusat pada tagar <strong>#28Oktober</strong>. Tingkat sinkronisasi waktu postingan antar kluster mencapai <strong>94.2%</strong> dalam rentang interval di bawah 5 detik, mengindikasikan penggunaan skrip otomasi (bot farm).
+            <div style="color: #334155; line-height: 1.5; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              Agent berhasil mendeteksi operasi amplifikasi terkoordinasi (Coordinated Inauthentic Behavior) yang berpusat pada tagar <strong style="color: #0f172a;">#28Oktober</strong>. Tingkat sinkronisasi waktu postingan antar kluster mencapai <strong style="color: #ef4444;">94.2%</strong> dalam rentang interval di bawah 5 detik, mengindikasikan penggunaan skrip otomasi (bot farm).
             </div>
           </div>
 
           <!-- Anomalies Table -->
           <div>
-            <div style="font-weight: 700; color: var(--color-cyan); margin-bottom: 4px; text-transform: uppercase;">
+            <div style="font-weight: 700; color: #2563eb; margin-bottom: 6px; text-transform: uppercase;">
               2. Simpul Koordinator Kunci & Indikator Anomali
             </div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; text-align: left;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; text-align: left; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
               <thead>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">
-                  <th style="padding: 6px;">Akun Koordinator</th>
-                  <th style="padding: 6px;">Platform</th>
-                  <th style="padding: 6px;">Bot Probability</th>
-                  <th style="padding: 6px;">Kluster Narasi</th>
+                <tr style="background: #f1f5f9; border-bottom: 1px solid #cbd5e1; color: #475569; font-weight: 700;">
+                  <th style="padding: 8px 10px;">Akun Koordinator</th>
+                  <th style="padding: 8px 10px;">Platform</th>
+                  <th style="padding: 8px 10px;">Bot Probability</th>
+                  <th style="padding: 8px 10px;">Kluster Narasi</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                  <td style="padding: 6px; font-weight: 700; color: #fff;">@daboriba_buzz</td>
-                  <td style="padding: 6px;">𝕏 (Twitter)</td>
-                  <td style="padding: 6px; color: #ef4444; font-weight: 700;">88% (Tinggi)</td>
-                  <td style="padding: 6px; color: #cbd5e1;">Agitasi Kebijakan Ekonomi</td>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                  <td style="padding: 8px 10px; font-weight: 700; color: #0f172a;">@daboriba_buzz</td>
+                  <td style="padding: 8px 10px; color: #334155;">𝕏 (Twitter)</td>
+                  <td style="padding: 8px 10px; color: #ef4444; font-weight: 700;">88% (Tinggi)</td>
+                  <td style="padding: 8px 10px; color: #475569;">Agitasi Kebijakan Ekonomi</td>
                 </tr>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                  <td style="padding: 6px; font-weight: 700; color: #fff;">@viral_indo_terkini</td>
-                  <td style="padding: 6px;">TikTok</td>
-                  <td style="padding: 6px; color: #ef4444; font-weight: 700;">84% (Tinggi)</td>
-                  <td style="padding: 6px; color: #cbd5e1;">Amplifikasi Video Demo</td>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                  <td style="padding: 8px 10px; font-weight: 700; color: #0f172a;">@viral_indo_terkini</td>
+                  <td style="padding: 8px 10px; color: #334155;">TikTok</td>
+                  <td style="padding: 8px 10px; color: #ef4444; font-weight: 700;">84% (Tinggi)</td>
+                  <td style="padding: 8px 10px; color: #475569;">Amplifikasi Video Demo</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px; font-weight: 700; color: #fff;">@revolusi_suara_rakyat</td>
-                  <td style="padding: 6px;">Instagram</td>
-                  <td style="padding: 6px; color: #f59e0b; font-weight: 700;">79% (Sedang)</td>
-                  <td style="padding: 6px; color: #cbd5e1;">Provokasi Aksi Massa</td>
+                  <td style="padding: 8px 10px; font-weight: 700; color: #0f172a;">@revolusi_suara_rakyat</td>
+                  <td style="padding: 8px 10px; color: #334155;">Instagram</td>
+                  <td style="padding: 8px 10px; color: #f59e0b; font-weight: 700;">79% (Sedang)</td>
+                  <td style="padding: 8px 10px; color: #475569;">Provokasi Aksi Massa</td>
                 </tr>
               </tbody>
             </table>
@@ -481,10 +481,10 @@ export class MyAgentView {
 
           <!-- Recommendations -->
           <div>
-            <div style="font-weight: 700; color: var(--color-cyan); margin-bottom: 4px; text-transform: uppercase;">
+            <div style="font-weight: 700; color: #2563eb; margin-bottom: 4px; text-transform: uppercase;">
               3. Rekomendasi Tindakan Komando
             </div>
-            <ul style="padding-left: 18px; color: #94a3b8; line-height: 1.4;">
+            <ul style="padding-left: 18px; color: #475569; line-height: 1.5; margin: 0;">
               <li>Tingkatkan pemantauan pada kanal regional DKI Jakarta & Jawa Barat.</li>
               <li>Pantau pergerakan tagar turunan yang berkaitan dengan #DemoBuruhNasional.</li>
               <li>Lakukan penelusuran lebih mendalam pada modul <strong>Pelacak Akun Medsos</strong>.</li>

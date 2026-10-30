@@ -733,7 +733,7 @@ export class GeoBuzzerView {
         const topRateLabel = maxRateBuzzer ? `${maxRateBuzzer.engagement_rate} (${maxRateBuzzer.city})` : '12.5%';
 
         briefStats.innerHTML = `
-          <span>Cakupan: <strong style="color: #fff;">38 Provinsi</strong> (<span style="color: var(--color-cyan);">${totalBuzzers || 152} Koordinator</span>)</span> &bull; 
+          <span>Cakupan: <strong style="color: #0f172a;">38 Provinsi</strong> (<span style="color: var(--color-cyan);">${totalBuzzers || 152} Koordinator</span>)</span> &bull; 
           <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
           <span>High Threat: <strong style="color: #ef4444;">${totalHighThreat} Aktor</strong></span> &bull; 
           <span>Top Engagement Rate: <strong style="color: #10b981;">${topRateLabel}</strong></span>
@@ -756,7 +756,7 @@ export class GeoBuzzerView {
         const provTopRate = provBuzzers.length > 0 ? provBuzzers[0].engagement_rate : '8.5%';
 
         briefStats.innerHTML = `
-          <span>Kluster Terdeteksi: <strong style="color: #fff;">${totalCluster} Akun</strong> (<span style="color: #ef4444;">${coreCoordinators} Koordinator</span> + <span style="color: #a855f7;">${botAmplifiers} Bot Farm</span>)</span> &bull; 
+          <span>Kluster Terdeteksi: <strong style="color: #0f172a;">${totalCluster} Akun</strong> (<span style="color: #ef4444;">${coreCoordinators} Koordinator</span> + <span style="color: #a855f7;">${botAmplifiers} Bot Farm</span>)</span> &bull; 
           <span>Potensi Reach: <strong style="color: var(--color-cyan);">${this.formatNumber(totalReach)}</strong></span> &bull; 
           <span>High Threat: <strong style="color: #ef4444;">${highRisk} Aktor</strong></span> &bull; 
           <span>Engagement Rate: <strong style="color: #10b981;">${provTopRate}</strong></span>
@@ -827,13 +827,13 @@ export class GeoBuzzerView {
                 <div style="font-weight: 700; color: #00e5ff; font-size: 0.82rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-plane-departure"></i> JALUR PROPAGASI ISU
                 </div>
-                <div style="font-size: 0.74rem; color: #f8fafc; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+                <div style="font-size: 0.74rem; color: #334155; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
                   <strong style="color: #fbbf24;">${l.from_name}</strong> &rarr; <strong style="color: #38bdf8;">${l.to_name}</strong>
                 </div>
-                <div style="font-size: 0.7rem; color: #cbd5e1; margin-bottom: 2px;">Narasi: <strong style="color: #fff;">${l.narrative}</strong></div>
-                <div style="font-size: 0.7rem; color: #cbd5e1; margin-bottom: 2px;">Kecepatan: <strong style="color: #f59e0b;">${l.speed_cph} tweet/jam</strong></div>
+                <div style="font-size: 0.7rem; color: #475569; margin-bottom: 2px;">Narasi: <strong style="color: #0f172a;">${l.narrative}</strong></div>
+                <div style="font-size: 0.7rem; color: #475569; margin-bottom: 2px;">Kecepatan: <strong style="color: #d97706;">${l.speed_cph} tweet/jam</strong></div>
                 <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 4px;">
-                  Rentang: <strong style="color: var(--color-cyan);">${l.timeframe}</strong> &bull; Volume: <strong style="color: #fff;">${(l.volume || 0).toLocaleString('id-ID')} interaksi</strong>
+                  Rentang: <strong style="color: var(--color-cyan);">${l.timeframe}</strong> &bull; Volume: <strong style="color: #0f172a;">${(l.volume || 0).toLocaleString('id-ID')} interaksi</strong>
                 </div>
               </div>
             `;
@@ -845,16 +845,16 @@ export class GeoBuzzerView {
                 <div style="font-weight: 700; color: #00e5ff; font-size: 0.85rem; margin-bottom: 2px;">
                   ${b.name} <span style="color: #94a3b8; font-weight: normal;">${b.handle}</span>
                 </div>
-                <div style="font-size: 0.72rem; color: #cbd5e1; margin-bottom: 6px;">
-                  Platform: <strong style="color: #f8fafc;">${b.platform}</strong> &bull; Wilayah: <strong style="color: #f8fafc;">${b.city}, ${b.province}</strong>
+                <div style="font-size: 0.72rem; color: #475569; margin-bottom: 6px;">
+                  Platform: <strong style="color: #0f172a;">${b.platform}</strong> &bull; Wilayah: <strong style="color: #0f172a;">${b.city}, ${b.province}</strong>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.7rem; background: rgba(0,0,0,0.35); padding: 6px; border-radius: 4px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.7rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px; border-radius: 4px;">
                   <div>Follower: <strong style="color: #38bdf8;">${b.followers.toLocaleString('id-ID')}</strong></div>
                   <div>Engagement: <strong style="color: #10b981;">${b.engagement_rate || '7.5%'}</strong></div>
                   <div>Bot Score: <strong style="color: ${b.bot_score > 75 ? '#ef4444' : '#f59e0b'};">${b.bot_score}%</strong></div>
                   <div>Ancaman: <strong style="color: ${b.threat_level === 'HIGH' ? '#ef4444' : '#10b981'};">${b.threat_level}</strong></div>
                 </div>
-                <div style="margin-top: 6px; font-size: 0.7rem; color: #e2e8f0; border-left: 2px solid #00e5ff; padding-left: 6px;">
+                <div style="margin-top: 6px; font-size: 0.7rem; color: #334155; border-left: 2px solid #00e5ff; padding-left: 6px;">
                   <em>"${b.post_snippet}"</em>
                 </div>
                 <div style="margin-top: 4px; font-size: 0.65rem; color: #94a3b8; text-align: right;">
@@ -1260,35 +1260,35 @@ export class GeoBuzzerView {
       let gzBannerHtml = '';
       if (gzFeed) {
         gzBannerHtml = `
-          <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 22, 34, 0.95)); border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+          <div style="grid-column: 1 / -1; background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 8px; padding: 12px 14px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;">
+              <span style="font-size: 0.74rem; color: #b45309; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;">
                 <i class="fa-solid fa-bullseye fa-fade"></i> DETEKSI SUMBER POSTINGAN UTAMA (GROUND ZERO)
               </span>
-              <span class="tag-badge" style="border-color: #f59e0b; color: #f59e0b; font-size: 0.62rem; font-weight: 700;">
+              <span class="tag-badge" style="border: 1px solid #f59e0b; background: #fef3c7; color: #b45309; font-size: 0.62rem; font-weight: 700;">
                 PATIENT ZERO
               </span>
             </div>
             
-            <div style="font-size: 0.75rem; color: #fff;">
-              Akun <strong>${gzFeed.author_name}</strong> (<span style="color: var(--color-cyan); font-family: var(--font-mono);">${gzFeed.author_handle}</span>) terdeteksi sebagai <u>penyebar pertama narasi ini</u> pada:
+            <div style="font-size: 0.78rem; color: #0f172a;">
+              Akun <strong>${gzFeed.author_name}</strong> (<span style="color: #2563eb; font-family: var(--font-mono); font-weight: 600;">${gzFeed.author_handle}</span>) terdeteksi sebagai <u>penyebar pertama narasi ini</u> pada:
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 6px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem;">
-              <div style="color: #f59e0b; font-weight: 700;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #fde68a; padding: 8px 12px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.7rem;">
+              <div style="color: #b45309; font-weight: 700;">
                 <i class="fa-solid fa-clock"></i> ${gzFeed.date_time_release || gzFeed.timestamp}
               </div>
-              <div style="color: #94a3b8;">
-                Delta: <strong style="color: #38bdf8;">T+00m00s (ORIGIN)</strong>
+              <div style="color: #64748b;">
+                Delta: <strong style="color: #2563eb;">T+00m00s (ORIGIN)</strong>
               </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: #cbd5e1; margin-top: 2px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #475569; margin-top: 2px;">
               <span>
-                <i class="fa-solid fa-location-crosshairs text-cyan"></i> Geotag: <strong>${gzFeed.geolocation?.city || gzFeed.city}</strong> [${gzFeed.geolocation?.latitude || 0}, ${gzFeed.geolocation?.longitude || 0}]
+                <i class="fa-solid fa-location-crosshairs text-cyan"></i> Geotag: <strong style="color: #0f172a;">${gzFeed.geolocation?.city || gzFeed.city}</strong> [${gzFeed.geolocation?.latitude || 0}, ${gzFeed.geolocation?.longitude || 0}]
               </span>
-              <button class="btn-focus-map" data-lon="${gzFeed.geolocation?.longitude || 0}" data-lat="${gzFeed.geolocation?.latitude || 0}" style="background: rgba(0,229,255,0.15); border: 1px solid var(--color-cyan); color: var(--color-cyan); padding: 3px 8px; border-radius: 3px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                <i class="fa-solid fa-magnifying-glass-location"></i> Fokuskan Peta
+              <button class="btn-focus-map" data-lon="${gzFeed.geolocation?.longitude || 0}" data-lat="${gzFeed.geolocation?.latitude || 0}" style="background: #eff6ff; border: 1px solid #93c5fd; color: #2563eb; padding: 4px 10px; border-radius: 6px; font-size: 0.68rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-crosshairs"></i> FOKUS PETA
               </button>
             </div>
           </div>

@@ -842,7 +842,7 @@ export class KomandoDashboardView {
                 <i class="fa-solid fa-hashtag"></i>
               </div>
               <div>
-                <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: #fff;">
+                <div style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: #0f172a;">
                   Rincian Penuh Top Hashtags
                 </div>
                 <div style="font-size: 0.72rem; color: #94a3b8;">
@@ -1357,7 +1357,7 @@ export class KomandoDashboardView {
               ${item.username}
             </div>
             <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 2px;">
-              Dipublikasikan pada <strong style="color: #cbd5e1;">${item.publishedAt}</strong> &bull; Kanal: <strong style="color: #fff;">${item.channel}</strong>
+              Dipublikasikan pada <strong style="color: #475569;">${item.publishedAt}</strong> &bull; Kanal: <strong style="color: #0f172a;">${item.channel}</strong>
             </div>
           </div>
           <span style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-size: 0.68rem; padding: 4px 10px; border-radius: 9999px; font-weight: 600;">
@@ -1366,7 +1366,7 @@ export class KomandoDashboardView {
         </div>
 
         <!-- Full Caption Preview -->
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; font-size: 0.8rem; color: #f1f5f9; line-height: 1.5;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; font-size: 0.8rem; color: #334155; line-height: 1.5;">
           ${item.caption}
         </div>
 
@@ -1692,7 +1692,7 @@ export class KomandoDashboardView {
     tbody.innerHTML = data.map((item, idx) => `
       <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
         <td style="padding: 10px 8px; font-weight: 700; color: var(--color-cyan);">${idx + 1}</td>
-        <td style="padding: 10px 8px; font-weight: 700; color: #fff;">${item.tag}</td>
+        <td style="padding: 10px 8px; font-weight: 700; color: #0f172a;">${item.tag}</td>
         <td style="padding: 10px 8px; text-align: right; font-family: var(--font-mono); color: #38bdf8;">${item.displayVal}</td>
         <td style="padding: 10px 8px; text-align: right; font-family: var(--font-mono); color: #a855f7;">${item.reach}</td>
         <td style="padding: 10px 8px; text-align: right; font-family: var(--font-mono); color: #10b981;">~${item.reach}</td>
@@ -1888,17 +1888,17 @@ export class KomandoDashboardView {
             ${initials}
           </div>
           <div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px;">
+            <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
               ${author.author}
               ${author.verified ? '<i class="fa-solid fa-circle-check" style="color:#38bdf8; font-size: 0.9rem;"></i>' : ''}
             </div>
             <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
-              Saluran: <strong style="color: #cbd5e1;">${author.channel}</strong> &bull; Wilayah: <strong style="color: #cbd5e1;">${author.location || 'Nasional'}</strong>
+              Saluran: <strong style="color: #475569;">${author.channel}</strong> &bull; Wilayah: <strong style="color: #475569;">${author.location || 'Nasional'}</strong>
             </div>
           </div>
         </div>
 
-        <div style="font-size: 0.76rem; color: #cbd5e1; background: #f1f5f9; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; border-left: 3px solid #3b82f6;">
+        <div style="font-size: 0.76rem; color: #334155; background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; border-left: 3px solid #2563eb;">
           <em>"${author.bio || 'Tidak ada deskripsi profil publik.'}"</em>
         </div>
 
@@ -2054,13 +2054,13 @@ export class KomandoDashboardView {
 
     body.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
           <div>
             <div style="font-size: 1.35rem; font-weight: 800; color: #0f172a;">
               "${item.text}"
             </div>
             <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
-              Kata Kunci Narasi Digital &bull; Platform: <strong style="color:#fff;">${this.selectedWordPlatform}</strong>
+              Kata Kunci Narasi Digital &bull; Platform: <strong style="color:#0f172a;">${this.selectedWordPlatform}</strong>
             </div>
           </div>
           <div style="text-align: right;">
